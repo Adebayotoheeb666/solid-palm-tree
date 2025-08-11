@@ -18,7 +18,9 @@
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "analyze": "node analyze-bundle.js",
+    "build:analyze": "npm run build && npm run analyze"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.5",
