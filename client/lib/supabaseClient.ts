@@ -1,25 +1,46 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
+
+// Check if Supabase should be initialized
+const shouldInitializeSupabase = () => {
+  return !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) ||
+         import.meta.env.DEV
+}
 
 // Production/Development configuration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || (
-  // In production, we might not have Supabase configured, so use a placeholder
-  import.meta.env.PROD ? 'https://placeholder.supabase.co' : 'http://localhost:54321'
-)
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'http://localhost:54321'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
 
-// Create Supabase client with error handling
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+// Create mock client for production when Supabase is not configured
+const createMockSupabaseClient = () => ({
   auth: {
-    persistSession: false, // Disable auth session persistence since we use custom auth
-    autoRefreshToken: false,
-    detectSessionInUrl: false
+    signUp: async () => ({ data: { user: null }, error: new Error('Supabase not configured') }),
+    signInWithPassword: async () => ({ data: { user: null }, error: new Error('Supabase not configured') }),
+    signOut: async () => ({ error: null }),
+    getUser: async () => ({ data: { user: null }, error: new Error('Supabase not configured') })
   },
-  global: {
-    headers: {
-      'X-Client-Info': 'onboard-ticket-client'
-    }
-  }
+  from: () => ({
+    select: () => ({ order: () => ({ data: [], error: null }) }),
+    insert: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }),
+    update: () => ({ eq: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }) })
+  }),
+  rpc: async () => ({ data: null, error: new Error('Supabase not configured') })
 })
+
+// Create Supabase client or mock client
+export const supabase: SupabaseClient<any> = shouldInitializeSupabase()
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: false, // Disable auth session persistence since we use custom auth
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'onboard-ticket-client'
+        }
+      }
+    })
+  : createMockSupabaseClient() as any
 
 // Database helper types that match our migration schema
 export type Database = {
