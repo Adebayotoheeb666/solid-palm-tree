@@ -2,12 +2,12 @@
   command = "npm run build:client"
   functions = "netlify/functions"
   publish = "dist/spa"
-
+  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,PAYPAL_MODE" }
 
 [functions]
   external_node_modules = ["express"]
   node_bundler = "esbuild"
-  
+
 [[redirects]]
   force = true
   from = "/api/*"
