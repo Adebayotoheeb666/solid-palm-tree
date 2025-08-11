@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { RegisterRequest } from "@shared/api";
+import SimpleHeader from "../components/SimpleHeader";
+import Footer from "../components/Footer";
 
 export default function Register() {
   const navigate = useNavigate();
