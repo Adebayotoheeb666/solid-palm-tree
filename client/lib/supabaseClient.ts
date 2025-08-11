@@ -356,49 +356,67 @@ const withErrorHandling = async <T>(operation: () => Promise<T>, fallback?: T): 
 export const supabaseHelpers = {
   // Auth helpers
   async signUp(email: string, password: string, metadata: any) {
-    return await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata
-      }
-    })
+    return await withErrorHandling(() =>
+      supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata
+        }
+      }),
+      { data: { user: null }, error: new Error('Supabase not configured') }
+    )
   },
 
   async signIn(email: string, password: string) {
-    return await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+    return await withErrorHandling(() =>
+      supabase.auth.signInWithPassword({
+        email,
+        password
+      }),
+      { data: { user: null }, error: new Error('Supabase not configured') }
+    )
   },
 
   async signOut() {
-    return await supabase.auth.signOut()
+    return await withErrorHandling(() => supabase.auth.signOut())
   },
 
   async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser()
-    return user
+    const result = await withErrorHandling(async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      return user
+    })
+    return result
   },
 
   // Check if current user is admin
   async isAdmin() {
-    const { data, error } = await supabase.rpc('is_admin')
-    return data === true && !error
+    const result = await withErrorHandling(async () => {
+      const { data, error } = await supabase.rpc('is_admin')
+      return data === true && !error
+    }, false)
+    return result || false
   },
 
   // Get user role
   async getUserRole() {
-    const { data, error } = await supabase.rpc('get_user_role')
-    return error ? 'user' : data
+    const result = await withErrorHandling(async () => {
+      const { data, error } = await supabase.rpc('get_user_role')
+      return error ? 'user' : data
+    }, 'user')
+    return result || 'user'
   },
 
   // Booking helpers
   async getAirports() {
-    return await supabase
-      .from('airports')
-      .select('*')
-      .order('city')
+    return await withErrorHandling(() =>
+      supabase
+        .from('airports')
+        .select('*')
+        .order('city'),
+      { data: [], error: null }
+    )
   },
 
   async getUserBookings(userId: string) {
