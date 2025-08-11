@@ -8,6 +8,8 @@ import {
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { LoginRequest } from "@shared/api";
+import SimpleHeader from "../components/SimpleHeader";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const navigate = useNavigate();
