@@ -3,11 +3,14 @@
   functions = "netlify/functions"
   publish = "dist/spa"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,PAYPAL_MODE"
+  SECRETS_SCAN_OMIT_PATHS = "supabase,dist/spa/assets/*"
 
 [functions]
   external_node_modules = ["express"]
   node_bundler = "esbuild"
-  
+
 [[redirects]]
   force = true
   from = "/api/*"
