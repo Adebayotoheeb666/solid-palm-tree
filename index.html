@@ -93,12 +93,45 @@
     <script>
       // Mark when the page starts loading
       performance.mark('page-start');
-      
+
       // Hide loading spinner when app is ready
       window.addEventListener('load', function() {
         document.body.classList.add('app-loaded');
         performance.mark('page-loaded');
       });
+
+      // Global error handlers to prevent crashes
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('Failed to fetch')) {
+          console.warn('Fetch error caught and handled:', e.message);
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      window.addEventListener('unhandledrejection', function(e) {
+        if (e.reason && e.reason.message && e.reason.message.includes('Failed to fetch')) {
+          console.warn('Unhandled fetch rejection caught and handled:', e.reason.message);
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      // Override fetch to add error handling
+      const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        return originalFetch.apply(this, args).catch(function(error) {
+          if (error.message && error.message.includes('Failed to fetch')) {
+            console.warn('Fetch intercepted and handled:', error.message);
+            // Return a fake response to prevent crashes
+            return Promise.resolve(new Response('{"error": "Network error handled"}', {
+              status: 500,
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          }
+          throw error;
+        });
+      };
     </script>
   </body>
 </html>
