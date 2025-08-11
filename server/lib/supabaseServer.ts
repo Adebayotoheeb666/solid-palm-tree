@@ -118,18 +118,24 @@ export const supabaseServerHelpers = {
 
   // Airport operations
   async getAllAirports() {
-    return await supabase
-      .from('airports')
-      .select('*')
-      .order('city');
+    return await withServerErrorHandling(() =>
+      supabase
+        .from('airports')
+        .select('*')
+        .order('city'),
+      { data: [], error: null }
+    );
   },
 
   async getAirportByCode(code: string) {
-    return await supabase
-      .from('airports')
-      .select('*')
-      .eq('code', code)
-      .single();
+    return await withServerErrorHandling(() =>
+      supabase
+        .from('airports')
+        .select('*')
+        .eq('code', code)
+        .single(),
+      { data: null, error: new Error('Supabase not configured') }
+    );
   },
 
   // Transaction operations
