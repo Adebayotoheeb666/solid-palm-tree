@@ -67,13 +67,6 @@ export default defineConfig(({ mode }) => ({
         },
         entryFileNames: `js/[name]_[hash].js`
       }
-    },
-    terserOptions: {
-      compress: {
-        drop_console: mode === "production",
-        drop_debugger: mode === "production",
-        pure_funcs: mode === "production" ? ['console.log', 'console.info'] : []
-      }
     }
   },
   plugins: [
