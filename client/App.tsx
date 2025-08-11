@@ -45,6 +45,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <DashboardButton />
             <Suspense
               fallback={
                 <div className="w-full h-screen flex items-center justify-center text-lg">
