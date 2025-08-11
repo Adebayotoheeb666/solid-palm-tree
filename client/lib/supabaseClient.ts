@@ -1,10 +1,25 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Development/Demo configuration - replace with real values for production
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'http://localhost:54321'
+// Production/Development configuration
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || (
+  // In production, we might not have Supabase configured, so use a placeholder
+  import.meta.env.PROD ? 'https://placeholder.supabase.co' : 'http://localhost:54321'
+)
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Create Supabase client with error handling
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false, // Disable auth session persistence since we use custom auth
+    autoRefreshToken: false,
+    detectSessionInUrl: false
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'onboard-ticket-client'
+    }
+  }
+})
 
 // Database helper types that match our migration schema
 export type Database = {
