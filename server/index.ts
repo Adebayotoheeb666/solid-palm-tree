@@ -143,6 +143,7 @@ export function createServer() {
 
   // Add database health check routes
   app.use("/api/health", dbHealthRouter);
+  app.use("/api/db", dbTestRouter);
 
   // Determine if we should use Supabase or fallback routes
   const useSupabase =
