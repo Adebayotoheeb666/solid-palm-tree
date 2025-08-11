@@ -357,18 +357,25 @@ const isSupabaseConfigured = () => {
 
 // Wrapper for Supabase operations with error handling
 const withErrorHandling = async <T>(operation: () => Promise<T>, fallback?: T): Promise<T | null> => {
-  if (!isSupabaseConfigured() && import.meta.env.PROD) {
-    console.warn('Supabase not configured in production environment')
+  // Always return fallback in production if Supabase not configured
+  if (!shouldInitializeSupabase()) {
+    console.warn('Supabase not configured, using fallback')
     return fallback || null
   }
 
   try {
-    return await operation()
+    const result = await operation()
+    return result
   } catch (error) {
     console.error('Supabase operation failed:', error)
-    if (import.meta.env.DEV) {
-      throw error // Re-throw in development for debugging
+
+    // Don't re-throw in production to prevent crashes
+    if (import.meta.env.PROD) {
+      return fallback || null
     }
+
+    // In development, log but still return fallback to prevent crashes
+    console.warn('Using fallback due to Supabase error in development')
     return fallback || null
   }
 }
