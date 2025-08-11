@@ -39,6 +39,7 @@ import {
 
 // Import fallback routes
 import { fallbackAirportsRouter } from "./routes/fallback-airports";
+import { dbHealthRouter } from "./routes/db-health";
 
 // Import fallback booking routes for demo
 import {
