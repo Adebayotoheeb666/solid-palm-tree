@@ -13,6 +13,7 @@ import {
   AuthProtectedRoute,
   AdminProtectedRoute,
 } from "./components/ProtectedRoute";
+import DashboardButton from "./components/DashboardButton";
 
 // Lazy load large/rarely used pages for faster initial load
 const Index = React.lazy(() => import("./pages/Index"));
