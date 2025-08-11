@@ -1,7 +1,7 @@
-import React, { useState, useCallback, memo } from 'react';
-import { Menu, X, User, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState, useCallback, memo } from "react";
+import { Menu, X, User, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface MobileNavProps {
   handleBookNow: () => void;
@@ -14,10 +14,13 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
 
   const closeMenu = useCallback(() => setIsOpen(false), []);
 
-  const handleNavigation = useCallback((path: string) => {
-    navigate(path);
-    closeMenu();
-  }, [navigate, closeMenu]);
+  const handleNavigation = useCallback(
+    (path: string) => {
+      navigate(path);
+      closeMenu();
+    },
+    [navigate, closeMenu],
+  );
 
   const handleLogout = useCallback(() => {
     logout();
@@ -30,7 +33,7 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
     closeMenu();
   }, [handleBookNow, closeMenu]);
 
-  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
+  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
 
   return (
     <div className="md:hidden">
@@ -55,7 +58,7 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
       {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
@@ -122,9 +125,7 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
           {/* User Info (if authenticated) */}
           {isAuthenticated && user && (
             <div className="border-t p-4">
-              <div className="text-sm text-gray-600">
-                Logged in as:
-              </div>
+              <div className="text-sm text-gray-600">Logged in as:</div>
               <div className="font-medium text-brand-text-primary truncate">
                 {user.email}
               </div>
@@ -136,6 +137,6 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
   );
 });
 
-MobileNav.displayName = 'MobileNav';
+MobileNav.displayName = "MobileNav";
 
 export default MobileNav;

@@ -1,8 +1,8 @@
-import React, { useCallback, memo } from 'react';
-import { User, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import MobileNav from './MobileNav';
+import React, { useCallback, memo } from "react";
+import { User, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import MobileNav from "./MobileNav";
 
 interface HeaderProps {
   handleBookNow?: () => void;
@@ -23,8 +23,14 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
   const bookNowHandler = handleBookNow || defaultHandleBookNow;
 
   const handleLogoClick = useCallback(() => navigate("/"), [navigate]);
-  const handleContactClick = useCallback(() => navigate("/contact"), [navigate]);
-  const handleDashboardClick = useCallback(() => navigate("/dashboard"), [navigate]);
+  const handleContactClick = useCallback(
+    () => navigate("/contact"),
+    [navigate],
+  );
+  const handleDashboardClick = useCallback(
+    () => navigate("/dashboard"),
+    [navigate],
+  );
   const handleLoginClick = useCallback(() => navigate("/login"), [navigate]);
   const handleLogoutClick = useCallback(() => {
     logout();
@@ -35,7 +41,10 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
     <header className="container mx-auto px-4 md:px-12 py-2 md:py-4">
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={handleLogoClick}
+        >
           <img
             src="/onboard/result.png"
             alt="OnboardTicket Logo"
@@ -95,6 +104,6 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
   );
 });
 
-Header.displayName = 'Header';
+Header.displayName = "Header";
 
 export default Header;

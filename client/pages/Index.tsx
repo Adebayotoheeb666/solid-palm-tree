@@ -17,62 +17,62 @@ const testimonials = [
     name: "Daniel Ricciardo",
     role: "Businessman",
     text: "The experience of booking airfare through this website was amazing! The intuitive interface, wide selection of routes, and fast transaction process made my trip more enjoyable.",
-    img: "https://api.builder.io/api/v1/image/assets/TEMP/f4f31fe52ad073d5757f8f9684b13989bf5401c7?width=112"
+    img: "https://api.builder.io/api/v1/image/assets/TEMP/f4f31fe52ad073d5757f8f9684b13989bf5401c7?width=112",
   },
   {
     name: "Sophia Lee",
     role: "Student",
     text: "Super fast and reliable! Got my reservation in minutes and it worked perfectly for my visa application.",
-    img: "https://randomuser.me/api/portraits/women/44.jpg"
+    img: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     name: "John Smith",
     role: "Frequent Traveler",
     text: "Affordable and trustworthy. I use this service every time I need proof of onward travel.",
-    img: "https://randomuser.me/api/portraits/men/32.jpg"
+    img: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     name: "Maria Garcia",
     role: "Digital Nomad",
     text: "The support team is fantastic and the process is seamless. Highly recommended!",
-    img: "https://randomuser.me/api/portraits/women/65.jpg"
+    img: "https://randomuser.me/api/portraits/women/65.jpg",
   },
   {
     name: "Ahmed Hassan",
     role: "Entrepreneur",
     text: "I was skeptical at first, but the reservation was real and verifiable. Great value!",
-    img: "https://randomuser.me/api/portraits/men/76.jpg"
+    img: "https://randomuser.me/api/portraits/men/76.jpg",
   },
   {
     name: "Emily Chen",
     role: "Backpacker",
     text: "Perfect for last-minute travel needs. The process is quick and easy.",
-    img: "https://randomuser.me/api/portraits/women/68.jpg"
+    img: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
     name: "Carlos Ruiz",
     role: "Tourist",
     text: "I got my ticket instantly and it was accepted at the embassy. Will use again!",
-    img: "https://randomuser.me/api/portraits/men/41.jpg"
+    img: "https://randomuser.me/api/portraits/men/41.jpg",
   },
   {
     name: "Priya Patel",
     role: "Consultant",
     text: "The best service for onward tickets. The customer support is responsive and helpful.",
-    img: "https://randomuser.me/api/portraits/women/12.jpg"
+    img: "https://randomuser.me/api/portraits/women/12.jpg",
   },
   {
     name: "Liam O'Connor",
     role: "Remote Worker",
     text: "Easy to use and very affordable. I recommend it to all my friends.",
-    img: "https://randomuser.me/api/portraits/men/23.jpg"
+    img: "https://randomuser.me/api/portraits/men/23.jpg",
   },
   {
     name: "Fatima Zahra",
     role: "Student",
     text: "Helped me get my visa without any hassle. Thank you!",
-    img: "https://randomuser.me/api/portraits/women/50.jpg"
-  }
+    img: "https://randomuser.me/api/portraits/women/50.jpg",
+  },
 ];
 
 const Index = () => {
@@ -81,10 +81,18 @@ const Index = () => {
   const [testimonialIdxLeft, setTestimonialIdxLeft] = useState(0);
   const [testimonialIdxRight, setTestimonialIdxRight] = useState(1);
   const totalTestimonials = testimonials.length;
-  const prevTestimonialLeft = () => setTestimonialIdxLeft((testimonialIdxLeft - 1 + totalTestimonials) % totalTestimonials);
-  const nextTestimonialLeft = () => setTestimonialIdxLeft((testimonialIdxLeft + 1) % totalTestimonials);
-  const prevTestimonialRight = () => setTestimonialIdxRight((testimonialIdxRight - 1 + totalTestimonials) % totalTestimonials);
-  const nextTestimonialRight = () => setTestimonialIdxRight((testimonialIdxRight + 1) % totalTestimonials);
+  const prevTestimonialLeft = () =>
+    setTestimonialIdxLeft(
+      (testimonialIdxLeft - 1 + totalTestimonials) % totalTestimonials,
+    );
+  const nextTestimonialLeft = () =>
+    setTestimonialIdxLeft((testimonialIdxLeft + 1) % totalTestimonials);
+  const prevTestimonialRight = () =>
+    setTestimonialIdxRight(
+      (testimonialIdxRight - 1 + totalTestimonials) % totalTestimonials,
+    );
+  const nextTestimonialRight = () =>
+    setTestimonialIdxRight((testimonialIdxRight + 1) % totalTestimonials);
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
@@ -123,8 +131,7 @@ const Index = () => {
               </button>
 
               <p className="text-xs md:text-sm font-bold text-[#637996] mt-4 md:mt-6">
-                Instant & secure Booking from
-                Just $15
+                Instant & secure Booking from Just $15
               </p>
             </div>
             {/* Image on the right (show after content on mobile and up to lg) */}
@@ -212,7 +219,7 @@ const Index = () => {
                     src="/onboard/secure.png"
                     alt="Secure Icon"
                     className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: 'none' }}
+                    style={{ background: "none" }}
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -234,7 +241,7 @@ const Index = () => {
                     src="/onboard/verifiable.png"
                     alt="Verified Icon"
                     className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: 'none' }}
+                    style={{ background: "none" }}
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -256,7 +263,7 @@ const Index = () => {
                     src="/onboard/save.png"
                     alt="Wallet Icon"
                     className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: 'none' }}
+                    style={{ background: "none" }}
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -340,10 +347,16 @@ const Index = () => {
 
               {/* Navigation Buttons */}
               <div className="flex gap-2 md:gap-4 justify-center lg:justify-start mt-2 md:mt-4">
-                <button className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors" onClick={prevTestimonialLeft}>
+                <button
+                  className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors"
+                  onClick={prevTestimonialLeft}
+                >
                   <ArrowLeft className="w-4 h-4 text-white" />
                 </button>
-                <button className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors" onClick={nextTestimonialLeft}>
+                <button
+                  className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors"
+                  onClick={nextTestimonialLeft}
+                >
                   <ArrowRight className="w-4 h-4 text-white" />
                 </button>
               </div>
@@ -374,10 +387,16 @@ const Index = () => {
                     </div>
                   </div>
                   <div className="flex gap-2 md:gap-4 justify-center lg:justify-start mt-4">
-                    <button className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors" onClick={prevTestimonialRight}>
+                    <button
+                      className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors"
+                      onClick={prevTestimonialRight}
+                    >
                       <ArrowLeft className="w-4 h-4 text-white" />
                     </button>
-                    <button className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors" onClick={nextTestimonialRight}>
+                    <button
+                      className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors"
+                      onClick={nextTestimonialRight}
+                    >
                       <ArrowRight className="w-4 h-4 text-white" />
                     </button>
                   </div>
@@ -510,48 +529,76 @@ const Index = () => {
             More flexibility while securing your visa
           </h2>
           <p className="text-sm sm:text-base md:text-lg lg:text-2xl text-[#8A8A8F] mb-4 sm:mb-6 md:mb-8 lg:mb-16 font-light font-jakarta text-left">
-            Most embassies encourage travelers to wait for visa approval before purchasing a full priced plane ticket
+            Most embassies encourage travelers to wait for visa approval before
+            purchasing a full priced plane ticket
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
             {/* Card 1 */}
             <div className="relative flex flex-col justify-between h-56 sm:h-64 md:h-72 lg:h-80 rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 w-full shadow-lg text-left overflow-hidden bg-gradient-to-r from-[#e3e3f1] to-[#cacbef]">
               <div className="flex items-center mb-2 sm:mb-3 md:mb-4">
-                <img src="/onboard/image.png" alt="British Embassy" className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4" />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">British Embassy</h5>
+                <img
+                  src="/onboard/image.png"
+                  alt="British Embassy"
+                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                />
+                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                  British Embassy
+                </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
                 <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
-                  Most embassies encourage travelers to wait for visa approval before purchasing a full-priced plane ticket
+                  Most embassies encourage travelers to wait for visa approval
+                  before purchasing a full-priced plane ticket
                 </p>
               </div>
-              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">See More?</button>
+              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">
+                See More?
+              </button>
             </div>
             {/* Card 2 */}
             <div className="relative flex flex-col justify-between h-56 sm:h-64 md:h-72 lg:h-80 rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 w-full shadow-lg text-left overflow-hidden bg-gradient-to-r from-[#e1d3bb] to-[#cacbef]">
               <div className="flex items-center mb-2 sm:mb-3 md:mb-4">
-                <img src="/onboard/spanish.png" alt="Spanish Embassy" className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4" />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">Spanish Embassy</h5>
+                <img
+                  src="/onboard/spanish.png"
+                  alt="Spanish Embassy"
+                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                />
+                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                  Spanish Embassy
+                </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
                 <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
-                  Most embassies encourage travelers to wait for visa approval before purchasing a full-priced plane ticket
+                  Most embassies encourage travelers to wait for visa approval
+                  before purchasing a full-priced plane ticket
                 </p>
               </div>
-              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">Spanish Embassy</button>
+              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">
+                Spanish Embassy
+              </button>
             </div>
             {/* Card 3 */}
             <div className="relative flex flex-col justify-between h-56 sm:h-64 md:h-72 lg:h-80 rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 w-full shadow-lg text-left overflow-hidden bg-gradient-to-r from-[#dfc3d2] to-[#9796e4]">
               <div className="flex items-center mb-2 sm:mb-3 md:mb-4">
-                <img src="/onboard/iceland.png" alt="Iceland Embassy" className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4" />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">Iceland Embassy</h5>
+                <img
+                  src="/onboard/iceland.png"
+                  alt="Iceland Embassy"
+                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                />
+                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                  Iceland Embassy
+                </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
                 <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
-                  Most embassies encourage travelers to wait for visa approval before purchasing a full-priced plane ticket
+                  Most embassies encourage travelers to wait for visa approval
+                  before purchasing a full-priced plane ticket
                 </p>
               </div>
-              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">Iceland Embassy</button>
+              <button className="absolute left-3 sm:left-4 md:left-6 bottom-3 sm:bottom-4 md:bottom-6 font-bold text-[#233789] bg-transparent border-none text-xs sm:text-sm md:text-base">
+                Iceland Embassy
+              </button>
             </div>
           </div>
         </div>
@@ -580,40 +627,77 @@ const Index = () => {
             More reasons you'll love travelling with Us
           </h2>
           <p className="text-left text-lg md:text-2xl text-[#3839C9] mb-8 font-medium">
-            Discover the added benefits that make every journey smoother, safer, and more convenient.
+            Discover the added benefits that make every journey smoother, safer,
+            and more convenient.
           </p>
           <div className="space-y-8">
             {/* Card 1 */}
-            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0" style={{ background: 'linear-gradient(90deg, rgb(197,230,222) 0%, rgb(205,206,242) 100%)' }}>
-              <img src="/onboard/cheap.png" alt="Cheaper" className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent" />
+            <div
+              className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgb(197,230,222) 0%, rgb(205,206,242) 100%)",
+              }}
+            >
+              <img
+                src="/onboard/cheap.png"
+                alt="Cheaper"
+                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+              />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
-                Cheaper than a full <br className="hidden sm:block"/> priced ticket
+                Cheaper than a full <br className="hidden sm:block" /> priced
+                ticket
               </h3>
               <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
-                Instead of wasting hundreds on throwaway or temporary flight tickets, you can meet your travel requirements starting at just $15.
+                Instead of wasting hundreds on throwaway or temporary flight
+                tickets, you can meet your travel requirements starting at just
+                $15.
               </p>
             </div>
             {/* Card 2 */}
-            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0" style={{ background: 'linear-gradient(90deg, rgb(227,223,214) 0%, rgb(205,206,242) 100%)' }}>
-              <img src="/onboard/real.png" alt="Real Reservations" className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent" />
+            <div
+              className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgb(227,223,214) 0%, rgb(205,206,242) 100%)",
+              }}
+            >
+              <img
+                src="/onboard/real.png"
+                alt="Real Reservations"
+                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+              />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
-                Real <br className="hidden sm:block"/> Reservations
+                Real <br className="hidden sm:block" /> Reservations
               </h3>
               <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
-                A real reservation with PNR code is made by a registered travel agency. Pay via major credit cards or Paypal.
+                A real reservation with PNR code is made by a registered travel
+                agency. Pay via major credit cards or Paypal.
               </p>
             </div>
             {/* Card 3 */}
-            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0" style={{ background: 'linear-gradient(90deg, rgb(223,227,211) 0%, rgb(205,206,242) 100%)' }}>
-              <img src="/onboard/get.png" alt="Get your reservation within 60 seconds" className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent" />
+            <div
+              className="w-full flex flex-col sm:flex-row items-start sm:items-center rounded-2xl p-6 md:p-8 shadow-md gap-4 sm:gap-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgb(223,227,211) 0%, rgb(205,206,242) 100%)",
+              }}
+            >
+              <img
+                src="/onboard/get.png"
+                alt="Get your reservation within 60 seconds"
+                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+              />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
-                Get your reservation <br className="hidden sm:block"/> within 60 seconds
+                Get your reservation <br className="hidden sm:block" /> within
+                60 seconds
               </h3>
               <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
-                We deliver your ticket  within minutes. We are the best Onboard tickets. Flexible, fast, and stress-free.
+                We deliver your ticket within minutes. We are the best Onboard
+                tickets. Flexible, fast, and stress-free.
               </p>
             </div>
           </div>
@@ -626,14 +710,25 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left: Heading and Description */}
             <div className="flex flex-col justify-between h-full">
-              <h2 className="text-3xl text-left text-[#191A78] md:text-5xl font-extrabold font-jakarta mb-4 md:mb-8 leading-tight tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 800 }}>
-                OnboardTicket<br />works with 100+ airlines
+              <h2
+                className="text-3xl text-left text-[#191A78] md:text-5xl font-extrabold font-jakarta mb-4 md:mb-8 leading-tight tracking-tight"
+                style={{
+                  fontFamily: "Plus Jakarta Sans, sans-serif",
+                  fontWeight: 800,
+                }}
+              >
+                OnboardTicket
+                <br />
+                works with 100+ airlines
               </h2>
-              <p className="text-[#3839C9] text-lg md:text-2xl font-medium mb-6 md:mb-10">Book with confidence. We partner with major airlines to provide authentic, verifiable reservations for your travel needs.</p>
+              <p className="text-[#3839C9] text-lg md:text-2xl font-medium mb-6 md:mb-10">
+                Book with confidence. We partner with major airlines to provide
+                authentic, verifiable reservations for your travel needs.
+              </p>
               <div className="flex gap-2 md:gap-4 mt-auto">
-                <button 
-                className="border-2 border-[#5225B8] bg-transparent text-[#233789] px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold text-base md:text-lg hover:bg-purple-50 transition-colors shadow-none"
-                onClick={() => navigate("/userform")}
+                <button
+                  className="border-2 border-[#5225B8] bg-transparent text-[#233789] px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold text-base md:text-lg hover:bg-purple-50 transition-colors shadow-none"
+                  onClick={() => navigate("/userform")}
                 >
                   See sample ticket
                 </button>
@@ -648,15 +743,34 @@ const Index = () => {
             </div>
             {/* Right: 2x2 grid of airline images */}
             <div className="grid grid-cols-2 grid-rows-2 gap-4 md:gap-8">
-              <img src="/onboard/Lufthansa.png" alt="Lufthansa" className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain" loading="lazy" />
-              <img src="/onboard/alaska.png" alt="Alaska" className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain" loading="lazy" />
-              <img src="/onboard/klm.png" alt="KLM" className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain" loading="lazy" />
-              <img src="/onboard/emirate.png" alt="Emirates" className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain" loading="lazy" />
+              <img
+                src="/onboard/Lufthansa.png"
+                alt="Lufthansa"
+                className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain"
+                loading="lazy"
+              />
+              <img
+                src="/onboard/alaska.png"
+                alt="Alaska"
+                className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain"
+                loading="lazy"
+              />
+              <img
+                src="/onboard/klm.png"
+                alt="KLM"
+                className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain"
+                loading="lazy"
+              />
+              <img
+                src="/onboard/emirate.png"
+                alt="Emirates"
+                className="w-full h-auto max-w-[180px] md:max-w-[220px] mx-auto object-contain"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
       </section>
-
 
       {/* FAQ Section */}
       <section className="py-16 md:py-20">
@@ -668,7 +782,8 @@ const Index = () => {
             Get support within 30 min, on average
           </p>
           <p className="text-lg text-left md:text-2xl text-[#8A8A8F] mb-8 md:mb-12 font-light font-jakarta">
-            Check out our frequently asked questions below or reach out to our team for fast, friendly support
+            Check out our frequently asked questions below or reach out to our
+            team for fast, friendly support
           </p>
 
           <div className="w-full text-left">
@@ -699,7 +814,7 @@ const Index = () => {
           </div>
 
           <div className="flex gap-2 md:gap-4 mt-8 justify-start">
-            <button 
+            <button
               className="bg-[#3839C9] text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-base md:text-lg hover:bg-blue-700 transition-colors shadow-md"
               onClick={() => navigate("/faq")}
             >
@@ -708,8 +823,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-
 
       {/* Footer */}
       <Footer />

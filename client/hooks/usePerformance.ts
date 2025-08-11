@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 interface PerformanceMetrics {
   componentName: string;
@@ -9,14 +9,16 @@ interface PerformanceMetrics {
 export const usePerformance = (componentName: string) => {
   useEffect(() => {
     const startTime = performance.now();
-    
+
     return () => {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Only log in development mode
       if (import.meta.env.DEV && renderTime > 100) {
-        console.warn(`${componentName} took ${renderTime.toFixed(2)}ms to render`);
+        console.warn(
+          `${componentName} took ${renderTime.toFixed(2)}ms to render`,
+        );
       }
     };
   }, [componentName]);
@@ -26,7 +28,7 @@ export const measurePerformance = (fn: () => void, label: string) => {
   const start = performance.now();
   fn();
   const end = performance.now();
-  
+
   if (import.meta.env.DEV) {
     console.log(`${label}: ${(end - start).toFixed(2)}ms`);
   }
@@ -40,13 +42,13 @@ export const useComponentMetrics = (componentName: string) => {
           console.log(`${componentName} metrics:`, {
             name: entry.name,
             duration: entry.duration,
-            startTime: entry.startTime
+            startTime: entry.startTime,
           });
         }
       }
     });
 
-    observer.observe({ entryTypes: ['measure', 'navigation', 'resource'] });
+    observer.observe({ entryTypes: ["measure", "navigation", "resource"] });
 
     return () => observer.disconnect();
   }, [componentName]);

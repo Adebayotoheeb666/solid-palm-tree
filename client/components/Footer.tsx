@@ -1,17 +1,29 @@
-import React, { useCallback, memo } from 'react';
-import { Instagram } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, memo } from "react";
+import { Instagram } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Footer: React.FC = memo(() => {
   const navigate = useNavigate();
 
   const handleLogoClick = useCallback(() => navigate("/"), [navigate]);
   const handleAboutClick = useCallback(() => navigate("/about"), [navigate]);
-  const handlePrivacyClick = useCallback(() => navigate("/privacy-policy"), [navigate]);
-  const handleTermsClick = useCallback(() => navigate("/terms-conditions"), [navigate]);
+  const handlePrivacyClick = useCallback(
+    () => navigate("/privacy-policy"),
+    [navigate],
+  );
+  const handleTermsClick = useCallback(
+    () => navigate("/terms-conditions"),
+    [navigate],
+  );
   const handleFaqClick = useCallback(() => navigate("/faq"), [navigate]);
-  const handlePaymentClick = useCallback(() => navigate("/payment"), [navigate]);
-  const handleContactClick = useCallback(() => navigate("/contact"), [navigate]);
+  const handlePaymentClick = useCallback(
+    () => navigate("/payment"),
+    [navigate],
+  );
+  const handleContactClick = useCallback(
+    () => navigate("/contact"),
+    [navigate],
+  );
 
   return (
     <footer className="mt-24 px-4 sm:px-8 lg:px-36">
@@ -44,43 +56,61 @@ const Footer: React.FC = memo(() => {
               restrictions or permanent bans from our platform.
             </p>
           </div>
-          
+
           {/* About - Left aligned on mobile, centered on larger screens */}
           <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
             <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
               About
             </h4>
             <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleAboutClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handleAboutClick}
+              >
                 Who We are ?
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handlePrivacyClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handlePrivacyClick}
+              >
                 Privacy Policy
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleTermsClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handleTermsClick}
+              >
                 Terms & Conditions
               </li>
             </ul>
           </div>
-          
+
           {/* Get Help - Left aligned on mobile, centered on larger screens */}
           <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
             <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
               Get Help
             </h4>
             <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleFaqClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handleFaqClick}
+              >
                 FAQs
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handlePaymentClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handlePaymentClick}
+              >
                 Payment
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleContactClick}>
+              <li
+                className="cursor-pointer hover:text-[#3839C9]"
+                onClick={handleContactClick}
+              >
                 Contact Support 24/7
               </li>
             </ul>
           </div>
-          
+
           {/* Follow Us - Left aligned on mobile, centered on larger screens */}
           <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
             <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
@@ -103,6 +133,6 @@ const Footer: React.FC = memo(() => {
   );
 });
 
-Footer.displayName = 'Footer';
+Footer.displayName = "Footer";
 
 export default Footer;

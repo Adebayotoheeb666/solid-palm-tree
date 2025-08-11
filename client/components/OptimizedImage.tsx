@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 interface OptimizedImageProps {
   src: string;
@@ -12,24 +12,24 @@ interface OptimizedImageProps {
   onLoad?: () => void;
   onError?: () => void;
   style?: React.CSSProperties;
-  loading?: 'lazy' | 'eager';
+  loading?: "lazy" | "eager";
   onClick?: () => void;
 }
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
   alt,
-  className = '',
+  className = "",
   width,
   height,
   priority = false,
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+',
+  placeholder = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+",
   sizes,
   onLoad,
   onError,
   style,
-  loading = 'lazy',
-  onClick
+  loading = "lazy",
+  onClick,
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -38,7 +38,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   // Intersection Observer for lazy loading
   useEffect(() => {
-    if (priority || loading === 'eager') {
+    if (priority || loading === "eager") {
       setInView(true);
       return;
     }
@@ -51,9 +51,9 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         }
       },
       {
-        rootMargin: '50px', // Start loading 50px before image comes into view
-        threshold: 0.1
-      }
+        rootMargin: "50px", // Start loading 50px before image comes into view
+        threshold: 0.1,
+      },
     );
 
     if (imgRef.current) {
@@ -76,16 +76,14 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Generate responsive image sources if sizes are provided
   const getSrcSet = (baseSrc: string) => {
     if (!sizes) return undefined;
-    
+
     // Basic responsive image logic - you can enhance this based on your image CDN
     const sizes = [320, 640, 768, 1024, 1280, 1536];
-    return sizes
-      .map(size => `${baseSrc}?w=${size} ${size}w`)
-      .join(', ');
+    return sizes.map((size) => `${baseSrc}?w=${size} ${size}w`).join(", ");
   };
 
   return (
-    <div 
+    <div
       ref={imgRef}
       className={`relative overflow-hidden ${className}`}
       style={style}
@@ -96,15 +94,15 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
           src={placeholder}
           alt=""
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-            imageLoaded ? 'opacity-0' : 'opacity-100'
+            imageLoaded ? "opacity-0" : "opacity-100"
           }`}
           style={{
-            filter: 'blur(5px)',
-            transform: 'scale(1.1)'
+            filter: "blur(5px)",
+            transform: "scale(1.1)",
           }}
         />
       )}
-      
+
       {/* Main image */}
       {inView && (
         <img
@@ -114,20 +112,20 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
           height={height}
           sizes={sizes}
           srcSet={getSrcSet(src)}
-          loading={priority ? 'eager' : 'lazy'}
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
           onLoad={handleLoad}
           onError={handleError}
           onClick={onClick}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          } ${onClick ? 'cursor-pointer' : ''}`}
+            imageLoaded ? "opacity-100" : "opacity-0"
+          } ${onClick ? "cursor-pointer" : ""}`}
           style={{
-            aspectRatio: width && height ? `${width}/${height}` : undefined
+            aspectRatio: width && height ? `${width}/${height}` : undefined,
           }}
         />
       )}
-      
+
       {/* Error fallback */}
       {imageError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500">
