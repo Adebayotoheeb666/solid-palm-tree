@@ -2,8 +2,15 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../../client/lib/supabaseClient';
 
 // Server-side Supabase client with service role key for admin operations
-const supabaseUrl = process.env.SUPABASE_URL || 'http://localhost:54321';
+const supabaseUrl = process.env.SUPABASE_URL || (
+  process.env.NODE_ENV === 'production' ? 'https://placeholder.supabase.co' : 'http://localhost:54321'
+);
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'your-service-role-key';
+
+// Check if Supabase is properly configured
+const isSupabaseConfigured = () => {
+  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+};
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey, {
   auth: {
@@ -11,6 +18,24 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey, 
     persistSession: false
   }
 });
+
+// Wrapper for server-side Supabase operations with error handling
+const withServerErrorHandling = async <T>(operation: () => Promise<T>, fallback?: T): Promise<T | null> => {
+  if (!isSupabaseConfigured() && process.env.NODE_ENV === 'production') {
+    console.warn('Supabase not configured in production environment');
+    return fallback || null;
+  }
+
+  try {
+    return await operation();
+  } catch (error) {
+    console.error('Server Supabase operation failed:', error);
+    if (process.env.NODE_ENV === 'development') {
+      throw error; // Re-throw in development for debugging
+    }
+    return fallback || null;
+  }
+};
 
 // Helper functions for server-side operations
 export const supabaseServerHelpers = {
