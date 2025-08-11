@@ -35,7 +35,6 @@ export default defineConfig(({ mode }) => ({
             '@radix-ui/react-select',
             '@radix-ui/react-popover',
             '@radix-ui/react-avatar',
-            '@radix-ui/react-button',
             '@radix-ui/react-checkbox',
             '@radix-ui/react-label',
             '@radix-ui/react-slider',
