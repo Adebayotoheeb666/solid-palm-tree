@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import { Instagram } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const Footer: React.FC = () => {
+const Footer: React.FC = memo(() => {
   const navigate = useNavigate();
+
+  const handleLogoClick = useCallback(() => navigate("/"), [navigate]);
+  const handleAboutClick = useCallback(() => navigate("/about"), [navigate]);
+  const handlePrivacyClick = useCallback(() => navigate("/privacy-policy"), [navigate]);
+  const handleTermsClick = useCallback(() => navigate("/terms-conditions"), [navigate]);
+  const handleFaqClick = useCallback(() => navigate("/faq"), [navigate]);
+  const handlePaymentClick = useCallback(() => navigate("/payment"), [navigate]);
+  const handleContactClick = useCallback(() => navigate("/contact"), [navigate]);
 
   return (
     <footer className="mt-24 px-4 sm:px-8 lg:px-36">
@@ -16,7 +24,7 @@ const Footer: React.FC = () => {
               alt="OnboardTicket Footer Logo"
               className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
               loading="lazy"
-              onClick={() => navigate("/")}
+              onClick={handleLogoClick}
             />
             <hr className="border-black w-32 sm:w-40 md:w-72" />
             <h4 className="font-semibold text-black text-xs sm:text-sm md:text-base">
@@ -43,13 +51,13 @@ const Footer: React.FC = () => {
               About
             </h4>
             <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/about")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleAboutClick}>
                 Who We are ?
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/privacy-policy")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handlePrivacyClick}>
                 Privacy Policy
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/terms-conditions")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleTermsClick}>
                 Terms & Conditions
               </li>
             </ul>
@@ -61,13 +69,13 @@ const Footer: React.FC = () => {
               Get Help
             </h4>
             <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/faq")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleFaqClick}>
                 FAQs
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/payment")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handlePaymentClick}>
                 Payment
               </li>
-              <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/contact")}>
+              <li className="cursor-pointer hover:text-[#3839C9]" onClick={handleContactClick}>
                 Contact Support 24/7
               </li>
             </ul>
@@ -93,6 +101,8 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = 'Footer';
 
 export default Footer;
