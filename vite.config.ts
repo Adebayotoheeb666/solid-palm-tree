@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist/spa",
     target: "es2020",
-    minify: "terser",
+    minify: "esbuild",
     cssMinify: true,
     sourcemap: mode === "development",
     reportCompressedSize: false, // Faster builds
