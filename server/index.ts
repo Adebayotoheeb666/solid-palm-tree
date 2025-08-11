@@ -40,6 +40,7 @@ import {
 // Import fallback routes
 import { fallbackAirportsRouter } from "./routes/fallback-airports";
 import { dbHealthRouter } from "./routes/db-health";
+import { dbTestRouter } from "./routes/db-test";
 
 // Import fallback booking routes for demo
 import {
