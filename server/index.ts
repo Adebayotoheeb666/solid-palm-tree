@@ -37,6 +37,11 @@ import {
   handleGetAllSupabaseBookings,
 } from "./routes/supabase-bookings";
 
+// Import fallback routes
+import { fallbackAirportsRouter } from "./routes/fallback-airports";
+import { dbHealthRouter } from "./routes/db-health";
+import { dbTestRouter } from "./routes/db-test";
+
 // Import fallback booking routes for demo
 import {
   handleCreateBooking,
@@ -132,6 +137,13 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Add fallback airports route
+  app.use("/api", fallbackAirportsRouter);
+
+  // Add database health check routes
+  app.use("/api/health", dbHealthRouter);
+  app.use("/api/db", dbTestRouter);
 
   // Determine if we should use Supabase or fallback routes
   const useSupabase =

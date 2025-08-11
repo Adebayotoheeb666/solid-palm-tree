@@ -1,17 +1,22 @@
-import { supabase } from '../client/lib/supabaseClient';
-
 export async function logSupabaseConnection() {
+  // Skip Supabase connection check in production if not configured
+  if (process.env.NODE_ENV === "production" && !process.env.SUPABASE_URL) {
+    console.log(
+      "[Supabase] Skipping connection check - not configured in production",
+    );
+    return;
+  }
+
   try {
-    const { error } = await supabase.from('test').select('*').limit(1);
+    // Dynamically import to avoid loading Supabase if not needed
+    const { supabase } = await import("../client/lib/supabaseClient");
+    const { error } = await supabase.from("test").select("*").limit(1);
     if (error) {
-      // eslint-disable-next-line no-console
-      console.error('[Supabase] Database connection failed:', error.message);
+      console.error("[Supabase] Database connection failed:", error.message);
     } else {
-      // eslint-disable-next-line no-console
-      console.log('[Supabase] Database connection successful.');
+      console.log("[Supabase] Database connection successful.");
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('[Supabase] Database connection error:', err);
+    console.error("[Supabase] Database connection error:", err);
   }
 }

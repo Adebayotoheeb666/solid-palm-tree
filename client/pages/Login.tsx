@@ -8,6 +8,8 @@ import {
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { LoginRequest } from "@shared/api";
+import SimpleHeader from "../components/SimpleHeader";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -80,29 +82,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#E7E9FF] font-jakarta">
       {/* Header */}
-      <header className="container mx-auto px-4 md:px-12 py-4">
-        <div className="flex items-center justify-between">
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img
-              src="/onboard/result.png"
-              alt="OnboardTicket Logo"
-              className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
-              loading="eager"
-            />
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/register"
-              className="px-8 py-2 text-brand-text-primary font-bold text-lg hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </div>
-      </header>
+      <SimpleHeader showSignUp={true} />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 md:px-12 py-8 md:py-16">
@@ -239,89 +219,7 @@ export default function Login() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-24 px-4 sm:px-8 lg:px-36">
-        <div className="bg-ticket-footer rounded-t-lg p-8 lg:p-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-left">
-            {/* Logo and Copyright */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-start">
-              <img
-                src="/onboard/logos-01.png"
-                alt="OnboardTicket Footer Logo"
-                className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
-                loading="lazy"
-                onClick={() => navigate("/")}
-              />
-              <hr className="border-black w-32 sm:w-40 md:w-72" />
-              <h4 className="font-semibold text-black text-xs sm:text-sm md:text-base">
-                Onboardticket.com
-              </h4>
-              <p className="text-[10px] sm:text-xs font-semibold text-[#303850] opacity-50">
-                © 2025 — Copyright
-              </p>
-            </div>
-            {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                About
-              </h4>
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                <li
-                  className="cursor-pointer hover:text-[#3839C9]"
-                  onClick={() => navigate("/about")}
-                >
-                  Who We are ?
-                </li>
-                <li
-                  className="cursor-pointer hover:text-[#3839C9]"
-                  onClick={() => navigate("/privacy-policy")}
-                >
-                  Privacy Policy
-                </li>
-                <li
-                  className="cursor-pointer hover:text-[#3839C9]"
-                  onClick={() => navigate("/terms-conditions")}
-                >
-                  Terms & Conditions
-                </li>
-              </ul>
-            </div>
-            {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                Get Help
-              </h4>
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                <li
-                  className="cursor-pointer hover:text-[#3839C9]"
-                  onClick={() => navigate("/faq")}
-                >
-                  FAQs
-                </li>
-                <li
-                  className="cursor-pointer hover:text-[#3839C9]"
-                  onClick={() => navigate("/contact")}
-                >
-                  Contact Support 24/7
-                </li>
-              </ul>
-            </div>
-            {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                Follow US
-              </h4>
-              <div className="space-y-1 md:space-y-2">
-                <h5 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                  Stay in touch
-                </h5>
-                <p className="text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                  Blog
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

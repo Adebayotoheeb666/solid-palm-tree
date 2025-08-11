@@ -13,6 +13,8 @@ import {
   AuthProtectedRoute,
   AdminProtectedRoute,
 } from "./components/ProtectedRoute";
+import DashboardButton from "./components/DashboardButton";
+import PerformanceOptimizer from "./components/PerformanceOptimizer";
 
 // Lazy load large/rarely used pages for faster initial load
 const Index = React.lazy(() => import("./pages/Index"));
@@ -41,9 +43,11 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <NotificationProvider>
+          <PerformanceOptimizer />
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <DashboardButton />
             <Suspense
               fallback={
                 <div className="w-full h-screen flex items-center justify-center text-lg">
