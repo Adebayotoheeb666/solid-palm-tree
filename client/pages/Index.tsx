@@ -5,13 +5,12 @@ import {
   Star,
   ArrowRight,
   ArrowLeft,
-  Instagram,
-  User,
-  LogOut,
 } from "lucide-react";
 import TestimonialCarousel from "../components/ui/TestimonialCarousel";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const testimonials = [
   {
@@ -78,7 +77,7 @@ const testimonials = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [testimonialIdxLeft, setTestimonialIdxLeft] = useState(0);
   const [testimonialIdxRight, setTestimonialIdxRight] = useState(1);
   const totalTestimonials = testimonials.length;
@@ -99,66 +98,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#E7E9FF] font-jakarta overflow-x-hidden px-4 md:px-16 py-4 md:py-16">
       {/* Header */}
-      <header className="container mx-auto px-4 md:px-12 py-2 md:py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-            <img
-              src="/onboard/result.png"
-              alt="OnboardTicket Logo"
-              className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
-              loading="eager"
-              onClick={() => navigate("/")}
-            />
-          </div>
-
-          {/* Navigation */}
-          <div className="hidden md:flex items-center gap-4 md:gap-8">
-            <button
-              className="px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
-              onClick={() => navigate("/contact")}
-            >
-              Get Support
-            </button>
-            {isAuthenticated ? (
-              <div className="flex items-center gap-4">
-                <button
-                  className="px-8 py-2 bg-[#3839C9] text-white font-bold text-base md:text-lg rounded-lg hover:bg-blue-700 transition-colors shadow-md flex items-center gap-2"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  <User className="w-4 h-4" />
-                  Dashboard
-                </button>
-                <button
-                  className="px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none flex items-center gap-2"
-                  onClick={() => {
-                    logout();
-                    navigate("/");
-                  }}
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <button
-                  className="px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
-                  onClick={() => navigate("/login")}
-                >
-                  Sign In
-                </button>
-                <button
-                  className="px-8 py-2 bg-white text-brand-text-primary font-bold text-base md:text-lg rounded-lg hover:bg-gray-50 transition-colors shadow-md"
-                  onClick={handleBookNow}
-                >
-                  Book now
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header handleBookNow={handleBookNow} />
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 md:px-12 py-4 md:py-8">
@@ -772,78 +712,7 @@ const Index = () => {
 
 
       {/* Footer */}
-      <footer className="mt-24 px-4 sm:px-8 lg:px-36">
-        <div className="bg-ticket-footer rounded-t-lg p-8 lg:p-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-left">
-            {/* Logo and Copyright */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-start">
-              <img
-                src="/onboard/logos-01.png"
-                alt="OnboardTicket Footer Logo"
-                className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
-                loading="lazy"
-                onClick={() => navigate("/")}
-              />
-              <hr className="border-black w-32 sm:w-40 md:w-72" />
-              <h4 className="font-semibold text-black text-xs sm:text-sm md:text-base">
-                Onboardticket.com
-              </h4>
-              <p className="text-[10px] sm:text-xs font-semibold text-[#303850] opacity-50">
-                © 2025 — Copyright
-              </p>
-              <p className="text-[10px] sm:text-xs font-semibold text-[#303850] opacity-50 leading-relaxed max-w-xs md:max-w-sm">
-                OnboardTicket is committed to upholding the highest standards in
-                compliance with international civil aviation regulations and
-                ethical booking practices. This includes, but is not limited to,
-                strict avoidance of misuse of booking classes, fraudulent
-                activities, duplicate, speculative, or fictitious reservations.
-                Users who engage in repeated cancellations without legitimate
-                intent will be subject to monitoring, and may face usage
-                restrictions or permanent bans from our platform.
-              </p>
-            </div>
-            {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                About
-              </h4>
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/about")}>Who We are ?</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
-              </ul>
-            </div>
-            {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                Get Help
-              </h4>
-              
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/faq")}>FAQs</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/payment")}>Payment</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
-              </ul>
-            </div>
-            {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
-              <h4 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                Follow US
-              </h4>
-              <Instagram className="w-5 h-5 md:w-7 md:h-7 text-[#A2A2A2]" />
-
-              <div className="space-y-1 md:space-y-2">
-                <h5 className="text-base md:text-lg font-bold text-[#0D69F2]">
-                  Stay in touch
-                </h5>
-                <p className="text-xs sm:text-sm font-semibold text-[#A2A2A2]">
-                  Blog
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
