@@ -136,6 +136,9 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Add fallback airports route
+  app.use("/api", fallbackAirportsRouter);
+
   // Determine if we should use Supabase or fallback routes
   const useSupabase =
     process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
