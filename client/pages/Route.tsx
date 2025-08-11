@@ -90,6 +90,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
     const loadAirports = async () => {
       try {
         setLoadingAirports(true);
+        const { supabaseHelpers } = await getSafeSupabase();
         const { data, error } = await supabaseHelpers.getAirports();
         if (!error && data && data.length > 0) {
           setAirports(data);
