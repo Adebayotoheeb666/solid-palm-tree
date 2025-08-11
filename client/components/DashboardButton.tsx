@@ -1,14 +1,15 @@
 import React from 'react';
 import { User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const DashboardButton: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
 
   // Don't show the button if user is not authenticated or already on dashboard
-  if (!isAuthenticated || window.location.pathname === '/dashboard') {
+  if (!isAuthenticated || location.pathname === '/dashboard') {
     return null;
   }
 
