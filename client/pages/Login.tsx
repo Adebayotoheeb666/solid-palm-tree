@@ -82,29 +82,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#E7E9FF] font-jakarta">
       {/* Header */}
-      <header className="container mx-auto px-4 md:px-12 py-4">
-        <div className="flex items-center justify-between">
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img
-              src="/onboard/result.png"
-              alt="OnboardTicket Logo"
-              className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
-              loading="eager"
-            />
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/register"
-              className="px-8 py-2 text-brand-text-primary font-bold text-lg hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </div>
-      </header>
+      <SimpleHeader showSignUp={true} />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 md:px-12 py-8 md:py-16">
