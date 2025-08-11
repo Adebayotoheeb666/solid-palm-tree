@@ -80,9 +80,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react({
       // Enable Fast Refresh
-      fast: true,
-      // JSX runtime optimization
-      jsxImportSource: '@emotion/react'
+      fast: true
     }),
     expressPlugin()
   ],
