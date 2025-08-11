@@ -329,6 +329,29 @@ export type Database = {
   }
 }
 
+// Check if Supabase is properly configured
+const isSupabaseConfigured = () => {
+  return !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+}
+
+// Wrapper for Supabase operations with error handling
+const withErrorHandling = async <T>(operation: () => Promise<T>, fallback?: T): Promise<T | null> => {
+  if (!isSupabaseConfigured() && import.meta.env.PROD) {
+    console.warn('Supabase not configured in production environment')
+    return fallback || null
+  }
+
+  try {
+    return await operation()
+  } catch (error) {
+    console.error('Supabase operation failed:', error)
+    if (import.meta.env.DEV) {
+      throw error // Re-throw in development for debugging
+    }
+    return fallback || null
+  }
+}
+
 // Helper functions for common operations
 export const supabaseHelpers = {
   // Auth helpers
