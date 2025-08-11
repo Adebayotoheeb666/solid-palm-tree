@@ -410,13 +410,28 @@ export const supabaseHelpers = {
 
   // Booking helpers
   async getAirports() {
-    return await withErrorHandling(() =>
+    // Try Supabase first
+    const result = await withErrorHandling(() =>
       supabase
         .from('airports')
         .select('*')
         .order('city'),
-      { data: [], error: null }
+      null
     )
+
+    if (result && result.data && result.data.length > 0) {
+      return result
+    }
+
+    // Fallback to API endpoint
+    try {
+      const response = await fetch('/api/airports')
+      const data = await response.json()
+      return { data: data.data || [], error: data.error }
+    } catch (error) {
+      console.error('Failed to fetch airports from fallback API:', error)
+      return { data: [], error: error }
+    }
   },
 
   async getUserBookings(userId: string) {
