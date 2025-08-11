@@ -37,6 +37,9 @@ import {
   handleGetAllSupabaseBookings,
 } from "./routes/supabase-bookings";
 
+// Import fallback routes
+import { fallbackAirportsRouter } from "./routes/fallback-airports";
+
 // Import fallback booking routes for demo
 import {
   handleCreateBooking,
