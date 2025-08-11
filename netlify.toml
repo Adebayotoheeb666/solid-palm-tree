@@ -2,7 +2,10 @@
   command = "npm run build:client"
   functions = "netlify/functions"
   publish = "dist/spa"
-  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,PAYPAL_MODE" }
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,PAYPAL_MODE"
+  SECRETS_SCAN_OMIT_PATHS = "supabase,dist/spa/assets/*"
 
 [functions]
   external_node_modules = ["express"]
