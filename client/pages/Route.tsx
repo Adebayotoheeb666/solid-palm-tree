@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "../components/DatePicker";
 import { useFormValidation, CommonValidationRules } from "../hooks/useFormValidation";
 import { Airport, FlightRoute } from "@shared/api";
-import { supabaseHelpers } from "../lib/supabaseClient";
+import { getSafeSupabase } from "../lib/supabaseSafe";
 
 interface RouteProps {
   onNext: () => void;
