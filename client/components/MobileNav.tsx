@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -7,34 +7,36 @@ interface MobileNavProps {
   handleBookNow: () => void;
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({ handleBookNow }) => {
+const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
 
-  const closeMenu = () => setIsOpen(false);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = useCallback((path: string) => {
     navigate(path);
     closeMenu();
-  };
+  }, [navigate, closeMenu]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     navigate("/");
     closeMenu();
-  };
+  }, [logout, navigate, closeMenu]);
 
-  const handleBookNowClick = () => {
+  const handleBookNowClick = useCallback(() => {
     handleBookNow();
     closeMenu();
-  };
+  }, [handleBookNow, closeMenu]);
+
+  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
 
   return (
     <div className="md:hidden">
       {/* Hamburger Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleMenu}
         className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
         aria-label="Toggle menu"
       >
@@ -132,6 +134,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ handleBookNow }) => {
       </div>
     </div>
   );
-};
+});
+
+MobileNav.displayName = 'MobileNav';
 
 export default MobileNav;
