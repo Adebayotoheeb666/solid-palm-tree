@@ -140,6 +140,9 @@ export function createServer() {
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
+  // Add database health check routes
+  app.use("/api/health", dbHealthRouter);
+
   // Determine if we should use Supabase or fallback routes
   const useSupabase =
     process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
