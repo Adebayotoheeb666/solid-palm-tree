@@ -15,7 +15,6 @@ interface RouteProps {
   onNavigate: (step: any) => void;
 }
 
-
 export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
   const navigate = useNavigate();
   const [tripType, setTripType] = useState<"oneway" | "roundtrip">("oneway");
@@ -74,7 +73,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
         if (!error && data && data.length > 0) {
           setAirports(data);
         } else {
-          console.log('No airports found in database');
+          console.log("No airports found in database");
           setAirports([]);
         }
       } catch (error) {
@@ -273,7 +272,6 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
 
   return (
     <div className="min-h-screen bg-ticket-primary text-white">
-
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
         <div className="flex flex-col sm:flex-row gap-8 sm:gap-16 mb-12">
@@ -358,7 +356,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                       disabled={loadingAirports}
                     >
                       <option value="">
-                        {loadingAirports ? "Loading airports..." : "Select departure airport"}
+                        {loadingAirports
+                          ? "Loading airports..."
+                          : "Select departure airport"}
                       </option>
                       {airports.map((airport) => (
                         <option key={airport.code} value={airport.code}>
@@ -394,7 +394,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                       disabled={loadingAirports}
                     >
                       <option value="">
-                        {loadingAirports ? "Loading airports..." : "Select destination airport"}
+                        {loadingAirports
+                          ? "Loading airports..."
+                          : "Select destination airport"}
                       </option>
                       {airports
                         .filter((airport) => airport.code !== fromLocation)
@@ -556,7 +558,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                       ({toLocation || "---"})
                     </div>
                     <div className="text-xs font-semibold text-ticket-gray">
-                      {getSelectedAirport(toLocation)?.city || "Select destination"}
+                      {getSelectedAirport(toLocation)?.city ||
+                        "Select destination"}
                     </div>
                     <div className="text-xs text-ticket-gray-light">
                       {tripType === "roundtrip" && returnDate

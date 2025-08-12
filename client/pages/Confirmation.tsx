@@ -187,7 +187,6 @@ export default function Confirmation({
 
   return (
     <div className="min-h-screen bg-ticket-primary text-white">
-
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
         <div className="flex flex-col sm:flex-row gap-8 sm:gap-16 mb-12">

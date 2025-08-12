@@ -52,7 +52,7 @@ function generateTestRoute() {
       city: "New York",
       country: "United States",
     },
-    departureDate: tomorrow.toISOString().split('T')[0],
+    departureDate: tomorrow.toISOString().split("T")[0],
     tripType: "oneway",
   };
 }

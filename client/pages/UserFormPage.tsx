@@ -14,7 +14,9 @@ export default function UserFormPage({ step }: { step?: string }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
-  const [currentStep, setCurrentStep] = useState<Step>(step as Step || "route");
+  const [currentStep, setCurrentStep] = useState<Step>(
+    (step as Step) || "route",
+  );
 
   // Redirect to register if not authenticated
   useEffect(() => {
@@ -29,7 +31,12 @@ export default function UserFormPage({ step }: { step?: string }) {
     } else {
       // fallback: try to infer from path
       const path = location.pathname.split("/")[2];
-      if (path && ["route","passengers","confirmation","search","thankyou"].includes(path)) {
+      if (
+        path &&
+        ["route", "passengers", "confirmation", "search", "thankyou"].includes(
+          path,
+        )
+      ) {
         setCurrentStep(path as Step);
       }
     }
@@ -77,17 +84,43 @@ export default function UserFormPage({ step }: { step?: string }) {
       {(() => {
         switch (currentStep) {
           case "route":
-            return <Route onNext={goToNextStep} currentStep={currentStep} onNavigate={navigateToStep} />;
+            return (
+              <Route
+                onNext={goToNextStep}
+                currentStep={currentStep}
+                onNavigate={navigateToStep}
+              />
+            );
           case "passengers":
-            return <Passengers onNext={goToNextStep} onBack={goToPreviousStep} currentStep={currentStep} onNavigate={navigateToStep} />;
+            return (
+              <Passengers
+                onNext={goToNextStep}
+                onBack={goToPreviousStep}
+                currentStep={currentStep}
+                onNavigate={navigateToStep}
+              />
+            );
           case "confirmation":
-            return <Confirmation onNext={goToNextStep} onBack={goToPreviousStep} currentStep={currentStep} onNavigate={navigateToStep} />;
+            return (
+              <Confirmation
+                onNext={goToNextStep}
+                onBack={goToPreviousStep}
+                currentStep={currentStep}
+                onNavigate={navigateToStep}
+              />
+            );
           case "search":
             return <SearchFlights onNext={goToNextStep} />;
           case "thankyou":
             return <ThankYou />;
           default:
-            return <Route onNext={goToNextStep} currentStep={currentStep} onNavigate={navigateToStep} />;
+            return (
+              <Route
+                onNext={goToNextStep}
+                currentStep={currentStep}
+                onNavigate={navigateToStep}
+              />
+            );
         }
       })()}
     </>
