@@ -7,6 +7,31 @@ import crypto from 'crypto';
 const users: User[] = [];
 let userIdCounter = 1;
 
+// Helper function to create default admin user
+const createDefaultAdmin = () => {
+  const adminUser: User = {
+    id: '1',
+    email: 'onboard@admin.com',
+    firstName: 'Admin',
+    lastName: 'User',
+    title: 'Mr',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  users.push(adminUser);
+
+  // Store admin password
+  (global as any).userPasswords = (global as any).userPasswords || {};
+  (global as any).userPasswords[adminUser.id] = hashPassword('onboardadmin');
+
+  userIdCounter = 2; // Next user will be ID 2
+  console.log('✅ Default admin user created: onboard@admin.com / onboardadmin');
+};
+
+// Create default admin on startup
+createDefaultAdmin();
+
 // Simple token storage for demo (use proper JWT in production)
 const tokenStorage = new Map<string, { userId: string; expiresAt: number }>();
 
