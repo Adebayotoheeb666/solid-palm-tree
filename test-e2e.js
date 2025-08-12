@@ -70,6 +70,10 @@ function generateTestPassenger() {
 let authToken = "";
 let adminToken = "";
 let bookingId = "";
+let testUser = null;
+let testAdmin = null;
+let testRoute = null;
+let testPassenger = null;
 
 async function makeRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
