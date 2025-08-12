@@ -11,6 +11,9 @@ import {
   supabaseAuthMiddleware,
 } from "./routes/supabase-auth";
 
+// Import database initialization
+import { DatabaseInitializer } from "./lib/databaseInit";
+
 // Import fallback authentication routes for demo
 import {
   handleRegister,
