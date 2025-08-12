@@ -76,15 +76,6 @@ export const verifyToken = (token: string): { userId: string } | null => {
   return { userId: tokenData.userId };
 };
 
-// Simple password hashing for demo (use bcrypt in production)
-const hashPassword = (password: string): string => {
-  return crypto.createHash('sha256').update(password + 'salt').digest('hex');
-};
-
-const verifyPassword = (password: string, hash: string): boolean => {
-  return hashPassword(password) === hash;
-};
-
 // Helper function to find user by email
 const findUserByEmail = (email: string): User | undefined => {
   return users.find(user => user.email.toLowerCase() === email.toLowerCase());
