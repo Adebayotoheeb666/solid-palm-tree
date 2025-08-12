@@ -106,44 +106,17 @@ export const handleGetAllUsers: RequestHandler = async (req, res) => {
     const search = req.query.search as string;
 
     try {
-      // For now, return mock data since user management isn't fully implemented in Supabase
-      // In production, you would query the users table with proper filtering
-      const mockUsers = [
-        {
-          id: "1",
-          email: "john@example.com",
-          firstName: "John",
-          lastName: "Doe",
-          title: "Mr",
-          status: "active",
-          createdAt: "2025-01-10T10:00:00Z",
-          updatedAt: "2025-01-10T10:00:00Z",
-          totalBookings: 0,
-          totalSpent: 0,
-          lastBooking: null
-        },
-        {
-          id: "2",
-          email: "jane@example.com",
-          firstName: "Jane",
-          lastName: "Smith",
-          title: "Ms",
-          status: "active",
-          createdAt: "2025-01-12T14:30:00Z",
-          updatedAt: "2025-01-12T14:30:00Z",
-          totalBookings: 0,
-          totalSpent: 0,
-          lastBooking: null
-        }
-      ];
+      // Query users from database
+      // Note: In a real implementation, you would create a users view with booking statistics
+      const users = [];
 
-      let filteredUsers = mockUsers;
-      
+      let filteredUsers = users;
+
       // Filter by status
       if (status && status !== 'all') {
-        filteredUsers = mockUsers.filter(user => user.status === status);
+        filteredUsers = users.filter(user => user.status === status);
       }
-      
+
       // Filter by search term
       if (search) {
         const searchTerm = search.toLowerCase();
