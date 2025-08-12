@@ -185,13 +185,22 @@ export const handleSupabaseLogin: RequestHandler = async (req, res) => {
 
     const { email, password } = validation.data;
 
+    console.log('🔍 Supabase login attempt for email:', email);
+    console.log('🔐 Password provided:', password);
+
     // Authenticate with Supabase
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
+    console.log('🔑 Supabase auth result:');
+    console.log('  Success:', !authError && !!authData.user);
+    console.log('  User ID:', authData.user?.id);
+    console.log('  Error:', authError?.message);
+
     if (authError || !authData.user) {
+      console.log('❌ Supabase login failed:', authError?.message);
       const response: AuthResponse = {
         success: false,
         message: 'Invalid email or password'
