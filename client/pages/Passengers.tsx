@@ -192,18 +192,6 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
 
 
     <div className="min-h-screen bg-ticket-primary text-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-          <img 
-            src="/onboard/result.png" 
-            alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
-            loading="eager"
-            onClick={() => navigate("/")}
-          />
-        </div>
-      </header>
 
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
@@ -511,7 +499,7 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               </p>
             </div>
             {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 About
               </h4>
@@ -522,7 +510,7 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               </ul>
             </div>
             {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Get Help
               </h4>
@@ -533,11 +521,11 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               </ul>
             </div>
             {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Follow US
               </h4>
-              
+
 
               <div className="space-y-1 md:space-y-2">
                 <h5 className="text-base md:text-lg font-bold text-white">
