@@ -18,7 +18,7 @@ export const handleGetAdminStats: RequestHandler = async (req, res) => {
       
       if (statsError) {
         console.error('Error fetching admin stats from Supabase:', statsError);
-        // Return fallback mock data if Supabase fails
+        // Return empty stats if Supabase fails
         return res.json({
           totalBookings: 0,
           totalRevenue: 0,
@@ -33,8 +33,8 @@ export const handleGetAdminStats: RequestHandler = async (req, res) => {
           topRoutes: [],
           recentBookings: [],
           averageBookingValue: 0,
-          conversionRate: 85.5, // Mock conversion rate
-          customerSatisfaction: 4.7 // Mock rating
+          conversionRate: 0,
+          customerSatisfaction: 0
         });
       }
 
