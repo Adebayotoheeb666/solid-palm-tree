@@ -2,6 +2,12 @@ import { RequestHandler } from "express";
 import { UserDashboardData, Booking } from "@shared/api";
 import { supabaseServerHelpers } from "../lib/supabaseServer";
 
+// Legacy functions for compatibility (will be deprecated)
+export const getAllBookings = () => [];
+export const addBooking = (booking: Booking) => {
+  console.log('addBooking called but not implemented in database version');
+};
+
 // Get user dashboard data
 export const handleGetDashboard: RequestHandler = async (req, res) => {
   try {
