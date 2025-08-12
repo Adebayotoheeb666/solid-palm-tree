@@ -187,21 +187,6 @@ export default function Confirmation({
 
   return (
     <div className="min-h-screen bg-ticket-primary text-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div
-          className="flex items-center cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <img
-            src="/onboard/result.png"
-            alt="OnboardTicket Logo"
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
-            loading="eager"
-            onClick={() => navigate("/")}
-          />
-        </div>
-      </header>
 
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
