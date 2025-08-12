@@ -168,6 +168,19 @@ export function createServer() {
   console.log("  useSupabase:", useSupabase);
   console.log("  Auth routes: Using", useSupabase ? "Supabase" : "Fallback");
 
+  // Initialize database if using Supabase
+  if (useSupabase) {
+    DatabaseInitializer.initialize().then(success => {
+      if (success) {
+        console.log("✅ Database initialization completed");
+      } else {
+        console.log("⚠️ Database initialization failed, some features may not work");
+      }
+    }).catch(error => {
+      console.log("❌ Database initialization error:", error);
+    });
+  }
+
   // Authentication routes (public)
   if (useSupabase) {
     console.log("📋 Setting up Supabase auth routes");
