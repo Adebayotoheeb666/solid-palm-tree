@@ -149,9 +149,9 @@ export function createServer() {
   const useSupabase =
     process.env.SUPABASE_URL &&
     process.env.SUPABASE_SERVICE_ROLE_KEY &&
-    !process.env.SUPABASE_URL.includes('placeholder') &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY !== 'placeholder-service-role-key' &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY !== 'your-service-role-key';
+    !process.env.SUPABASE_URL.includes("placeholder") &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key" &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY !== "your-service-role-key";
   const authMiddleware = useSupabase
     ? supabaseAuthMiddleware
     : authenticateUser;
