@@ -7,6 +7,15 @@ import crypto from 'crypto';
 const users: User[] = [];
 let userIdCounter = 1;
 
+// Simple password hashing for demo (use bcrypt in production)
+const hashPassword = (password: string): string => {
+  return crypto.createHash('sha256').update(password + 'salt').digest('hex');
+};
+
+const verifyPassword = (password: string, hash: string): boolean => {
+  return hashPassword(password) === hash;
+};
+
 // Helper function to create default admin user
 const createDefaultAdmin = () => {
   const adminUser: User = {
