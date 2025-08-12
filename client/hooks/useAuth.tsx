@@ -45,12 +45,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       if (response.ok) {
-        const data: AuthResponse = await response.json();
-        if (data.success && data.user) {
-          setUser(data.user);
-        } else {
+        try {
+          const data: AuthResponse = await response.json();
+          if (data.success && data.user) {
+            setUser(data.user);
+          } else {
+            localStorage.removeItem('authToken');
+          }
+        } catch (parseError) {
+          console.error('Failed to parse token validation response:', parseError);
           localStorage.removeItem('authToken');
         }
       } else {
