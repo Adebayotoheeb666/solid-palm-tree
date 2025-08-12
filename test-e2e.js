@@ -294,6 +294,12 @@ async function testAdminDashboard() {
 async function runEndToEndTest() {
   console.log("🚀 Starting End-to-End Test for OnboardTicket Application\n");
 
+  // Generate fresh test data for each test run
+  testUser = generateTestUser();
+  testAdmin = generateTestAdmin();
+  testRoute = generateTestRoute();
+  testPassenger = generateTestPassenger();
+
   const tests = [
     { name: "Health Check", fn: testHealthCheck },
     { name: "User Registration", fn: testUserRegistration },
