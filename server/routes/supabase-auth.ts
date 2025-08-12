@@ -3,6 +3,68 @@ import { AuthResponse, LoginRequest, RegisterRequest } from "@shared/api";
 import { supabase } from "../lib/supabaseServer";
 import { z } from 'zod';
 
+// Create default admin user in Supabase
+const createSupabaseAdminUser = async () => {
+  try {
+    const adminEmail = 'onboard@admin.com';
+    const adminPassword = 'onboardadmin';
+
+    // Check if admin user already exists
+    const { data: existingUsers } = await supabase
+      .from('users')
+      .select('email')
+      .eq('email', adminEmail)
+      .limit(1);
+
+    if (existingUsers && existingUsers.length > 0) {
+      console.log('✅ Supabase admin user already exists:', adminEmail);
+      return;
+    }
+
+    // Create user in Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email: adminEmail,
+      password: adminPassword,
+      user_metadata: {
+        first_name: 'Admin',
+        last_name: 'User',
+        title: 'Mr'
+      },
+      email_confirm: true // Auto-confirm the email
+    });
+
+    if (authError || !authData.user) {
+      console.log('❌ Failed to create Supabase admin user:', authError?.message);
+      return;
+    }
+
+    // Create user profile in public.users table
+    const { error: userError } = await supabase
+      .from('users')
+      .insert({
+        id: authData.user.id,
+        email: adminEmail,
+        first_name: 'Admin',
+        last_name: 'User',
+        title: 'Mr'
+      });
+
+    if (userError) {
+      console.log('❌ Failed to create admin user profile:', userError.message);
+      // Cleanup auth user if profile creation fails
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      return;
+    }
+
+    console.log('✅ Supabase admin user created successfully:', adminEmail, '/ onboardadmin');
+  } catch (error) {
+    console.log('❌ Error creating Supabase admin user:', error);
+  }
+};
+
+// Create admin user on startup
+createSupabaseAdminUser();
+
 // Validation schemas
 const loginSchema = z.object({
   email: z.string().email(),
