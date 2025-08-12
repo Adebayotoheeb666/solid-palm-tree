@@ -169,8 +169,13 @@ export const handleLogin: RequestHandler = async (req, res) => {
     const { email, password } = validation.data;
 
     // Find user
+    console.log('🔍 Login attempt for email:', email);
+    console.log('📊 Total users in system:', users.length);
+    console.log('👥 Users:', users.map(u => ({ id: u.id, email: u.email })));
+
     const user = findUserByEmail(email);
     if (!user) {
+      console.log('❌ User not found for email:', email);
       const response: AuthResponse = {
         success: false,
         message: 'Invalid email or password'
@@ -178,9 +183,17 @@ export const handleLogin: RequestHandler = async (req, res) => {
       return res.status(401).json(response);
     }
 
+    console.log('✅ User found:', { id: user.id, email: user.email });
+
     // Check password
     const userPasswords = (global as any).userPasswords || {};
     const hashedPassword = userPasswords[user.id];
+
+    console.log('🔑 Password check for user ID:', user.id);
+    console.log('🔒 Has stored password hash:', !!hashedPassword);
+    console.log('🔐 Input password:', password);
+    console.log('🔓 Stored password hash:', hashedPassword);
+    console.log('✓ Password verification result:', verifyPassword(password, hashedPassword));
 
     if (!hashedPassword || !verifyPassword(password, hashedPassword)) {
       const response: AuthResponse = {
