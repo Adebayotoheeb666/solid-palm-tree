@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthResponse, LoginRequest, RegisterRequest } from '@shared/api';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { User, AuthResponse, LoginRequest, RegisterRequest } from "@shared/api";
 
 interface AuthContextType {
   user: User | null;
@@ -15,7 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -30,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Check for existing auth token on app load
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (token) {
       validateToken(token);
     } else {
@@ -40,9 +46,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const validateToken = async (token: string) => {
     try {
-      const response = await fetch('/api/auth/validate', {
+      const response = await fetch("/api/auth/validate", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -52,18 +58,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (data.success && data.user) {
             setUser(data.user);
           } else {
-            localStorage.removeItem('authToken');
+            localStorage.removeItem("authToken");
           }
         } catch (parseError) {
-          console.error('Failed to parse token validation response:', parseError);
-          localStorage.removeItem('authToken');
+          console.error(
+            "Failed to parse token validation response:",
+            parseError,
+          );
+          localStorage.removeItem("authToken");
         }
       } else {
-        localStorage.removeItem('authToken');
+        localStorage.removeItem("authToken");
       }
     } catch (error) {
-      console.error('Token validation failed:', error);
-      localStorage.removeItem('authToken');
+      console.error("Token validation failed:", error);
+      localStorage.removeItem("authToken");
     } finally {
       setLoading(false);
     }
@@ -71,10 +80,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: LoginRequest): Promise<AuthResponse> => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
@@ -86,7 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const errorData = await response.json();
           return {
             success: false,
-            message: errorData.message || 'Login failed. Please try again.',
+            message: errorData.message || "Login failed. Please try again.",
           };
         } catch (parseError) {
           return {
@@ -100,25 +109,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (data.success && data.user && data.token) {
         setUser(data.user);
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem("authToken", data.token);
       }
 
       return data;
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       return {
         success: false,
-        message: 'Login failed. Please try again.',
+        message: "Login failed. Please try again.",
       };
     }
   };
 
   const register = async (userData: RegisterRequest): Promise<AuthResponse> => {
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
@@ -130,7 +139,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const errorData = await response.json();
           return {
             success: false,
-            message: errorData.message || 'Registration failed. Please try again.',
+            message:
+              errorData.message || "Registration failed. Please try again.",
           };
         } catch (parseError) {
           return {
@@ -144,22 +154,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (data.success && data.user && data.token) {
         setUser(data.user);
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem("authToken", data.token);
       }
 
       return data;
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.error("Registration failed:", error);
       return {
         success: false,
-        message: 'Registration failed. Please try again.',
+        message: "Registration failed. Please try again.",
       };
     }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
   };
 
   const value: AuthContextType = {
@@ -171,21 +181,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Hook for making authenticated API requests
 export const useAuthenticatedFetch = () => {
   const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
-    const token = localStorage.getItem('authToken');
-    
+    const token = localStorage.getItem("authToken");
+
     const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     };
 
