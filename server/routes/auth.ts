@@ -41,6 +41,9 @@ const createDefaultAdmin = () => {
 // Create default admin on startup
 createDefaultAdmin();
 
+// Debug: Test password hashing
+console.log('🧪 Testing password hash for "onboardadmin":', hashPassword('onboardadmin'));
+
 // Simple token storage for demo (use proper JWT in production)
 const tokenStorage = new Map<string, { userId: string; expiresAt: number }>();
 
@@ -175,7 +178,7 @@ export const handleLogin: RequestHandler = async (req, res) => {
 
     const user = findUserByEmail(email);
     if (!user) {
-      console.log('❌ User not found for email:', email);
+      console.log('��� User not found for email:', email);
       const response: AuthResponse = {
         success: false,
         message: 'Invalid email or password'
