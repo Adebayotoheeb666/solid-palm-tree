@@ -118,13 +118,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify(userData),
       });
 
+      // Check if response is ok before trying to parse JSON
+      if (!response.ok) {
+        // Try to get error message from response, but handle parsing errors
+        try {
+          const errorData = await response.json();
+          return {
+            success: false,
+            message: errorData.message || 'Registration failed. Please try again.',
+          };
+        } catch (parseError) {
+          return {
+            success: false,
+            message: `Registration failed with status ${response.status}`,
+          };
+        }
+      }
+
       const data: AuthResponse = await response.json();
-      
+
       if (data.success && data.user && data.token) {
         setUser(data.user);
         localStorage.setItem('authToken', data.token);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Registration failed:', error);
