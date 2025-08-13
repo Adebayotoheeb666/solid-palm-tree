@@ -202,7 +202,7 @@ export function createServer() {
         console.log("⚠️ Database initialization failed, some features may not work");
       }
     }).catch(error => {
-      console.log("❌ Database initialization error:", error);
+      console.log("��� Database initialization error:", error);
     });
   }
 
@@ -218,35 +218,19 @@ export function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Booking routes (authenticated)
-  if (useSupabase) {
-    app.post("/api/bookings", authMiddleware, handleCreateSupabaseBooking);
-    app.get("/api/bookings", authMiddleware, handleGetSupabaseUserBookings);
-    app.get(
-      "/api/bookings/:bookingId",
-      authMiddleware,
-      handleGetSupabaseBooking,
-    );
-    app.put(
-      "/api/bookings/:bookingId/cancel",
-      authMiddleware,
-      handleCancelSupabaseBooking,
-    );
-  } else {
-    // Fallback to mock bookings for development
-    app.post("/api/bookings", authMiddleware, handleCreateBooking);
-    app.get("/api/bookings", authMiddleware, handleGetUserBookings);
-    app.get(
-      "/api/bookings/:bookingId",
-      authMiddleware,
-      handleGetBookingDetails,
-    );
-    app.put(
-      "/api/bookings/:bookingId/cancel",
-      authMiddleware,
-      handleCancelBooking,
-    );
-  }
+  // Booking routes (authenticated) - prefer Supabase but fallback when needed
+  app.post("/api/bookings", authMiddleware, useSupabase ? handleCreateSupabaseBooking : handleCreateBooking);
+  app.get("/api/bookings", authMiddleware, useSupabase ? handleGetSupabaseUserBookings : handleGetUserBookings);
+  app.get(
+    "/api/bookings/:bookingId",
+    authMiddleware,
+    useSupabase ? handleGetSupabaseBooking : handleGetBookingDetails,
+  );
+  app.put(
+    "/api/bookings/:bookingId/cancel",
+    authMiddleware,
+    useSupabase ? handleCancelSupabaseBooking : handleCancelBooking,
+  );
 
   // Payment routes (authenticated)
   app.post("/api/payments", authenticateUser, handleProcessPayment);
