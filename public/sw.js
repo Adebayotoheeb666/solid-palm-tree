@@ -70,6 +70,16 @@ self.addEventListener("fetch", (event) => {
             response.status !== 200 ||
             response.type !== "basic"
           ) {
+            // If it's a 404 for an old asset, try to clear cache and reload
+            if (response.status === 404 && request.url.match(/\.(js|css)$/i)) {
+              console.log("[SW] 404 for asset, clearing cache:", request.url);
+              caches.delete(CACHE_NAME);
+            }
+            return response;
+          }
+
+          // Skip caching chrome-extension requests
+          if (request.url.startsWith('chrome-extension://')) {
             return response;
           }
 
@@ -85,6 +95,9 @@ self.addEventListener("fetch", (event) => {
             ) {
               cache.put(request, responseToCache);
             }
+          }).catch((error) => {
+            // Handle cache put errors (like chrome-extension scheme)
+            console.warn("[SW] Cache put failed:", error.message);
           });
 
           return response;
