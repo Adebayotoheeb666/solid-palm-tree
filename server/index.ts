@@ -166,6 +166,33 @@ export function createServer() {
     });
   });
 
+  // System status endpoint
+  app.get("/api/status", async (req, res) => {
+    const dbHealth = useSupabase ? await DatabaseInitializer.checkHealth() : { healthy: true, message: "Not using database" };
+
+    res.json({
+      server: "online",
+      authSystem: "hybrid",
+      database: {
+        configured: useSupabase,
+        healthy: dbHealth.healthy,
+        message: dbHealth.message,
+        system: useSupabase ? "supabase" : "fallback"
+      },
+      features: {
+        authentication: "✅ Available (hybrid)",
+        userRegistration: "✅ Available (hybrid)",
+        booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+        admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+        airports: useSupabase && dbHealth.healthy ? "✅ Database" : "⚠️ Static data only"
+      },
+      adminCredentials: {
+        email: "onboard@admin.com",
+        password: "onboardadmin"
+      }
+    });
+  });
+
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
