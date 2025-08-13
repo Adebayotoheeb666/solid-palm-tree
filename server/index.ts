@@ -202,7 +202,7 @@ export function createServer() {
         console.log("⚠️ Database initialization failed, some features may not work");
       }
     }).catch(error => {
-      console.log("��� Database initialization error:", error);
+      console.log("❌ Database initialization error:", error);
     });
   }
 
@@ -321,25 +321,16 @@ export function createServer() {
   // Admin routes (with authentication)
   app.get("/api/admin/stats", authMiddleware, handleGetAdminStats);
 
-  if (useSupabase) {
-    app.get(
-      "/api/admin/bookings",
-      authMiddleware,
-      handleGetAllSupabaseBookings,
-    );
-    app.put(
-      "/api/admin/bookings/:bookingId/status",
-      authMiddleware,
-      handleUpdateSupabaseBookingStatus,
-    );
-  } else {
-    app.get("/api/admin/bookings", authMiddleware, handleGetAllBookings);
-    app.put(
-      "/api/admin/bookings/:bookingId/status",
-      authMiddleware,
-      handleUpdateBookingStatus,
-    );
-  }
+  app.get(
+    "/api/admin/bookings",
+    authMiddleware,
+    useSupabase ? handleGetAllSupabaseBookings : handleGetAllBookings,
+  );
+  app.put(
+    "/api/admin/bookings/:bookingId/status",
+    authMiddleware,
+    useSupabase ? handleUpdateSupabaseBookingStatus : handleUpdateBookingStatus,
+  );
 
   app.get("/api/admin/payments", authMiddleware, handleGetAllTransactions);
   app.post(
