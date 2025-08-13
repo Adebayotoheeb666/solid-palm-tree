@@ -206,19 +206,11 @@ export function createServer() {
     });
   }
 
-  // Authentication routes (public)
-  if (useSupabase) {
-    console.log("📋 Setting up Supabase auth routes");
-    app.post("/api/auth/register", handleSupabaseRegister);
-    app.post("/api/auth/login", handleSupabaseLogin);
-    app.get("/api/auth/validate", handleSupabaseValidateToken);
-  } else {
-    console.log("📋 Setting up fallback auth routes");
-    // Fallback to mock auth for development
-    app.post("/api/auth/register", handleRegister);
-    app.post("/api/auth/login", handleLogin);
-    app.get("/api/auth/validate", handleValidateToken);
-  }
+  // Authentication routes (public) - using hybrid system
+  console.log("📋 Setting up hybrid auth routes (Supabase + fallback)");
+  app.post("/api/auth/register", handleHybridRegister);
+  app.post("/api/auth/login", handleHybridLogin);
+  app.get("/api/auth/validate", handleHybridValidateToken);
 
   // User management routes (authenticated)
   app.get("/api/user/dashboard", authMiddleware, handleGetDashboard);
