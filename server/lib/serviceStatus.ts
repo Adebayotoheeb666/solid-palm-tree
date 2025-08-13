@@ -53,7 +53,7 @@ export class ServiceStatusChecker {
           ? `Connection failed: ${error.message}`
           : "Connected successfully",
         features: ["Database", "Authentication", "Real-time data"],
-        details: error ? null : { userCount: data?.[0]?.count || 0 },
+        details: error ? null : { userCount: count || 0 },
       };
     } catch (error) {
       return {
