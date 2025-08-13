@@ -41,10 +41,9 @@ export class ServiceStatusChecker {
 
     try {
       const { supabase } = await import("./supabaseServer");
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from("users")
-        .select("count(*)", { count: "exact" })
-        .limit(1);
+        .select("*", { count: "exact", head: true });
 
       return {
         name: "Supabase Database",
