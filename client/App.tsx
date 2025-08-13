@@ -122,6 +122,7 @@ const App = () => (
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
+                <Route path="/cache-reset" element={<CacheReset />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
