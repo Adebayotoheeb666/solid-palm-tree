@@ -149,6 +149,13 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Simple services status endpoint
+  app.get("/api/services", async (req, res) => {
+    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
+    const serviceStatus = await ServiceStatusChecker.checkAllServices();
+    res.json(serviceStatus);
+  });
+
   // Database health check
   app.get("/api/health/database", async (req, res) => {
     if (!useSupabase) {
