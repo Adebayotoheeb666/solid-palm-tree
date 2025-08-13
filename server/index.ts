@@ -141,6 +141,23 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Database health check
+  app.get("/api/health/database", async (req, res) => {
+    if (!useSupabase) {
+      return res.json({
+        healthy: true,
+        message: "Using fallback system (no database)",
+        system: "fallback"
+      });
+    }
+
+    const health = await DatabaseInitializer.checkHealth();
+    res.status(health.healthy ? 200 : 500).json({
+      ...health,
+      system: "supabase"
+    });
+  });
+
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
