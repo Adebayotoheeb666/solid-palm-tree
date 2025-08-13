@@ -180,9 +180,9 @@ export function createServer() {
     !process.env.SUPABASE_URL.includes("placeholder") &&
     process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key" &&
     process.env.SUPABASE_SERVICE_ROLE_KEY !== "your-service-role-key";
-  const authMiddleware = useSupabase
-    ? supabaseAuthMiddleware
-    : authenticateUser;
+
+  // Use hybrid auth middleware that works with or without Supabase
+  const authMiddleware = hybridAuthMiddleware;
 
   console.log("🔧 Auth system configuration:");
   console.log("  SUPABASE_URL:", !!process.env.SUPABASE_URL);
