@@ -22,6 +22,14 @@ import {
   authenticateUser,
 } from "./routes/auth";
 
+// Import hybrid authentication routes
+import {
+  handleHybridRegister,
+  handleHybridLogin,
+  handleHybridValidateToken,
+  hybridAuthMiddleware,
+} from "./routes/hybrid-auth";
+
 // Import user management routes
 import {
   handleGetDashboard,
