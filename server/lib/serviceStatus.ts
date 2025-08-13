@@ -41,10 +41,9 @@ export class ServiceStatusChecker {
 
     try {
       const { supabase } = await import("./supabaseServer");
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from("users")
-        .select("count(*)", { count: "exact" })
-        .limit(1);
+        .select("*", { count: "exact", head: true });
 
       return {
         name: "Supabase Database",
@@ -54,7 +53,7 @@ export class ServiceStatusChecker {
           ? `Connection failed: ${error.message}`
           : "Connected successfully",
         features: ["Database", "Authentication", "Real-time data"],
-        details: error ? null : { userCount: data?.[0]?.count || 0 },
+        details: error ? null : { userCount: count || 0 },
       };
     } catch (error) {
       return {
