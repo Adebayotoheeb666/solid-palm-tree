@@ -1,4 +1,4 @@
-const CACHE_NAME = "onboard-ticket-v1";
+const CACHE_NAME = "onboard-ticket-v2";
 const CRITICAL_ASSETS = [
   "/",
   "/onboard/result.png",
