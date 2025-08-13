@@ -168,6 +168,8 @@ export function createServer() {
 
   // System status endpoint
   app.get("/api/status", async (req, res) => {
+    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
+    const serviceStatus = await ServiceStatusChecker.checkAllServices();
     const dbHealth = useSupabase ? await DatabaseInitializer.checkHealth() : { healthy: true, message: "Not using database" };
 
     res.json({
@@ -179,12 +181,17 @@ export function createServer() {
         message: dbHealth.message,
         system: useSupabase ? "supabase" : "fallback"
       },
+      services: serviceStatus.services,
+      serviceSummary: serviceStatus.summary,
       features: {
         authentication: "✅ Available (hybrid)",
         userRegistration: "✅ Available (hybrid)",
         booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
         admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
-        airports: useSupabase && dbHealth.healthy ? "✅ Database" : "⚠️ Static data only"
+        airports: useSupabase && dbHealth.healthy ? "✅ Database" : "⚠️ Static data only",
+        payments: serviceStatus.services.stripe.status === 'working' ? "✅ Stripe available" : "⚠️ Stripe not configured",
+        emails: serviceStatus.services.sendgrid.status === 'working' ? "✅ SendGrid available" : "⚠️ SendGrid not configured",
+        flights: serviceStatus.services.amadeus.status === 'working' ? "✅ Amadeus available" : "⚠️ Amadeus not configured"
       },
       adminCredentials: {
         email: "onboard@admin.com",
