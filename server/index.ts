@@ -162,14 +162,14 @@ export function createServer() {
       return res.json({
         healthy: true,
         message: "Using fallback system (no database)",
-        system: "fallback"
+        system: "fallback",
       });
     }
 
     const health = await DatabaseInitializer.checkHealth();
     res.status(health.healthy ? 200 : 500).json({
       ...health,
-      system: "supabase"
+      system: "supabase",
     });
   });
 
@@ -177,7 +177,9 @@ export function createServer() {
   app.get("/api/status", async (req, res) => {
     const { ServiceStatusChecker } = await import("./lib/serviceStatus");
     const serviceStatus = await ServiceStatusChecker.checkAllServices();
-    const dbHealth = useSupabase ? await DatabaseInitializer.checkHealth() : { healthy: true, message: "Not using database" };
+    const dbHealth = useSupabase
+      ? await DatabaseInitializer.checkHealth()
+      : { healthy: true, message: "Not using database" };
 
     res.json({
       server: "online",
@@ -186,7 +188,7 @@ export function createServer() {
         configured: useSupabase,
         healthy: dbHealth.healthy,
         message: dbHealth.message,
-        system: useSupabase ? "supabase" : "fallback"
+        system: useSupabase ? "supabase" : "fallback",
       },
       services: serviceStatus.services,
       serviceSummary: serviceStatus.summary,
@@ -195,15 +197,27 @@ export function createServer() {
         userRegistration: "✅ Available (hybrid)",
         booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
         admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
-        airports: useSupabase && dbHealth.healthy ? "✅ Database" : "⚠️ Static data only",
-        payments: serviceStatus.services.stripe.status === 'working' ? "✅ Stripe available" : "⚠️ Stripe not configured",
-        emails: serviceStatus.services.sendgrid.status === 'working' ? "✅ SendGrid available" : "⚠️ SendGrid not configured",
-        flights: serviceStatus.services.amadeus.status === 'working' ? "✅ Amadeus available" : "⚠️ Amadeus not configured"
+        airports:
+          useSupabase && dbHealth.healthy
+            ? "✅ Database"
+            : "⚠️ Static data only",
+        payments:
+          serviceStatus.services.stripe.status === "working"
+            ? "✅ Stripe available"
+            : "⚠️ Stripe not configured",
+        emails:
+          serviceStatus.services.sendgrid.status === "working"
+            ? "✅ SendGrid available"
+            : "⚠️ SendGrid not configured",
+        flights:
+          serviceStatus.services.amadeus.status === "working"
+            ? "✅ Amadeus available"
+            : "⚠️ Amadeus not configured",
       },
       adminCredentials: {
         email: "onboard@admin.com",
-        password: "onboardadmin"
-      }
+        password: "onboardadmin",
+      },
     });
   });
 
@@ -236,15 +250,19 @@ export function createServer() {
 
   // Initialize database if using Supabase
   if (useSupabase) {
-    DatabaseInitializer.initialize().then(success => {
-      if (success) {
-        console.log("✅ Database initialization completed");
-      } else {
-        console.log("⚠️ Database initialization failed, some features may not work");
-      }
-    }).catch(error => {
-      console.log("❌ Database initialization error:", error);
-    });
+    DatabaseInitializer.initialize()
+      .then((success) => {
+        if (success) {
+          console.log("✅ Database initialization completed");
+        } else {
+          console.log(
+            "⚠️ Database initialization failed, some features may not work",
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("❌ Database initialization error:", error);
+      });
   }
 
   // Authentication routes (public) - using hybrid system
@@ -260,8 +278,16 @@ export function createServer() {
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
   // Booking routes (authenticated) - prefer Supabase but fallback when needed
-  app.post("/api/bookings", authMiddleware, useSupabase ? handleCreateSupabaseBooking : handleCreateBooking);
-  app.get("/api/bookings", authMiddleware, useSupabase ? handleGetSupabaseUserBookings : handleGetUserBookings);
+  app.post(
+    "/api/bookings",
+    authMiddleware,
+    useSupabase ? handleCreateSupabaseBooking : handleCreateBooking,
+  );
+  app.get(
+    "/api/bookings",
+    authMiddleware,
+    useSupabase ? handleGetSupabaseUserBookings : handleGetUserBookings,
+  );
   app.get(
     "/api/bookings/:bookingId",
     authMiddleware,
