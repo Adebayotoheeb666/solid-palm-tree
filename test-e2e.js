@@ -11,50 +11,69 @@
 
 const BASE_URL = "http://localhost:8080";
 
-// Test data
-const testUser = {
-  email: "test@example.com",
-  password: "testpass123",
-  firstName: "John",
-  lastName: "Doe",
-  title: "Mr",
-};
+// Test data - Generate dynamically to work with real database
+function generateTestUser() {
+  const timestamp = Date.now();
+  return {
+    email: `test.user.${timestamp}@example.com`,
+    password: "testpass123",
+    firstName: "Test",
+    lastName: "User",
+    title: "Mr",
+  };
+}
 
-const testAdmin = {
-  email: "admin@onboardticket.com",
-  password: "admin123",
-  firstName: "Admin",
-  lastName: "User",
-  title: "Mr",
-};
+function generateTestAdmin() {
+  const timestamp = Date.now();
+  return {
+    email: `test.admin.${timestamp}@onboardticket.com`,
+    password: "admin123",
+    firstName: "Test",
+    lastName: "Admin",
+    title: "Mr",
+  };
+}
 
-const testRoute = {
-  from: {
-    code: "JFK",
-    name: "John F. Kennedy International Airport",
-    city: "New York",
-    country: "United States",
-  },
-  to: {
-    code: "LAX",
-    name: "Los Angeles International Airport",
-    city: "Los Angeles",
-    country: "United States",
-  },
-  departureDate: "2024-02-15",
-  tripType: "oneway",
-};
+// Note: Route data should come from actual database airports
+function generateTestRoute() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-const testPassenger = {
-  title: "Mr",
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@example.com",
-};
+  return {
+    from: {
+      code: "LAX", // Should be from database
+      name: "Los Angeles International Airport",
+      city: "Los Angeles",
+      country: "United States",
+    },
+    to: {
+      code: "JFK", // Should be from database
+      name: "John F. Kennedy International Airport",
+      city: "New York",
+      country: "United States",
+    },
+    departureDate: tomorrow.toISOString().split("T")[0],
+    tripType: "oneway",
+  };
+}
+
+function generateTestPassenger() {
+  const timestamp = Date.now();
+  return {
+    title: "Mr",
+    firstName: "Test",
+    lastName: "Passenger",
+    email: `test.passenger.${timestamp}@example.com`,
+  };
+}
 
 let authToken = "";
 let adminToken = "";
 let bookingId = "";
+let testUser = null;
+let testAdmin = null;
+let testRoute = null;
+let testPassenger = null;
 
 async function makeRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
@@ -274,6 +293,12 @@ async function testAdminDashboard() {
 
 async function runEndToEndTest() {
   console.log("🚀 Starting End-to-End Test for OnboardTicket Application\n");
+
+  // Generate fresh test data for each test run
+  testUser = generateTestUser();
+  testAdmin = generateTestAdmin();
+  testRoute = generateTestRoute();
+  testPassenger = generateTestPassenger();
 
   const tests = [
     { name: "Health Check", fn: testHealthCheck },

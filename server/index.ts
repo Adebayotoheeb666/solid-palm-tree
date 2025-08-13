@@ -11,6 +11,9 @@ import {
   supabaseAuthMiddleware,
 } from "./routes/supabase-auth";
 
+// Import database initialization
+import { DatabaseInitializer } from "./lib/databaseInit";
+
 // Import fallback authentication routes for demo
 import {
   handleRegister,
@@ -18,6 +21,14 @@ import {
   handleValidateToken,
   authenticateUser,
 } from "./routes/auth";
+
+// Import hybrid authentication routes
+import {
+  handleHybridRegister,
+  handleHybridLogin,
+  handleHybridValidateToken,
+  hybridAuthMiddleware,
+} from "./routes/hybrid-auth";
 
 // Import user management routes
 import {
@@ -138,6 +149,78 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Simple services status endpoint
+  app.get("/api/services", async (req, res) => {
+    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
+    const serviceStatus = await ServiceStatusChecker.checkAllServices();
+    res.json(serviceStatus);
+  });
+
+  // Database health check
+  app.get("/api/health/database", async (req, res) => {
+    if (!useSupabase) {
+      return res.json({
+        healthy: true,
+        message: "Using fallback system (no database)",
+        system: "fallback",
+      });
+    }
+
+    const health = await DatabaseInitializer.checkHealth();
+    res.status(health.healthy ? 200 : 500).json({
+      ...health,
+      system: "supabase",
+    });
+  });
+
+  // System status endpoint
+  app.get("/api/status", async (req, res) => {
+    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
+    const serviceStatus = await ServiceStatusChecker.checkAllServices();
+    const dbHealth = useSupabase
+      ? await DatabaseInitializer.checkHealth()
+      : { healthy: true, message: "Not using database" };
+
+    res.json({
+      server: "online",
+      authSystem: "hybrid",
+      database: {
+        configured: useSupabase,
+        healthy: dbHealth.healthy,
+        message: dbHealth.message,
+        system: useSupabase ? "supabase" : "fallback",
+      },
+      services: serviceStatus.services,
+      serviceSummary: serviceStatus.summary,
+      features: {
+        authentication: "✅ Available (hybrid)",
+        userRegistration: "✅ Available (hybrid)",
+        booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+        admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+        airports:
+          useSupabase && dbHealth.healthy
+            ? "✅ Database"
+            : "⚠️ Static data only",
+        payments:
+          serviceStatus.services.stripe.status === "working"
+            ? "✅ Stripe available"
+            : "⚠️ Stripe not configured",
+        emails:
+          serviceStatus.services.sendgrid.status === "working"
+            ? "✅ SendGrid available"
+            : "⚠️ SendGrid not configured",
+        flights:
+          serviceStatus.services.amadeus.status === "working"
+            ? "✅ Amadeus available"
+            : "⚠️ Amadeus not configured",
+      },
+      adminCredentials: {
+        email: "onboard@admin.com",
+        password: "onboardadmin",
+      },
+    });
+  });
+
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
@@ -147,10 +230,14 @@ export function createServer() {
 
   // Determine if we should use Supabase or fallback routes
   const useSupabase =
-    process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const authMiddleware = useSupabase
-    ? supabaseAuthMiddleware
-    : authenticateUser;
+    process.env.SUPABASE_URL &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY &&
+    !process.env.SUPABASE_URL.includes("placeholder") &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key" &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY !== "your-service-role-key";
+
+  // Use hybrid auth middleware that works with or without Supabase
+  const authMiddleware = hybridAuthMiddleware;
 
   console.log("🔧 Auth system configuration:");
   console.log("  SUPABASE_URL:", !!process.env.SUPABASE_URL);
@@ -161,19 +248,28 @@ export function createServer() {
   console.log("  useSupabase:", useSupabase);
   console.log("  Auth routes: Using", useSupabase ? "Supabase" : "Fallback");
 
-  // Authentication routes (public)
+  // Initialize database if using Supabase
   if (useSupabase) {
-    console.log("📋 Setting up Supabase auth routes");
-    app.post("/api/auth/register", handleSupabaseRegister);
-    app.post("/api/auth/login", handleSupabaseLogin);
-    app.get("/api/auth/validate", handleSupabaseValidateToken);
-  } else {
-    console.log("📋 Setting up fallback auth routes");
-    // Fallback to mock auth for development
-    app.post("/api/auth/register", handleRegister);
-    app.post("/api/auth/login", handleLogin);
-    app.get("/api/auth/validate", handleValidateToken);
+    DatabaseInitializer.initialize()
+      .then((success) => {
+        if (success) {
+          console.log("✅ Database initialization completed");
+        } else {
+          console.log(
+            "⚠️ Database initialization failed, some features may not work",
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("❌ Database initialization error:", error);
+      });
   }
+
+  // Authentication routes (public) - using hybrid system
+  console.log("📋 Setting up hybrid auth routes (Supabase + fallback)");
+  app.post("/api/auth/register", handleHybridRegister);
+  app.post("/api/auth/login", handleHybridLogin);
+  app.get("/api/auth/validate", handleHybridValidateToken);
 
   // User management routes (authenticated)
   app.get("/api/user/dashboard", authMiddleware, handleGetDashboard);
@@ -181,35 +277,27 @@ export function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Booking routes (authenticated)
-  if (useSupabase) {
-    app.post("/api/bookings", authMiddleware, handleCreateSupabaseBooking);
-    app.get("/api/bookings", authMiddleware, handleGetSupabaseUserBookings);
-    app.get(
-      "/api/bookings/:bookingId",
-      authMiddleware,
-      handleGetSupabaseBooking,
-    );
-    app.put(
-      "/api/bookings/:bookingId/cancel",
-      authMiddleware,
-      handleCancelSupabaseBooking,
-    );
-  } else {
-    // Fallback to mock bookings for development
-    app.post("/api/bookings", authMiddleware, handleCreateBooking);
-    app.get("/api/bookings", authMiddleware, handleGetUserBookings);
-    app.get(
-      "/api/bookings/:bookingId",
-      authMiddleware,
-      handleGetBookingDetails,
-    );
-    app.put(
-      "/api/bookings/:bookingId/cancel",
-      authMiddleware,
-      handleCancelBooking,
-    );
-  }
+  // Booking routes (authenticated) - prefer Supabase but fallback when needed
+  app.post(
+    "/api/bookings",
+    authMiddleware,
+    useSupabase ? handleCreateSupabaseBooking : handleCreateBooking,
+  );
+  app.get(
+    "/api/bookings",
+    authMiddleware,
+    useSupabase ? handleGetSupabaseUserBookings : handleGetUserBookings,
+  );
+  app.get(
+    "/api/bookings/:bookingId",
+    authMiddleware,
+    useSupabase ? handleGetSupabaseBooking : handleGetBookingDetails,
+  );
+  app.put(
+    "/api/bookings/:bookingId/cancel",
+    authMiddleware,
+    useSupabase ? handleCancelSupabaseBooking : handleCancelBooking,
+  );
 
   // Payment routes (authenticated)
   app.post("/api/payments", authenticateUser, handleProcessPayment);
@@ -300,25 +388,16 @@ export function createServer() {
   // Admin routes (with authentication)
   app.get("/api/admin/stats", authMiddleware, handleGetAdminStats);
 
-  if (useSupabase) {
-    app.get(
-      "/api/admin/bookings",
-      authMiddleware,
-      handleGetAllSupabaseBookings,
-    );
-    app.put(
-      "/api/admin/bookings/:bookingId/status",
-      authMiddleware,
-      handleUpdateSupabaseBookingStatus,
-    );
-  } else {
-    app.get("/api/admin/bookings", authMiddleware, handleGetAllBookings);
-    app.put(
-      "/api/admin/bookings/:bookingId/status",
-      authMiddleware,
-      handleUpdateBookingStatus,
-    );
-  }
+  app.get(
+    "/api/admin/bookings",
+    authMiddleware,
+    useSupabase ? handleGetAllSupabaseBookings : handleGetAllBookings,
+  );
+  app.put(
+    "/api/admin/bookings/:bookingId/status",
+    authMiddleware,
+    useSupabase ? handleUpdateSupabaseBookingStatus : handleUpdateBookingStatus,
+  );
 
   app.get("/api/admin/payments", authMiddleware, handleGetAllTransactions);
   app.post(

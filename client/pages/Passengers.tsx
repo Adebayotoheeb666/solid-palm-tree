@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, ArrowRight, Mail, AlertCircle, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useFormValidation, CommonValidationRules } from "../hooks/useFormValidation";
+import {
+  useFormValidation,
+  CommonValidationRules,
+} from "../hooks/useFormValidation";
 import { Passenger } from "@shared/api";
 
 interface PassengersProps {
@@ -11,11 +14,16 @@ interface PassengersProps {
   onNavigate: (step: any) => void;
 }
 
-export default function Passengers({ onNext, onBack, currentStep, onNavigate }: PassengersProps) {
+export default function Passengers({
+  onNext,
+  onBack,
+  currentStep,
+  onNavigate,
+}: PassengersProps) {
   const navigate = useNavigate();
   const [contactEmail, setContactEmail] = useState("");
   const [passengers, setPassengers] = useState<Passenger[]>([
-    { title: "Mr", firstName: "", lastName: "", email: "" }
+    { title: "Mr", firstName: "", lastName: "", email: "" },
   ]);
   const [loading, setLoading] = useState(false);
   const [routeData, setRouteData] = useState<any>(null);
@@ -23,18 +31,20 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
   // Load route data from previous step and restore passenger data
   useEffect(() => {
     // Load route data
-    const savedRoute = localStorage.getItem('selectedRoute') || localStorage.getItem('bookingRoute');
+    const savedRoute =
+      localStorage.getItem("selectedRoute") ||
+      localStorage.getItem("bookingRoute");
     if (savedRoute) {
       try {
         setRouteData(JSON.parse(savedRoute));
       } catch (error) {
-        console.error('Error parsing route data:', error);
+        console.error("Error parsing route data:", error);
       }
     }
 
     // Restore passenger data
-    const savedPassengers = localStorage.getItem('bookingPassengers');
-    const savedContactEmail = localStorage.getItem('bookingContactEmail');
+    const savedPassengers = localStorage.getItem("bookingPassengers");
+    const savedContactEmail = localStorage.getItem("bookingContactEmail");
 
     if (savedPassengers) {
       try {
@@ -43,7 +53,7 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
           setPassengers(passengerData);
         }
       } catch (error) {
-        console.error('Error parsing passenger data:', error);
+        console.error("Error parsing passenger data:", error);
       }
     }
 
@@ -55,14 +65,14 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
   // Save passenger data whenever it changes
   useEffect(() => {
     if (passengers.length > 0 && passengers[0].firstName) {
-      localStorage.setItem('bookingPassengers', JSON.stringify(passengers));
+      localStorage.setItem("bookingPassengers", JSON.stringify(passengers));
     }
   }, [passengers]);
 
   // Save contact email whenever it changes
   useEffect(() => {
     if (contactEmail) {
-      localStorage.setItem('bookingContactEmail', contactEmail);
+      localStorage.setItem("bookingContactEmail", contactEmail);
     }
   }, [contactEmail]);
 
@@ -91,8 +101,12 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
   } = useFormValidation(getValidationRules());
 
   const addPassenger = () => {
-    if (passengers.length < 9) { // Limit to 9 passengers
-      setPassengers([...passengers, { title: "Mr", firstName: "", lastName: "", email: "" }]);
+    if (passengers.length < 9) {
+      // Limit to 9 passengers
+      setPassengers([
+        ...passengers,
+        { title: "Mr", firstName: "", lastName: "", email: "" },
+      ]);
     }
   };
 
@@ -103,7 +117,11 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
     }
   };
 
-  const updatePassenger = (index: number, field: keyof Passenger, value: string) => {
+  const updatePassenger = (
+    index: number,
+    field: keyof Passenger,
+    value: string,
+  ) => {
     const newPassengers = [...passengers];
     newPassengers[index] = { ...newPassengers[index], [field]: value };
     setPassengers(newPassengers);
@@ -121,11 +139,11 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
 
   const handleContactEmailChange = (value: string) => {
     setContactEmail(value);
-    clearFieldError('contactEmail');
-    setFieldTouched('contactEmail', true);
+    clearFieldError("contactEmail");
+    setFieldTouched("contactEmail", true);
 
     setTimeout(() => {
-      validateSingleField('contactEmail', value);
+      validateSingleField("contactEmail", value);
     }, 100);
   };
 
@@ -139,7 +157,7 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
     });
 
     // Set all fields as touched
-    setFieldTouched('contactEmail', true);
+    setFieldTouched("contactEmail", true);
     passengers.forEach((_, index) => {
       setFieldTouched(`passenger_${index}_firstName`, true);
       setFieldTouched(`passenger_${index}_lastName`, true);
@@ -156,31 +174,34 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
 
     try {
       // Prepare clean passenger data
-      const cleanPassengers = passengers.map(p => ({
+      const cleanPassengers = passengers.map((p) => ({
         title: p.title,
         firstName: p.firstName.trim(),
         lastName: p.lastName.trim(),
-        email: p.email?.trim() || contactEmail.trim()
+        email: p.email?.trim() || contactEmail.trim(),
       }));
 
       // Save passenger data to multiple keys for compatibility
       const passengerData = {
         contactEmail: contactEmail.trim(),
-        passengers: cleanPassengers
+        passengers: cleanPassengers,
       };
 
-      localStorage.setItem('passengerData', JSON.stringify(passengerData));
-      localStorage.setItem('bookingPassengers', JSON.stringify(cleanPassengers));
-      localStorage.setItem('bookingContactEmail', contactEmail.trim());
+      localStorage.setItem("passengerData", JSON.stringify(passengerData));
+      localStorage.setItem(
+        "bookingPassengers",
+        JSON.stringify(cleanPassengers),
+      );
+      localStorage.setItem("bookingContactEmail", contactEmail.trim());
 
-      console.log('Passenger data saved:', passengerData);
+      console.log("Passenger data saved:", passengerData);
 
       // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       onNext();
     } catch (error) {
-      console.error('Error saving passenger data:', error);
+      console.error("Error saving passenger data:", error);
       // Still allow progression for demo purposes
       onNext();
     } finally {
@@ -189,22 +210,7 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
   };
 
   return (
-
-
     <div className="min-h-screen bg-ticket-primary text-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-          <img 
-            src="/onboard/result.png" 
-            alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
-            loading="eager"
-            onClick={() => navigate("/")}
-          />
-        </div>
-      </header>
-
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
         <div className="flex flex-col sm:flex-row gap-8 sm:gap-16 mb-12">
@@ -243,8 +249,10 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
           <div className="space-y-8">
             {/* Passenger Section */}
             <div>
-              <h2 className="text-2xl font-bold mb-8 text-[#F6F6FF]">Passenger</h2>
-              
+              <h2 className="text-2xl font-bold mb-8 text-[#F6F6FF]">
+                Passenger
+              </h2>
+
               {/* Contact Email */}
               <div className="mb-8">
                 <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
@@ -258,16 +266,18 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                       placeholder="Enter contact email"
                       value={contactEmail}
                       onChange={(e) => handleContactEmailChange(e.target.value)}
-                      onBlur={() => setFieldTouched('contactEmail', true)}
+                      onBlur={() => setFieldTouched("contactEmail", true)}
                       className={`w-full bg-transparent pl-12 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none ${
-                        hasFieldError('contactEmail') ? 'border border-red-500 rounded' : ''
+                        hasFieldError("contactEmail")
+                          ? "border border-red-500 rounded"
+                          : ""
                       }`}
                     />
                   </div>
-                  {hasFieldError('contactEmail') && (
+                  {hasFieldError("contactEmail") && (
                     <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
                       <AlertCircle className="w-4 h-4" />
-                      <span>{getFieldError('contactEmail')}</span>
+                      <span>{getFieldError("contactEmail")}</span>
                     </div>
                   )}
                 </div>
@@ -276,7 +286,10 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               {/* Passengers */}
               <div className="space-y-6">
                 {passengers.map((passenger, index) => (
-                  <div key={index} className="bg-ticket-light/20 rounded-lg p-4 space-y-4">
+                  <div
+                    key={index}
+                    className="bg-ticket-light/20 rounded-lg p-4 space-y-4"
+                  >
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-[#F6F6FF]">
                         Passenger {index + 1}
@@ -300,7 +313,9 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                         {["Mr", "Ms", "Mrs"].map((title) => (
                           <button
                             key={title}
-                            onClick={() => updatePassenger(index, 'title', title)}
+                            onClick={() =>
+                              updatePassenger(index, "title", title)
+                            }
                             className={`h-12 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center ${
                               passenger.title === title
                                 ? "bg-ticket-dark text-white"
@@ -314,7 +329,9 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                       {hasFieldError(`passenger_${index}_title`) && (
                         <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
                           <AlertCircle className="w-4 h-4" />
-                          <span>{getFieldError(`passenger_${index}_title`)}</span>
+                          <span>
+                            {getFieldError(`passenger_${index}_title`)}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -330,17 +347,32 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                             type="text"
                             placeholder="First Name"
                             value={passenger.firstName}
-                            onChange={(e) => updatePassenger(index, 'firstName', e.target.value)}
-                            onBlur={() => setFieldTouched(`passenger_${index}_firstName`, true)}
+                            onChange={(e) =>
+                              updatePassenger(
+                                index,
+                                "firstName",
+                                e.target.value,
+                              )
+                            }
+                            onBlur={() =>
+                              setFieldTouched(
+                                `passenger_${index}_firstName`,
+                                true,
+                              )
+                            }
                             className={`w-full bg-transparent text-white placeholder-gray-400 focus:outline-none ${
-                              hasFieldError(`passenger_${index}_firstName`) ? 'border border-red-500 rounded' : ''
+                              hasFieldError(`passenger_${index}_firstName`)
+                                ? "border border-red-500 rounded"
+                                : ""
                             }`}
                           />
                         </div>
                         {hasFieldError(`passenger_${index}_firstName`) && (
                           <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
                             <AlertCircle className="w-4 h-4" />
-                            <span>{getFieldError(`passenger_${index}_firstName`)}</span>
+                            <span>
+                              {getFieldError(`passenger_${index}_firstName`)}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -354,17 +386,28 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                             type="text"
                             placeholder="Last Name"
                             value={passenger.lastName}
-                            onChange={(e) => updatePassenger(index, 'lastName', e.target.value)}
-                            onBlur={() => setFieldTouched(`passenger_${index}_lastName`, true)}
+                            onChange={(e) =>
+                              updatePassenger(index, "lastName", e.target.value)
+                            }
+                            onBlur={() =>
+                              setFieldTouched(
+                                `passenger_${index}_lastName`,
+                                true,
+                              )
+                            }
                             className={`w-full bg-transparent text-white placeholder-gray-400 focus:outline-none ${
-                              hasFieldError(`passenger_${index}_lastName`) ? 'border border-red-500 rounded' : ''
+                              hasFieldError(`passenger_${index}_lastName`)
+                                ? "border border-red-500 rounded"
+                                : ""
                             }`}
                           />
                         </div>
                         {hasFieldError(`passenger_${index}_lastName`) && (
                           <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
                             <AlertCircle className="w-4 h-4" />
-                            <span>{getFieldError(`passenger_${index}_lastName`)}</span>
+                            <span>
+                              {getFieldError(`passenger_${index}_lastName`)}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -420,14 +463,22 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-black">(RFD)</div>
-                    <div className="text-xs font-semibold text-ticket-gray">Chicago Rockford</div>
-                    <div className="text-xs text-ticket-gray-light">20/05/205</div>
+                    <div className="text-xs font-semibold text-ticket-gray">
+                      Chicago Rockford
+                    </div>
+                    <div className="text-xs text-ticket-gray-light">
+                      20/05/205
+                    </div>
                   </div>
                   <ArrowRight className="w-8 h-8 text-black" />
                   <div className="text-center">
                     <div className="text-3xl font-bold text-black">(ORY)</div>
-                    <div className="text-xs font-semibold text-ticket-gray">Paris Orly</div>
-                    <div className="text-xs text-ticket-gray-light">30/05/205</div>
+                    <div className="text-xs font-semibold text-ticket-gray">
+                      Paris Orly
+                    </div>
+                    <div className="text-xs text-ticket-gray-light">
+                      30/05/205
+                    </div>
                   </div>
                 </div>
               </div>
@@ -435,29 +486,40 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               {/* Passenger Info */}
               <div className="mb-6">
                 <div className="text-sm font-semibold text-ticket-text mb-1">
-                  Passenger{passengers.length > 1 ? 's' : ''} / {passengers.length}
+                  Passenger{passengers.length > 1 ? "s" : ""} /{" "}
+                  {passengers.length}
                 </div>
                 {passengers.slice(0, 2).map((passenger, index) => (
                   <div key={index} className="mb-4 last:mb-0">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="text-ticket-text font-semibold">Passenger {index + 1}</div>
+                        <div className="text-ticket-text font-semibold">
+                          Passenger {index + 1}
+                        </div>
                         <div className="font-bold">
-                          {passenger.title || "Mr"}.{passenger.firstName || "First"} {passenger.lastName || "Last"}
+                          {passenger.title || "Mr"}.
+                          {passenger.firstName || "First"}{" "}
+                          {passenger.lastName || "Last"}
                         </div>
                       </div>
                       <div>
-                        <div className="text-ticket-text font-semibold">Flight</div>
+                        <div className="text-ticket-text font-semibold">
+                          Flight
+                        </div>
                         <div className="font-bold">$10 USD</div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 text-sm mt-2">
                       <div>
-                        <div className="text-ticket-text font-semibold">Seat</div>
+                        <div className="text-ticket-text font-semibold">
+                          Seat
+                        </div>
                         <div className="font-bold">{20 + index}C</div>
                       </div>
                       <div>
-                        <div className="text-ticket-text font-semibold">Departure</div>
+                        <div className="text-ticket-text font-semibold">
+                          Departure
+                        </div>
                         <div className="font-bold">7:30 AM</div>
                       </div>
                     </div>
@@ -465,7 +527,8 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
                 ))}
                 {passengers.length > 2 && (
                   <div className="text-xs text-ticket-gray-light mt-2">
-                    + {passengers.length - 2} more passenger{passengers.length - 2 > 1 ? 's' : ''}
+                    + {passengers.length - 2} more passenger
+                    {passengers.length - 2 > 1 ? "s" : ""}
                   </div>
                 )}
               </div>
@@ -474,11 +537,11 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
               <div className="flex justify-center">
                 <div className="flex gap-1">
                   {[...Array(15)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="w-1 bg-black" 
-                      style={{ 
-                        height: `${Math.random() * 20 + 10}px` 
+                    <div
+                      key={i}
+                      className="w-1 bg-black"
+                      style={{
+                        height: `${Math.random() * 20 + 10}px`,
                       }}
                     ></div>
                   ))}
@@ -496,48 +559,88 @@ export default function Passengers({ onNext, onBack, currentStep, onNavigate }: 
             {/* Logo and Copyright */}
             <div className="space-y-4">
               <div>
-                <img 
-                  src="/onboard/result.png" 
-                  alt="OnboardTicket Logo" 
+                <img
+                  src="/onboard/result.png"
+                  alt="OnboardTicket Logo"
                   className="w-40 h-10 mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
-                <div className="text-base font-semibold text-white">Onboardticket.com</div>
-                <div className="text-xs opacity-80 mt-2 text-white">© 2025 — Copyright</div>
+                <div className="text-base font-semibold text-white">
+                  Onboardticket.com
+                </div>
+                <div className="text-xs opacity-80 mt-2 text-white">
+                  © 2025 — Copyright
+                </div>
               </div>
               <p className="text-xs opacity-80 leading-relaxed text-white">
-                OnboardTicket is committed to upholding the highest standards in compliance with international civil aviation regulations and ethical booking practices. This includes, but is not limited to, strict avoidance of misuse of booking classes, fraudulent activities, duplicate, speculative, or fictitious reservations. Users who engage in repeated cancellations without legitimate intent will be subject to monitoring, and may face usage restrictions or permanent bans from our platform.
+                OnboardTicket is committed to upholding the highest standards in
+                compliance with international civil aviation regulations and
+                ethical booking practices. This includes, but is not limited to,
+                strict avoidance of misuse of booking classes, fraudulent
+                activities, duplicate, speculative, or fictitious reservations.
+                Users who engage in repeated cancellations without legitimate
+                intent will be subject to monitoring, and may face usage
+                restrictions or permanent bans from our platform.
               </p>
             </div>
             {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 About
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-white">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/about")}>Who We are ?</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/about")}
+                >
+                  Who We are ?
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/privacy-policy")}
+                >
+                  Privacy Policy
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/terms-conditions")}
+                >
+                  Terms & Conditions
+                </li>
               </ul>
             </div>
             {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Get Help
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-white">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/faq")}>FAQs</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/payment")}>Payment</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/faq")}
+                >
+                  FAQs
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/payment")}
+                >
+                  Payment
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/contact")}
+                >
+                  Contact Support 24/7
+                </li>
               </ul>
             </div>
             {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Follow US
               </h4>
-              
 
               <div className="space-y-1 md:space-y-2">
                 <h5 className="text-base md:text-lg font-bold text-white">

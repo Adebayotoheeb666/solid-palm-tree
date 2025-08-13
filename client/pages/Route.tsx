@@ -15,131 +15,6 @@ interface RouteProps {
   onNavigate: (step: any) => void;
 }
 
-// Default airports (fallback if API fails)
-const defaultAirports: Airport[] = [
-  {
-    code: "RFD",
-    name: "Chicago Rockford International Airport",
-    city: "Chicago",
-    country: "USA",
-  },
-  { code: "ORY", name: "Paris Orly Airport", city: "Paris", country: "France" },
-  {
-    code: "LHR",
-    name: "London Heathrow Airport",
-    city: "London",
-    country: "UK",
-  },
-  {
-    code: "JFK",
-    name: "John F. Kennedy International Airport",
-    city: "New York",
-    country: "USA",
-  },
-  {
-    code: "LAX",
-    name: "Los Angeles International Airport",
-    city: "Los Angeles",
-    country: "USA",
-  },
-  {
-    code: "DXB",
-    name: "Dubai International Airport",
-    city: "Dubai",
-    country: "UAE",
-  },
-  {
-    code: "SIN",
-    name: "Singapore Changi Airport",
-    city: "Singapore",
-    country: "Singapore",
-  },
-  {
-    code: "NRT",
-    name: "Narita International Airport",
-    city: "Tokyo",
-    country: "Japan",
-  },
-  {
-    code: "FRA",
-    name: "Frankfurt Airport",
-    city: "Frankfurt",
-    country: "Germany",
-  },
-  {
-    code: "AMS",
-    name: "Amsterdam Airport Schiphol",
-    city: "Amsterdam",
-    country: "Netherlands",
-  },
-  {
-    code: "CDG",
-    name: "Charles de Gaulle Airport",
-    city: "Paris",
-    country: "France",
-  },
-  {
-    code: "MIA",
-    name: "Miami International Airport",
-    city: "Miami",
-    country: "USA",
-  },
-  {
-    code: "BOS",
-    name: "Logan International Airport",
-    city: "Boston",
-    country: "USA",
-  },
-  {
-    code: "ATL",
-    name: "Hartsfield-Jackson Atlanta International Airport",
-    city: "Atlanta",
-    country: "USA",
-  },
-  {
-    code: "ORD",
-    name: "Chicago O'Hare International Airport",
-    city: "Chicago",
-    country: "USA",
-  },
-  {
-    code: "DEN",
-    name: "Denver International Airport",
-    city: "Denver",
-    country: "USA",
-  },
-  {
-    code: "SEA",
-    name: "Seattle-Tacoma International Airport",
-    city: "Seattle",
-    country: "USA",
-  },
-  {
-    code: "SFO",
-    name: "San Francisco International Airport",
-    city: "San Francisco",
-    country: "USA",
-  },
-  {
-    code: "LAS",
-    name: "Harry Reid International Airport",
-    city: "Las Vegas",
-    country: "USA",
-  },
-  {
-    code: "YYZ",
-    name: "Toronto Pearson International Airport",
-    city: "Toronto",
-    country: "Canada",
-  },
-  {
-    code: "SYD",
-    name: "Sydney Kingsford Smith Airport",
-    city: "Sydney",
-    country: "Australia",
-  },
-];
-
 export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
   const navigate = useNavigate();
   const [tripType, setTripType] = useState<"oneway" | "roundtrip">("oneway");
@@ -149,7 +24,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
   const [returnDate, setReturnDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchingFlights, setSearchingFlights] = useState(false);
-  const [airports, setAirports] = useState<Airport[]>(defaultAirports);
+  const [airports, setAirports] = useState<Airport[]>([]);
   const [loadingAirports, setLoadingAirports] = useState(true);
 
   // Form validation
@@ -197,10 +72,13 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
         const { data, error } = await supabaseHelpers.getAirports();
         if (!error && data && data.length > 0) {
           setAirports(data);
+        } else {
+          console.log("No airports found in database");
+          setAirports([]);
         }
       } catch (error) {
-        console.log("Using default airports due to API error:", error);
-        // Keep default airports
+        console.log("Failed to load airports from database:", error);
+        setAirports([]);
       } finally {
         setLoadingAirports(false);
       }
@@ -394,22 +272,6 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
 
   return (
     <div className="min-h-screen bg-ticket-primary text-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div
-          className="flex items-center cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <img
-            src="/onboard/result.png"
-            alt="OnboardTicket Logo"
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
-            loading="eager"
-            onClick={() => navigate("/")}
-          />
-        </div>
-      </header>
-
       <div className="px-4 sm:px-8 lg:px-36">
         {/* Navigation Tabs */}
         <div className="flex flex-col sm:flex-row gap-8 sm:gap-16 mb-12">
@@ -491,8 +353,13 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
+                      disabled={loadingAirports}
                     >
-                      <option value="">Select departure airport</option>
+                      <option value="">
+                        {loadingAirports
+                          ? "Loading airports..."
+                          : "Select departure airport"}
+                      </option>
                       {airports.map((airport) => (
                         <option key={airport.code} value={airport.code}>
                           {airport.city} ({airport.code}) - {airport.name}
@@ -524,8 +391,13 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
+                      disabled={loadingAirports}
                     >
-                      <option value="">Select destination airport</option>
+                      <option value="">
+                        {loadingAirports
+                          ? "Loading airports..."
+                          : "Select destination airport"}
+                      </option>
                       {airports
                         .filter((airport) => airport.code !== fromLocation)
                         .map((airport) => (
@@ -668,11 +540,11 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-black">
-                      ({fromLocation || "RFD"})
+                      ({fromLocation || "---"})
                     </div>
                     <div className="text-xs font-semibold text-ticket-gray">
                       {getSelectedAirport(fromLocation)?.city ||
-                        "Chicago Rockford"}
+                        "Select departure"}
                     </div>
                     <div className="text-xs text-ticket-gray-light">
                       {departureDate
@@ -683,10 +555,11 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                   <ArrowRight className="w-8 h-8 text-black" />
                   <div className="text-center">
                     <div className="text-3xl font-bold text-black">
-                      ({toLocation || "ORY"})
+                      ({toLocation || "---"})
                     </div>
                     <div className="text-xs font-semibold text-ticket-gray">
-                      {getSelectedAirport(toLocation)?.city || "Paris Orly"}
+                      {getSelectedAirport(toLocation)?.city ||
+                        "Select destination"}
                     </div>
                     <div className="text-xs text-ticket-gray-light">
                       {tripType === "roundtrip" && returnDate
@@ -788,7 +661,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
               </p>
             </div>
             {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 About
               </h4>
@@ -814,7 +687,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
               </ul>
             </div>
             {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Get Help
               </h4>
@@ -840,7 +713,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
               </ul>
             </div>
             {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-white">
                 Follow US
               </h4>
