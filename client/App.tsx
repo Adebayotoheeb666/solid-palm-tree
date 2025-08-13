@@ -35,6 +35,7 @@ const SupportTickets = React.lazy(() => import("./pages/SupportTickets"));
 const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
 const PaymentSuccess = React.lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCancel = React.lazy(() => import("./pages/PaymentCancel"));
+const CacheReset = React.lazy(() => import("./pages/CacheReset"));
 
 const queryClient = new QueryClient();
 
