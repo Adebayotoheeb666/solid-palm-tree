@@ -224,8 +224,27 @@ export function createServer() {
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
+  // Add health check endpoints for Digital Ocean
+  app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  app.get("/api/health", (req, res) => {
+    const health = {
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || "development",
+      services: {
+        server: "healthy",
+        database: useSupabase ? "configured" : "fallback"
+      }
+    };
+    res.status(200).json(health);
+  });
+
   // Add database health check routes
-  app.use("/api/health", dbHealthRouter);
+  app.use("/api/health-detailed", dbHealthRouter);
   app.use("/api/db", dbTestRouter);
 
   // Determine if we should use Supabase or fallback routes
