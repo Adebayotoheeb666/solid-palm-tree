@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, Plane, ChevronDown, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "../components/DatePicker";
+import SearchableSelect from "../components/ui/SearchableSelect";
 import {
   useFormValidation,
   CommonValidationRules,
@@ -339,80 +340,64 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
             <div>
               <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Route</h3>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-6 mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 relative">
-                    <select
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
+                      From (Departure Airport)
+                    </label>
+                    <SearchableSelect
+                      options={airports.map((airport) => ({
+                        value: airport.code,
+                        label: `${airport.city} (${airport.code})`,
+                        description: airport.name,
+                      }))}
                       value={fromLocation}
-                      onChange={(e) =>
-                        handleLocationChange("fromLocation", e.target.value)
+                      onChange={(value) =>
+                        handleLocationChange("fromLocation", value)
                       }
                       onBlur={() => setFieldTouched("fromLocation", true)}
-                      className={`w-full bg-white border rounded p-4 text-gray-600 appearance-none pr-10 ${
-                        hasFieldError("fromLocation")
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      disabled={loadingAirports}
-                    >
-                      <option value="">
-                        {loadingAirports
+                      placeholder={
+                        loadingAirports
                           ? "Loading airports..."
-                          : "Select departure airport"}
-                      </option>
-                      {airports.map((airport) => (
-                        <option key={airport.code} value={airport.code}>
-                          {airport.city} ({airport.code}) - {airport.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none" />
-                    {hasFieldError("fromLocation") && (
-                      <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>{getFieldError("fromLocation")}</span>
-                      </div>
-                    )}
+                          : "Select departure airport"
+                      }
+                      disabled={loadingAirports}
+                      error={hasFieldError("fromLocation")}
+                      errorMessage={getFieldError("fromLocation")}
+                    />
                   </div>
 
-                  <div className="bg-ticket-secondary rounded p-2">
-                    <Plane className="w-4 h-4 text-white" />
+                  <div className="bg-ticket-secondary rounded p-3 mt-6">
+                    <Plane className="w-5 h-5 text-white" />
                   </div>
 
-                  <div className="flex-1 relative">
-                    <select
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
+                      To (Destination Airport)
+                    </label>
+                    <SearchableSelect
+                      options={airports
+                        .filter((airport) => airport.code !== fromLocation)
+                        .map((airport) => ({
+                          value: airport.code,
+                          label: `${airport.city} (${airport.code})`,
+                          description: airport.name,
+                        }))}
                       value={toLocation}
-                      onChange={(e) =>
-                        handleLocationChange("toLocation", e.target.value)
+                      onChange={(value) =>
+                        handleLocationChange("toLocation", value)
                       }
                       onBlur={() => setFieldTouched("toLocation", true)}
-                      className={`w-full bg-white border rounded p-4 text-gray-600 appearance-none pr-10 ${
-                        hasFieldError("toLocation")
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      disabled={loadingAirports}
-                    >
-                      <option value="">
-                        {loadingAirports
+                      placeholder={
+                        loadingAirports
                           ? "Loading airports..."
-                          : "Select destination airport"}
-                      </option>
-                      {airports
-                        .filter((airport) => airport.code !== fromLocation)
-                        .map((airport) => (
-                          <option key={airport.code} value={airport.code}>
-                            {airport.city} ({airport.code}) - {airport.name}
-                          </option>
-                        ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none" />
-                    {hasFieldError("toLocation") && (
-                      <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>{getFieldError("toLocation")}</span>
-                      </div>
-                    )}
+                          : "Select destination airport"
+                      }
+                      disabled={loadingAirports}
+                      error={hasFieldError("toLocation")}
+                      errorMessage={getFieldError("toLocation")}
+                    />
                   </div>
                 </div>
               </div>
@@ -420,11 +405,13 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
 
             {/* Date Selection */}
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Date</h3>
+              <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">
+                Travel Dates
+              </h3>
 
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex-1 space-y-2">
+              <div className="space-y-6">
+                <div className="flex gap-6">
+                  <div className="flex-1 space-y-3">
                     <label className="block text-sm font-semibold text-[#F6F6FF]">
                       Departure Date
                     </label>
@@ -436,14 +423,14 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                       }
                       onBlur={() => setFieldTouched("departureDate", true)}
                       min={new Date().toISOString().split("T")[0]}
-                      className={`w-full bg-white border rounded p-4 text-gray-600 ${
+                      className={`w-full bg-white border rounded-lg p-4 text-gray-600 text-base ${
                         hasFieldError("departureDate")
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
                     />
                     {hasFieldError("departureDate") && (
-                      <div className="flex items-center gap-1 text-red-400 text-sm">
+                      <div className="flex items-center gap-2 text-red-400 text-sm">
                         <AlertCircle className="w-4 h-4" />
                         <span>{getFieldError("departureDate")}</span>
                       </div>
@@ -452,16 +439,16 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
 
                   {tripType === "roundtrip" && (
                     <>
-                      <div className="bg-ticket-secondary rounded p-2 flex items-center justify-center mt-8">
+                      <div className="bg-ticket-secondary rounded-lg p-3 flex items-center justify-center mt-8">
                         <svg
-                          className="w-4 h-4 text-white"
+                          className="w-5 h-5 text-white"
                           viewBox="0 0 19 15"
                           fill="currentColor"
                         >
                           <path d="M19 4.14235V15.0009H8.12981C7.78726 14.8159 7.65846 14.5352 7.6813 14.1517C7.70596 13.7347 7.68587 13.3142 7.68678 12.8963C7.68861 12.215 7.85394 12.0525 8.54817 12.0516C10.6948 12.0507 12.8405 12.0534 14.9872 12.0498C15.6924 12.0489 15.9874 11.7601 15.9901 11.0697C15.9947 9.93352 15.992 8.7973 15.9911 7.66019C15.9911 6.74057 15.7353 6.48788 14.7999 6.48697C12.1518 6.48607 9.50274 6.48697 6.85462 6.48697C6.70846 6.48697 6.56231 6.48697 6.38053 6.48697C6.38053 7.47338 6.39058 8.39841 6.37231 9.32345C6.36774 9.52921 6.26178 9.73317 6.2024 9.93713C6.00692 9.84688 5.78221 9.79183 5.6187 9.66187C3.89957 8.30275 2.18774 6.9355 0.480481 5.56194C0.297788 5.41484 0.158942 5.21449 0 5.03941C0 4.97984 0 4.91938 0 4.85982C0.176298 4.68022 0.338894 4.48439 0.531635 4.32284C0.97101 3.95554 1.425 3.60448 1.87351 3.2471C3.14687 2.23001 4.41659 1.20931 5.69909 0.203056C5.83793 0.0938572 6.04163 0.0658805 6.21519 0C6.27 0.175982 6.36683 0.351062 6.37322 0.528849C6.3924 1.15517 6.38053 1.78238 6.38053 2.4096C6.38053 2.79225 6.38053 3.174 6.38053 3.59274C6.62351 3.59274 6.80346 3.59274 6.98341 3.59274C10.7067 3.59274 14.4309 3.59726 18.1541 3.58643C18.5926 3.58552 18.8822 3.71638 19 4.14235Z" />
                         </svg>
                       </div>
-                      <div className="flex-1 space-y-2">
+                      <div className="flex-1 space-y-3">
                         <label className="block text-sm font-semibold text-[#F6F6FF]">
                           Return Date
                         </label>
@@ -476,14 +463,14 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                             departureDate ||
                             new Date().toISOString().split("T")[0]
                           }
-                          className={`w-full bg-white border rounded p-4 text-gray-600 ${
+                          className={`w-full bg-white border rounded-lg p-4 text-gray-600 text-base ${
                             hasFieldError("returnDate")
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
                         />
                         {hasFieldError("returnDate") && (
-                          <div className="flex items-center gap-1 text-red-400 text-sm">
+                          <div className="flex items-center gap-2 text-red-400 text-sm">
                             <AlertCircle className="w-4 h-4" />
                             <span>{getFieldError("returnDate")}</span>
                           </div>

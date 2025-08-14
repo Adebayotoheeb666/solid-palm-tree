@@ -20,7 +20,14 @@
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
     "analyze": "node analyze-bundle.js",
-    "build:analyze": "npm run build && npm run analyze"
+    "build:analyze": "npm run build && npm run analyze",
+    "docker:build": "docker build -t onboardticket-app .",
+    "docker:run": "docker run -p 3000:3000 onboardticket-app",
+    "docker:dev": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "deploy:do": "doctl apps create --spec deploy/digital-ocean-app.yaml",
+    "deploy:do-update": "doctl apps update --spec deploy/digital-ocean-app.yaml"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.5",
