@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
           <img
             src="/onboard/result.png"
             alt="OnboardTicket Logo"
-            className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
+            className="h-16 md:h-28 w-auto max-w-[250px] md:max-w-[380px] object-contain cursor-pointer"
             loading="eager"
             onClick={handleLogoClick}
           />
