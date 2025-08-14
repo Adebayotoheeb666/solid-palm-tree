@@ -257,6 +257,16 @@ export const handleUpdateProfile: RequestHandler = async (req, res) => {
         .json({ success: false, message: "Missing required fields" });
     }
 
+    // Check if user ID is a valid UUID (Supabase) or fallback system
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id);
+
+    if (!isValidUUID) {
+      // User is from fallback system, profile updates not supported
+      return res
+        .status(400)
+        .json({ success: false, message: "Profile updates not available in fallback mode" });
+    }
+
     // Update user in database
     const { data: updatedUser, error } =
       await supabaseServerHelpers.getUserById(user.id);
