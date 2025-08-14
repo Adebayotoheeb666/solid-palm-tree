@@ -181,6 +181,16 @@ export const handleGetBooking: RequestHandler = async (req, res) => {
     const user = (req as any).user;
     const { bookingId } = req.params;
 
+    // Check if user ID is a valid UUID (Supabase) or fallback system
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id);
+
+    if (!isValidUUID) {
+      // User is from fallback system, no bookings available
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+
     const { data: booking, error } =
       await supabaseServerHelpers.getBookingById(bookingId);
 
