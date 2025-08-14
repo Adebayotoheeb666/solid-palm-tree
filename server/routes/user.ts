@@ -13,18 +13,28 @@ export const handleGetDashboard: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
 
-    // Get user's bookings from Supabase
-    const { data: userBookings, error } =
-      await supabaseServerHelpers.getUserBookings(user.id);
+    // Check if user ID is a valid UUID (Supabase) or fallback system
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id);
 
-    if (error) {
-      console.error("Error fetching user bookings:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Failed to fetch bookings" });
+    let bookings = [];
+
+    if (isValidUUID) {
+      // Get user's bookings from Supabase
+      const { data: userBookings, error } =
+        await supabaseServerHelpers.getUserBookings(user.id);
+
+      if (error) {
+        console.error("Error fetching user bookings:", error);
+        return res
+          .status(500)
+          .json({ success: false, message: "Failed to fetch bookings" });
+      }
+
+      bookings = userBookings || [];
+    } else {
+      // User is from fallback system, no bookings available
+      bookings = [];
     }
-
-    const bookings = userBookings || [];
 
     // Transform Supabase data to match expected format
     const transformedBookings: Booking[] = bookings.map((booking) => ({
