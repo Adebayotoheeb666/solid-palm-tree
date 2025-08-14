@@ -644,11 +644,11 @@ const Index = () => {
                 alt="Cheaper"
                 className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
-              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
+              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Cheaper than a full <br className="hidden sm:block" /> priced
                 ticket
               </h3>
-              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
+              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4 self-center"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
                 Instead of wasting hundreds on throwaway or temporary flight
                 tickets, you can meet your travel requirements starting at just
@@ -668,10 +668,10 @@ const Index = () => {
                 alt="Real Reservations"
                 className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
-              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
+              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Real <br className="hidden sm:block" /> Reservations
               </h3>
-              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
+              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4 self-center"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
                 A real reservation with PNR code is made by a registered travel
                 agency. Pay via major credit cards or Paypal.
@@ -690,11 +690,11 @@ const Index = () => {
                 alt="Get your reservation within 60 seconds"
                 className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
-              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left">
+              <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Get your reservation <br className="hidden sm:block" /> within
                 60 seconds
               </h3>
-              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4"></div>
+              <div className="hidden sm:block border-l-4 border-black h-14 md:h-16 mx-0 sm:mx-4 self-center"></div>
               <p className="text-black font-medium flex-1 text-left text-sm md:text-base">
                 We deliver your ticket within minutes. We are the best Onboard
                 tickets. Flexible, fast, and stress-free.
