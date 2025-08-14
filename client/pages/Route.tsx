@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, Plane, ChevronDown, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "../components/DatePicker";
+import SearchableSelect from "../components/ui/SearchableSelect";
 import {
   useFormValidation,
   CommonValidationRules,
@@ -339,80 +340,52 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
             <div>
               <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Route</h3>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-6 mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 relative">
-                    <select
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
+                      From (Departure Airport)
+                    </label>
+                    <SearchableSelect
+                      options={airports.map(airport => ({
+                        value: airport.code,
+                        label: `${airport.city} (${airport.code})`,
+                        description: airport.name
+                      }))}
                       value={fromLocation}
-                      onChange={(e) =>
-                        handleLocationChange("fromLocation", e.target.value)
-                      }
+                      onChange={(value) => handleLocationChange("fromLocation", value)}
                       onBlur={() => setFieldTouched("fromLocation", true)}
-                      className={`w-full bg-white border rounded p-4 text-gray-600 appearance-none pr-10 ${
-                        hasFieldError("fromLocation")
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
+                      placeholder={loadingAirports ? "Loading airports..." : "Select departure airport"}
                       disabled={loadingAirports}
-                    >
-                      <option value="">
-                        {loadingAirports
-                          ? "Loading airports..."
-                          : "Select departure airport"}
-                      </option>
-                      {airports.map((airport) => (
-                        <option key={airport.code} value={airport.code}>
-                          {airport.city} ({airport.code}) - {airport.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none" />
-                    {hasFieldError("fromLocation") && (
-                      <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>{getFieldError("fromLocation")}</span>
-                      </div>
-                    )}
+                      error={hasFieldError("fromLocation")}
+                      errorMessage={getFieldError("fromLocation")}
+                    />
                   </div>
 
-                  <div className="bg-ticket-secondary rounded p-2">
-                    <Plane className="w-4 h-4 text-white" />
+                  <div className="bg-ticket-secondary rounded p-3 mt-6">
+                    <Plane className="w-5 h-5 text-white" />
                   </div>
 
-                  <div className="flex-1 relative">
-                    <select
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
+                      To (Destination Airport)
+                    </label>
+                    <SearchableSelect
+                      options={airports
+                        .filter(airport => airport.code !== fromLocation)
+                        .map(airport => ({
+                          value: airport.code,
+                          label: `${airport.city} (${airport.code})`,
+                          description: airport.name
+                        }))}
                       value={toLocation}
-                      onChange={(e) =>
-                        handleLocationChange("toLocation", e.target.value)
-                      }
+                      onChange={(value) => handleLocationChange("toLocation", value)}
                       onBlur={() => setFieldTouched("toLocation", true)}
-                      className={`w-full bg-white border rounded p-4 text-gray-600 appearance-none pr-10 ${
-                        hasFieldError("toLocation")
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
+                      placeholder={loadingAirports ? "Loading airports..." : "Select destination airport"}
                       disabled={loadingAirports}
-                    >
-                      <option value="">
-                        {loadingAirports
-                          ? "Loading airports..."
-                          : "Select destination airport"}
-                      </option>
-                      {airports
-                        .filter((airport) => airport.code !== fromLocation)
-                        .map((airport) => (
-                          <option key={airport.code} value={airport.code}>
-                            {airport.city} ({airport.code}) - {airport.name}
-                          </option>
-                        ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none" />
-                    {hasFieldError("toLocation") && (
-                      <div className="flex items-center gap-1 mt-1 text-red-400 text-sm">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>{getFieldError("toLocation")}</span>
-                      </div>
-                    )}
+                      error={hasFieldError("toLocation")}
+                      errorMessage={getFieldError("toLocation")}
+                    />
                   </div>
                 </div>
               </div>
