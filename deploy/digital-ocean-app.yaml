@@ -1,0 +1,70 @@
+# Digital Ocean App Platform specification
+# Deploy with: doctl apps create --spec deploy/digital-ocean-app.yaml
+
+name: onboardticket-app
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: your-username/your-repo-name
+    branch: main
+    deploy_on_push: true
+  run_command: npm start
+  build_command: npm run build
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  routes:
+  - path: /
+  health_check:
+    http_path: /api/health
+    initial_delay_seconds: 60
+    period_seconds: 30
+    timeout_seconds: 10
+    success_threshold: 1
+    failure_threshold: 3
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: PORT
+    value: "8080"
+  - key: SUPABASE_URL
+    scope: RUN_TIME
+    type: SECRET
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: VITE_SUPABASE_URL
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: VITE_SUPABASE_ANON_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_SECRET_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: STRIPE_PUBLISHABLE_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_WEBHOOK_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: SENDGRID_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: AMADEUS_CLIENT_ID
+    scope: RUN_TIME
+    type: SECRET
+  - key: AMADEUS_CLIENT_SECRET
+    scope: RUN_TIME
+    type: SECRET
+
+# Optional: Add a static site service for CDN if needed
+# static_sites:
+# - name: static-assets
+#   source_dir: /dist/spa
+#   github:
+#     repo: your-username/your-repo-name
+#     branch: main
+#   routes:
+#   - path: /assets
