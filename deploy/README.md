@@ -13,14 +13,16 @@ The easiest way to deploy to Digital Ocean is using their App Platform:
 1. **Fork/Clone the repository** to your GitHub account
 
 2. **Install doctl CLI** (Digital Ocean CLI):
+
    ```bash
    # macOS
    brew install doctl
-   
+
    # Linux/Windows - download from https://github.com/digitalocean/doctl/releases
    ```
 
 3. **Authenticate with Digital Ocean**:
+
    ```bash
    doctl auth init
    ```
@@ -31,6 +33,7 @@ The easiest way to deploy to Digital Ocean is using their App Platform:
    - Set environment variables (see below)
 
 5. **Deploy the app**:
+
    ```bash
    doctl apps create --spec deploy/digital-ocean-app.yaml
    ```
@@ -51,23 +54,27 @@ For more control, deploy to a Droplet using Docker:
    - Enable Docker during creation
 
 2. **Connect to your Droplet**:
+
    ```bash
    ssh root@your-droplet-ip
    ```
 
 3. **Clone your repository**:
+
    ```bash
    git clone https://github.com/your-username/your-repo-name.git
    cd your-repo-name
    ```
 
 4. **Create environment file**:
+
    ```bash
    cp .env.example .env
    nano .env  # Add your environment variables
    ```
 
 5. **Build and run with Docker**:
+
    ```bash
    docker-compose up -d
    ```
@@ -90,24 +97,29 @@ For production scalability, deploy to Digital Ocean Kubernetes:
 Set these environment variables in your chosen deployment method:
 
 ### Database & Authentication
+
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (server-side)
 - `VITE_SUPABASE_URL` - Supabase URL (client-side)
 - `VITE_SUPABASE_ANON_KEY` - Supabase anon key (client-side)
 
 ### Payment Processing
+
 - `STRIPE_SECRET_KEY` - Stripe secret key
 - `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
 - `STRIPE_WEBHOOK_SECRET` - Stripe webhook secret
 
 ### Email Service
+
 - `SENDGRID_API_KEY` - SendGrid API key for email notifications
 
 ### Flight Data
+
 - `AMADEUS_CLIENT_ID` - Amadeus API client ID
 - `AMADEUS_CLIENT_SECRET` - Amadeus API client secret
 
 ### App Configuration
+
 - `NODE_ENV=production`
 - `PORT=8080` (for App Platform) or `PORT=3000` (for Docker)
 
@@ -123,17 +135,21 @@ If you're migrating from Netlify:
 ## Monitoring & Maintenance
 
 ### Health Checks
+
 The app includes a health check endpoint at `/api/health` that verifies:
+
 - Server status
 - Database connectivity
 - External service availability
 
 ### Logs
+
 - **App Platform**: View logs in the Digital Ocean dashboard
 - **Docker**: Use `docker-compose logs -f`
 - **Droplet**: Check logs with `journalctl` or application logs
 
 ### Scaling
+
 - **App Platform**: Adjust instance count and size in the dashboard
 - **Docker**: Scale with `docker-compose up -d --scale app=3`
 - **Kubernetes**: Use `kubectl scale deployment`
@@ -172,6 +188,7 @@ The app includes a health check endpoint at `/api/health` that verifies:
 ## Support
 
 For deployment issues specific to this application:
+
 1. Check the browser console for service status
 2. Review server logs for errors
 3. Verify all environment variables are correctly set

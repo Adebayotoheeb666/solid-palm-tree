@@ -347,15 +347,21 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                       From (Departure Airport)
                     </label>
                     <SearchableSelect
-                      options={airports.map(airport => ({
+                      options={airports.map((airport) => ({
                         value: airport.code,
                         label: `${airport.city} (${airport.code})`,
-                        description: airport.name
+                        description: airport.name,
                       }))}
                       value={fromLocation}
-                      onChange={(value) => handleLocationChange("fromLocation", value)}
+                      onChange={(value) =>
+                        handleLocationChange("fromLocation", value)
+                      }
                       onBlur={() => setFieldTouched("fromLocation", true)}
-                      placeholder={loadingAirports ? "Loading airports..." : "Select departure airport"}
+                      placeholder={
+                        loadingAirports
+                          ? "Loading airports..."
+                          : "Select departure airport"
+                      }
                       disabled={loadingAirports}
                       error={hasFieldError("fromLocation")}
                       errorMessage={getFieldError("fromLocation")}
@@ -372,16 +378,22 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                     </label>
                     <SearchableSelect
                       options={airports
-                        .filter(airport => airport.code !== fromLocation)
-                        .map(airport => ({
+                        .filter((airport) => airport.code !== fromLocation)
+                        .map((airport) => ({
                           value: airport.code,
                           label: `${airport.city} (${airport.code})`,
-                          description: airport.name
+                          description: airport.name,
                         }))}
                       value={toLocation}
-                      onChange={(value) => handleLocationChange("toLocation", value)}
+                      onChange={(value) =>
+                        handleLocationChange("toLocation", value)
+                      }
                       onBlur={() => setFieldTouched("toLocation", true)}
-                      placeholder={loadingAirports ? "Loading airports..." : "Select destination airport"}
+                      placeholder={
+                        loadingAirports
+                          ? "Loading airports..."
+                          : "Select destination airport"
+                      }
                       disabled={loadingAirports}
                       error={hasFieldError("toLocation")}
                       errorMessage={getFieldError("toLocation")}
@@ -393,7 +405,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
 
             {/* Date Selection */}
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Travel Dates</h3>
+              <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">
+                Travel Dates
+              </h3>
 
               <div className="space-y-6">
                 <div className="flex gap-6">

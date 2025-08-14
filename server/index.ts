@@ -237,8 +237,8 @@ export function createServer() {
       environment: process.env.NODE_ENV || "development",
       services: {
         server: "healthy",
-        database: useSupabase ? "configured" : "fallback"
-      }
+        database: useSupabase ? "configured" : "fallback",
+      },
     };
     res.status(200).json(health);
   });

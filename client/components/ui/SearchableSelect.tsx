@@ -41,8 +41,8 @@ export default function SearchableSelect({
     (option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
       option.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (option.description && 
-        option.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      (option.description &&
+        option.description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   // Get selected option display text
@@ -52,7 +52,10 @@ export default function SearchableSelect({
   // Handle click outside to close dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSearchTerm("");
         setHighlightedIndex(-1);
@@ -73,13 +76,13 @@ export default function SearchableSelect({
         case "ArrowDown":
           e.preventDefault();
           setHighlightedIndex((prev) =>
-            prev < filteredOptions.length - 1 ? prev + 1 : 0
+            prev < filteredOptions.length - 1 ? prev + 1 : 0,
           );
           break;
         case "ArrowUp":
           e.preventDefault();
           setHighlightedIndex((prev) =>
-            prev > 0 ? prev - 1 : filteredOptions.length - 1
+            prev > 0 ? prev - 1 : filteredOptions.length - 1,
           );
           break;
         case "Enter":

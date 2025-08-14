@@ -12,9 +12,9 @@ export const handleHealthCheck: RequestHandler = async (req, res) => {
     services: {
       database: "unknown",
       supabase: "unknown",
-      server: "healthy"
+      server: "healthy",
     },
-    responseTime: 0
+    responseTime: 0,
   };
 
   try {
@@ -40,27 +40,31 @@ export const handleHealthCheck: RequestHandler = async (req, res) => {
     health.responseTime = Date.now() - startTime;
 
     // Set appropriate status code
-    const statusCode = health.status === "healthy" ? 200 : 
-                      health.status === "degraded" ? 200 : 503;
+    const statusCode =
+      health.status === "healthy"
+        ? 200
+        : health.status === "degraded"
+          ? 200
+          : 503;
 
     res.status(statusCode).json(health);
   } catch (error) {
     console.error("Health check error:", error);
-    
+
     health.status = "error";
     health.responseTime = Date.now() - startTime;
-    
+
     res.status(503).json({
       ...health,
-      error: "Internal server error during health check"
+      error: "Internal server error during health check",
     });
   }
 };
 
 // Simplified health check for load balancers
 export const handleSimpleHealthCheck: RequestHandler = (req, res) => {
-  res.status(200).json({ 
-    status: "ok", 
-    timestamp: new Date().toISOString() 
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
   });
 };
