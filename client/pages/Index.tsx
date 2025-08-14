@@ -540,9 +540,9 @@ const Index = () => {
                 <img
                   src="/onboard/image.png"
                   alt="British Embassy"
-                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
                   British Embassy
                 </h5>
               </div>
@@ -562,9 +562,9 @@ const Index = () => {
                 <img
                   src="/onboard/spanish.png"
                   alt="Spanish Embassy"
-                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
                   Spanish Embassy
                 </h5>
               </div>
@@ -584,9 +584,9 @@ const Index = () => {
                 <img
                   src="/onboard/iceland.png"
                   alt="Iceland Embassy"
-                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
                   Iceland Embassy
                 </h5>
               </div>
