@@ -39,20 +39,30 @@ class ServiceStatusLogger {
    */
   async checkAndLogServices(): Promise<void> {
     if (this.isLogging) return;
-    
+
     this.isLogging = true;
     const startTime = performance.now();
 
     try {
-      console.group('🔍 OnboardTicket Services Status Check');
+      const isFirstCheck = this.lastCheck === null;
+
+      if (isFirstCheck) {
+        this.logWelcomeMessage();
+      }
+
+      console.group(`🔍 OnboardTicket Services Status Check ${isFirstCheck ? '(Initial)' : '(Periodic)'}`);
       console.log('⏰ Check initiated at:', new Date().toLocaleString());
 
       const result = await this.fetchServicesStatus();
-      
+
       if (result) {
         this.logServicesStatus(result);
         this.logSummary(result);
         this.lastCheck = new Date();
+
+        if (isFirstCheck) {
+          this.logUsageInstructions();
+        }
       } else {
         console.error('❌ Failed to fetch services status');
       }
