@@ -26,8 +26,12 @@
     "docker:dev": "docker-compose up -d",
     "docker:stop": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
+    "docker:do": "docker-compose -f docker-compose.do.yml up -d",
+    "docker:do:stop": "docker-compose -f docker-compose.do.yml down",
+    "docker:do:logs": "docker-compose -f docker-compose.do.yml logs -f",
     "deploy:do": "doctl apps create --spec deploy/digital-ocean-app.yaml",
-    "deploy:do-update": "doctl apps update --spec deploy/digital-ocean-app.yaml"
+    "deploy:do-update": "doctl apps update --spec deploy/digital-ocean-app.yaml",
+    "deploy:do:build": "docker build -f Dockerfile.do -t onboardticket-app:do ."
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.5",

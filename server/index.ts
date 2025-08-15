@@ -258,6 +258,22 @@ export function createServer() {
   // Use hybrid auth middleware that works with or without Supabase
   const authMiddleware = hybridAuthMiddleware;
 
+  // Security check: Warn about placeholder values in production
+  if (process.env.NODE_ENV === 'production') {
+    const dangerousValues = [
+      'placeholder', 'your-', 'test_', 'demo', 'example',
+      'sk_test_', 'pk_test_', 'whsec_test'
+    ];
+
+    Object.entries(process.env).forEach(([key, value]) => {
+      if (key.includes('SECRET') || key.includes('KEY') || key.includes('PRIVATE')) {
+        if (value && dangerousValues.some(danger => value.includes(danger))) {
+          console.warn(`⚠️ SECURITY WARNING: ${key} appears to contain placeholder/test values in production!`);
+        }
+      }
+    });
+  }
+
   console.log("🔧 Auth system configuration:");
   console.log("  SUPABASE_URL:", !!process.env.SUPABASE_URL);
   console.log(

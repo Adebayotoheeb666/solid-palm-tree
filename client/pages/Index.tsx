@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronDown,
   Navigation,
@@ -81,18 +81,16 @@ const Index = () => {
   const [testimonialIdxLeft, setTestimonialIdxLeft] = useState(0);
   const [testimonialIdxRight, setTestimonialIdxRight] = useState(1);
   const totalTestimonials = testimonials.length;
-  const prevTestimonialLeft = () =>
-    setTestimonialIdxLeft(
-      (testimonialIdxLeft - 1 + totalTestimonials) % totalTestimonials,
-    );
-  const nextTestimonialLeft = () =>
-    setTestimonialIdxLeft((testimonialIdxLeft + 1) % totalTestimonials);
-  const prevTestimonialRight = () =>
-    setTestimonialIdxRight(
-      (testimonialIdxRight - 1 + totalTestimonials) % totalTestimonials,
-    );
-  const nextTestimonialRight = () =>
-    setTestimonialIdxRight((testimonialIdxRight + 1) % totalTestimonials);
+
+  // Auto-slide effect for testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
+      setTestimonialIdxRight((prev) => (prev + 1) % totalTestimonials);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [totalTestimonials]);
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
@@ -345,20 +343,16 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Navigation Buttons */}
-              <div className="flex gap-2 md:gap-4 justify-center lg:justify-start mt-2 md:mt-4">
-                <button
-                  className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors"
-                  onClick={prevTestimonialLeft}
-                >
-                  <ArrowLeft className="w-4 h-4 text-white" />
-                </button>
-                <button
-                  className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors"
-                  onClick={nextTestimonialLeft}
-                >
-                  <ArrowRight className="w-4 h-4 text-white" />
-                </button>
+              {/* Auto-sliding indicators */}
+              <div className="flex gap-1 justify-center lg:justify-start mt-4">
+                {testimonials.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === testimonialIdxLeft ? "bg-[#878EFF]" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
 
@@ -386,19 +380,15 @@ const Index = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-2 md:gap-4 justify-center lg:justify-start mt-4">
-                    <button
-                      className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors"
-                      onClick={prevTestimonialRight}
-                    >
-                      <ArrowLeft className="w-4 h-4 text-white" />
-                    </button>
-                    <button
-                      className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors"
-                      onClick={nextTestimonialRight}
-                    >
-                      <ArrowRight className="w-4 h-4 text-white" />
-                    </button>
+                  <div className="flex gap-1 justify-center lg:justify-start mt-4">
+                    {testimonials.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === testimonialIdxRight ? "bg-[#878EFF]" : "bg-gray-300"
+                        }`}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -540,14 +530,14 @@ const Index = () => {
                 <img
                   src="/onboard/image.png"
                   alt="British Embassy"
-                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-[#191A78] tracking-tight font-jakarta text-left break-words leading-tight">
                   British Embassy
                 </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
-                <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
+                <p className="text-black text-xs sm:text-sm md:text-sm lg:text-base font-medium break-words leading-snug">
                   Most embassies encourage travelers to wait for visa approval
                   before purchasing a full-priced plane ticket
                 </p>
@@ -562,14 +552,14 @@ const Index = () => {
                 <img
                   src="/onboard/spanish.png"
                   alt="Spanish Embassy"
-                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-[#191A78] tracking-tight font-jakarta text-left break-words leading-tight">
                   Spanish Embassy
                 </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
-                <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
+                <p className="text-black text-xs sm:text-sm md:text-sm lg:text-base font-medium break-words leading-snug">
                   Most embassies encourage travelers to wait for visa approval
                   before purchasing a full-priced plane ticket
                 </p>
@@ -584,14 +574,14 @@ const Index = () => {
                 <img
                   src="/onboard/iceland.png"
                   alt="Iceland Embassy"
-                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain mr-2 sm:mr-3 md:mr-4"
+                  className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 object-contain mr-2 sm:mr-3 md:mr-4"
                 />
-                <h5 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-[#191A78] mb-2 sm:mb-3 md:mb-4 tracking-tight font-jakarta text-left break-words leading-tight">
+                <h5 className="text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-[#191A78] tracking-tight font-jakarta text-left break-words leading-tight">
                   Iceland Embassy
                 </h5>
               </div>
               <div className="mb-2 sm:mb-3 md:mb-4 flex-1 flex items-center">
-                <p className="text-black text-xs sm:text-sm md:text-base lg:text-lg font-medium break-words leading-snug">
+                <p className="text-black text-xs sm:text-sm md:text-sm lg:text-base font-medium break-words leading-snug">
                   Most embassies encourage travelers to wait for visa approval
                   before purchasing a full-priced plane ticket
                 </p>
@@ -642,7 +632,7 @@ const Index = () => {
               <img
                 src="/onboard/cheap.png"
                 alt="Cheaper"
-                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+                className="w-20 h-20 md:w-24 md:h-24 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Cheaper than a full <br className="hidden sm:block" /> priced
@@ -666,7 +656,7 @@ const Index = () => {
               <img
                 src="/onboard/real.png"
                 alt="Real Reservations"
-                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+                className="w-20 h-20 md:w-24 md:h-24 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Real <br className="hidden sm:block" /> Reservations
@@ -688,7 +678,7 @@ const Index = () => {
               <img
                 src="/onboard/get.png"
                 alt="Get your reservation within 60 seconds"
-                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+                className="w-20 h-20 md:w-24 md:h-24 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Get your reservation <br className="hidden sm:block" /> within

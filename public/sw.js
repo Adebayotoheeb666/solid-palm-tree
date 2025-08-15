@@ -1,7 +1,7 @@
-const CACHE_NAME = "onboard-ticket-v2";
+const CACHE_NAME = "onboard-ticket-v3";
 const CRITICAL_ASSETS = [
   "/",
-  "/onboard/result.png",
+  "/onboard/logos.png",
   "/hero.png",
   "/onboard/logos-01.png",
 ];
@@ -130,8 +130,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: event.data ? event.data.text() : "New notification",
-    icon: "/onboard/result.png",
-    badge: "/onboard/result.png",
+    icon: "/onboard/logos.png",
+    badge: "/onboard/logos.png",
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),

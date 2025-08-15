@@ -105,6 +105,11 @@ export default function Login() {
                   🔒 This page requires administrator privileges. Please sign in
                   with an admin account.
                 </p>
+                <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+                  <strong>Admin Credentials:</strong><br />
+                  Email: onboard@admin.com<br />
+                  Password: onboardadmin
+                </div>
               </div>
             )}
 
@@ -180,6 +185,22 @@ export default function Login() {
                   </button>
                 </div>
               </div>
+
+              {/* Quick Admin Login Button */}
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      email: "onboard@admin.com",
+                      password: "onboardadmin"
+                    });
+                  }}
+                  className="w-full py-2 mb-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm transition-colors"
+                >
+                  🔧 Fill Admin Credentials (Dev)
+                </button>
+              )}
 
               {/* Submit Button */}
               <button
