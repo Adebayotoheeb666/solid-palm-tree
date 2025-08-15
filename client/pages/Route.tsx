@@ -565,36 +565,103 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 )}
               </div>
 
-              {/* Passenger Info */}
-              <div className="mb-6">
-                <div className="text-sm font-semibold text-ticket-text mb-1">
-                  Passanger / 1
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-ticket-text font-semibold">
-                      Passanger
+{(() => {
+                // Get saved passenger data
+                const savedPassengers = localStorage.getItem("bookingPassengers");
+                const savedContactEmail = localStorage.getItem("bookingContactEmail");
+                let passengers = [];
+                let contactEmail = "";
+
+                try {
+                  if (savedPassengers) {
+                    passengers = JSON.parse(savedPassengers);
+                  }
+                  if (savedContactEmail) {
+                    contactEmail = savedContactEmail;
+                  }
+                } catch (error) {
+                  console.log("Error parsing passenger data:", error);
+                }
+
+                return (
+                  /* Passenger Info */
+                  <div className="mb-6">
+                    <div className="text-sm font-semibold text-ticket-text mb-1">
+                      Passenger{passengers.length > 1 ? "s" : ""} / {passengers.length || 1}
                     </div>
-                    <div className="font-bold">Mr.Lorem abc</div>
-                  </div>
-                  <div>
-                    <div className="text-ticket-text font-semibold">Flight</div>
-                    <div className="font-bold">$123CD</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm mt-2">
-                  <div>
-                    <div className="text-ticket-text font-semibold">Seat</div>
-                    <div className="font-bold">20C</div>
-                  </div>
-                  <div>
-                    <div className="text-ticket-text font-semibold">
-                      Departure
+                    {passengers.length > 0 ? (
+                      passengers.slice(0, 2).map((passenger, index) => (
+                        <div key={index} className="mb-4 last:mb-0">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <div className="text-ticket-text font-semibold">
+                                Passenger {index + 1}
+                              </div>
+                              <div className="font-bold">
+                                {passenger.title || "Mr"}.{" "}
+                                {passenger.firstName || "First"}{" "}
+                                {passenger.lastName || "Last"}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-ticket-text font-semibold">Flight</div>
+                              <div className="font-bold">$15 USD</div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm mt-2">
+                            <div>
+                              <div className="text-ticket-text font-semibold">Seat</div>
+                              <div className="font-bold">{20 + index}C</div>
+                            </div>
+                            <div>
+                              <div className="text-ticket-text font-semibold">
+                                Departure
+                              </div>
+                              <div className="font-bold">7:30 AM</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div className="text-ticket-text font-semibold">
+                            Passenger
+                          </div>
+                          <div className="font-bold">Mr. Passenger Name</div>
+                        </div>
+                        <div>
+                          <div className="text-ticket-text font-semibold">Flight</div>
+                          <div className="font-bold">$15 USD</div>
+                        </div>
+                      </div>
+                    )}
+                    {passengers.length > 2 && (
+                      <div className="text-xs text-ticket-gray-light mt-2">
+                        + {passengers.length - 2} more passenger
+                        {passengers.length - 2 > 1 ? "s" : ""}
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-4 text-sm mt-2">
+                      <div>
+                        <div className="text-ticket-text font-semibold">Seat</div>
+                        <div className="font-bold">20C</div>
+                      </div>
+                      <div>
+                        <div className="text-ticket-text font-semibold">
+                          Departure
+                        </div>
+                        <div className="font-bold">7:30 AM</div>
+                      </div>
                     </div>
-                    <div className="font-bold">7:30 AM</div>
+                    {contactEmail && (
+                      <div className="text-xs text-ticket-gray-light mt-3">
+                        Contact: {contactEmail}
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
+                );
+              })()}
 
               {/* Barcode */}
               <div className="flex justify-center">
