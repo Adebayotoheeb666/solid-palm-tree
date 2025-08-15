@@ -84,13 +84,46 @@ class ServiceStatusLogger {
    */
   private async fetchServicesStatus(): Promise<ServiceCheckResult | null> {
     try {
-      const response = await fetch('/api/services');
+      // Check network connectivity first
+      if (!navigator.onLine) {
+        console.warn('🌐 No internet connection detected');
+        return null;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch('/api/services', {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return await response.json();
+
+      const data = await response.json();
+
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response format');
+      }
+
+      return data;
     } catch (error) {
-      console.error('🚨 Failed to fetch services status:', error);
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.error('🚨 Service status check timed out (10s)');
+        } else {
+          console.error('🚨 Failed to fetch services status:', error.message);
+        }
+      } else {
+        console.error('🚨 Unknown error during service status check:', error);
+      }
       return null;
     }
   }
