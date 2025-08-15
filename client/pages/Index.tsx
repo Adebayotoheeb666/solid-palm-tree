@@ -81,18 +81,16 @@ const Index = () => {
   const [testimonialIdxLeft, setTestimonialIdxLeft] = useState(0);
   const [testimonialIdxRight, setTestimonialIdxRight] = useState(1);
   const totalTestimonials = testimonials.length;
-  const prevTestimonialLeft = () =>
-    setTestimonialIdxLeft(
-      (testimonialIdxLeft - 1 + totalTestimonials) % totalTestimonials,
-    );
-  const nextTestimonialLeft = () =>
-    setTestimonialIdxLeft((testimonialIdxLeft + 1) % totalTestimonials);
-  const prevTestimonialRight = () =>
-    setTestimonialIdxRight(
-      (testimonialIdxRight - 1 + totalTestimonials) % totalTestimonials,
-    );
-  const nextTestimonialRight = () =>
-    setTestimonialIdxRight((testimonialIdxRight + 1) % totalTestimonials);
+
+  // Auto-slide effect for testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
+      setTestimonialIdxRight((prev) => (prev + 1) % totalTestimonials);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [totalTestimonials]);
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
