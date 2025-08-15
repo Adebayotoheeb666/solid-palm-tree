@@ -57,6 +57,7 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <NotificationProvider>
+          <ServiceStatusMonitor />
           <PerformanceOptimizer />
           <Toaster />
           <Sonner />
