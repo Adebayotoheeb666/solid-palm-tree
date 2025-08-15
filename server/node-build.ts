@@ -4,7 +4,7 @@ import * as express from "express";
 import { logSupabaseConnection } from "./logSupabaseConnection";
 
 const app = createServer();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || (process.env.NODE_ENV === 'production' ? 8080 : 3000);
 
 // In production, serve the built SPA files
 const __dirname = import.meta.dirname;
