@@ -27,6 +27,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
   const [searchingFlights, setSearchingFlights] = useState(false);
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loadingAirports, setLoadingAirports] = useState(true);
+  const [passengerData, setPassengerData] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Form validation
   const validationRules = {
