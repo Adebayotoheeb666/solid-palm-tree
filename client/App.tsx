@@ -41,6 +41,17 @@ const CacheReset = React.lazy(() => import("./pages/CacheReset"));
 
 const queryClient = new QueryClient();
 
+// Service Status Monitor Component
+const ServiceStatusMonitor: React.FC = () => {
+  useServiceStatus({
+    enablePeriodicChecking: true,
+    checkIntervalMinutes: 10,
+    checkOnMount: true,
+  });
+
+  return null; // This component doesn't render anything
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
