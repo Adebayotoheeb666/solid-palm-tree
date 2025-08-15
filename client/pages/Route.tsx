@@ -600,21 +600,27 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
               </div>
 
 {(() => {
-                // Get saved passenger data
-                const savedPassengers = localStorage.getItem("bookingPassengers");
-                const savedContactEmail = localStorage.getItem("bookingContactEmail");
+                // Get current passenger data from state or localStorage
                 let passengers = [];
                 let contactEmail = "";
 
-                try {
-                  if (savedPassengers) {
-                    passengers = JSON.parse(savedPassengers);
+                if (passengerData) {
+                  passengers = passengerData.passengers || [];
+                  contactEmail = passengerData.contactEmail || "";
+                } else {
+                  // Fallback to localStorage (for immediate access)
+                  try {
+                    const savedPassengers = localStorage.getItem("bookingPassengers");
+                    const savedContactEmail = localStorage.getItem("bookingContactEmail");
+                    if (savedPassengers) {
+                      passengers = JSON.parse(savedPassengers);
+                    }
+                    if (savedContactEmail) {
+                      contactEmail = savedContactEmail;
+                    }
+                  } catch (error) {
+                    console.log("Error parsing passenger data:", error);
                   }
-                  if (savedContactEmail) {
-                    contactEmail = savedContactEmail;
-                  }
-                } catch (error) {
-                  console.log("Error parsing passenger data:", error);
                 }
 
                 return (
