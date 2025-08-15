@@ -85,7 +85,7 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
             <img
-              src="/onboard/result.png"
+              src="/onboard/logos.png"
               alt="OnboardTicket Logo"
               className="h-12 w-auto object-contain"
             />
