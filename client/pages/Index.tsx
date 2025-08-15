@@ -688,7 +688,7 @@ const Index = () => {
               <img
                 src="/onboard/get.png"
                 alt="Get your reservation within 60 seconds"
-                className="w-28 h-28 md:w-32 md:h-32 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
+                className="w-20 h-20 md:w-24 md:h-24 object-contain mb-2 sm:mb-0 sm:mr-6 bg-transparent"
               />
               <h3 className="text-lg md:text-2xl font-extrabold text-[#191A78] min-w-[140px] md:min-w-[180px] mr-0 sm:mr-6 mb-2 sm:mb-0 text-left flex items-center">
                 Get your reservation <br className="hidden sm:block" /> within
