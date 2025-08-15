@@ -125,6 +125,38 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
     setDefaultDates();
   }, []);
 
+  // Load passenger data and listen for changes
+  useEffect(() => {
+    const loadPassengerData = () => {
+      try {
+        const savedPassengers = localStorage.getItem("bookingPassengers");
+        const savedContactEmail = localStorage.getItem("bookingContactEmail");
+        if (savedPassengers || savedContactEmail) {
+          setPassengerData({
+            passengers: savedPassengers ? JSON.parse(savedPassengers) : [],
+            contactEmail: savedContactEmail || "",
+          });
+        }
+      } catch (error) {
+        console.log("Error loading passenger data:", error);
+      }
+    };
+
+    // Load initial data
+    loadPassengerData();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "bookingPassengers" || e.key === "bookingContactEmail") {
+        loadPassengerData();
+        setRefreshKey(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   // Update return date when trip type changes
   useEffect(() => {
     if (tripType === "roundtrip" && !returnDate && departureDate) {
