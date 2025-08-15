@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { Suspense } from "react";
 import { AuthProvider } from "./hooks/useAuth";
 import { NotificationProvider } from "./hooks/useNotifications";
+import { useServiceStatus } from "./hooks/useServiceStatus";
 import {
   AuthProtectedRoute,
   AdminProtectedRoute,
