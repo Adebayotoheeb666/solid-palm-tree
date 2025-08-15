@@ -24,7 +24,7 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({
           onClick={() => navigate("/")}
         >
           <img
-            src="/onboard/result.png"
+            src="/onboard/logos.png"
             alt="OnboardTicket Logo"
             className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
             loading="eager"
