@@ -186,6 +186,22 @@ export default function Login() {
                 </div>
               </div>
 
+              {/* Quick Admin Login Button */}
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      email: "onboard@admin.com",
+                      password: "onboardadmin"
+                    });
+                  }}
+                  className="w-full py-2 mb-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm transition-colors"
+                >
+                  🔧 Fill Admin Credentials (Dev)
+                </button>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
