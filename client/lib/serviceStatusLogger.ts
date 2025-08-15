@@ -183,6 +183,34 @@ class ServiceStatusLogger {
   }
 
   /**
+   * Log welcome message with service information
+   */
+  private logWelcomeMessage(): void {
+    console.log(
+      '%c🚀 OnboardTicket External Services Monitor',
+      'color: #3B82F6; font-size: 16px; font-weight: bold; text-decoration: underline;'
+    );
+    console.log('%cMonitoring the following external services:', 'color: #6B7280; font-style: italic;');
+    console.log('  • 🔐 Supabase (Database & Authentication)');
+    console.log('  • 💳 Stripe (Payment Processing)');
+    console.log('  • ✈️ Amadeus (Flight Data API)');
+    console.log('  • 📧 SendGrid (Email Service)');
+    console.log('');
+  }
+
+  /**
+   * Log usage instructions for developers
+   */
+  private logUsageInstructions(): void {
+    console.group('%c💡 Developer Tools', 'color: #8B5CF6; font-weight: bold;');
+    console.log('%cUse these commands in the console:', 'color: #6B7280;');
+    console.log('%cserviceStatusLogger.manualCheck()%c - Trigger manual status check', 'background: #F3F4F6; padding: 2px 4px; border-radius: 3px;', '');
+    console.log('%cserviceStatusLogger.getLastCheckTime()%c - Get last check timestamp', 'background: #F3F4F6; padding: 2px 4px; border-radius: 3px;', '');
+    console.log('Automatic checks run every 10 minutes while the app is active');
+    console.groupEnd();
+  }
+
+  /**
    * Get last check time
    */
   getLastCheckTime(): Date | null {
