@@ -380,19 +380,15 @@ const Index = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-2 md:gap-4 justify-center lg:justify-start mt-4">
-                    <button
-                      className="w-8 h-8 md:w-14 md:h-8 bg-[#A49AFF] rounded-full flex items-center justify-center hover:bg-purple-400 transition-colors"
-                      onClick={prevTestimonialRight}
-                    >
-                      <ArrowLeft className="w-4 h-4 text-white" />
-                    </button>
-                    <button
-                      className="w-8 h-8 md:w-14 md:h-8 bg-[#878EFF] rounded-full flex items-center justify-center hover:bg-purple-500 transition-colors"
-                      onClick={nextTestimonialRight}
-                    >
-                      <ArrowRight className="w-4 h-4 text-white" />
-                    </button>
+                  <div className="flex gap-1 justify-center lg:justify-start mt-4">
+                    {testimonials.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === testimonialIdxRight ? "bg-[#878EFF]" : "bg-gray-300"
+                        }`}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
