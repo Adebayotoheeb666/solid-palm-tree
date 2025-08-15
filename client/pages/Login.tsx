@@ -105,6 +105,11 @@ export default function Login() {
                   🔒 This page requires administrator privileges. Please sign in
                   with an admin account.
                 </p>
+                <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+                  <strong>Admin Credentials:</strong><br />
+                  Email: onboard@admin.com<br />
+                  Password: onboardadmin
+                </div>
               </div>
             )}
 
