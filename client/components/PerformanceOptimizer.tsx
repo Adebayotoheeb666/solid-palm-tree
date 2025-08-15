@@ -36,7 +36,7 @@ const PerformanceOptimizer: React.FC = () => {
     // Preload critical resources
     const preloadCriticalResources = () => {
       const criticalImages = [
-        "/onboard/result.png",
+        "/onboard/logos.png",
         "/hero.png",
         "/onboard/logos-01.png",
         "/onboard/fast.png",
