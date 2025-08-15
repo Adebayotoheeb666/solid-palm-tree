@@ -130,8 +130,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: event.data ? event.data.text() : "New notification",
-    icon: "/onboard/result.png",
-    badge: "/onboard/result.png",
+    icon: "/onboard/logos.png",
+    badge: "/onboard/logos.png",
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
