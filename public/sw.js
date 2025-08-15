@@ -1,7 +1,7 @@
 const CACHE_NAME = "onboard-ticket-v2";
 const CRITICAL_ASSETS = [
   "/",
-  "/onboard/result.png",
+  "/onboard/logos.png",
   "/hero.png",
   "/onboard/logos-01.png",
 ];
