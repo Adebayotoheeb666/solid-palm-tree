@@ -135,6 +135,7 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/payment" element={<Payment />} />
+                <Route path="/ticket-sample" element={<TicketSample />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/cache-reset" element={<CacheReset />} />
