@@ -64,6 +64,18 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
           </button>
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
+              {/* User Info Display */}
+              <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-white rounded-lg border border-gray-200">
+                <div className="w-8 h-8 bg-[#3839C9] rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
+                </div>
+              </div>
               <button
                 className="px-8 py-2 bg-[#3839C9] text-white font-bold text-base md:text-lg rounded-lg hover:bg-blue-700 transition-colors shadow-md flex items-center gap-2"
                 onClick={handleDashboardClick}
