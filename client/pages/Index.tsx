@@ -198,22 +198,21 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* Fast Reservation */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+            <div className="relative flex flex-col justify-center h-64 md:h-72">
+              <div className="gradient-box rounded-2xl p-6 w-full h-full flex flex-col items-center justify-center text-center shadow-lg overflow-hidden">
+                <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-4">
                   <img
                     src="/onboard/fast.png"
                     alt="Fast Reservation Icon"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
+                <div className="flex-1 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white mb-3 font-jakarta">
                     Fast Reservation
                   </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
+                  <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
+                    Get your reservation instantly via email. Quick and hassle-free booking process.
                   </p>
                 </div>
               </div>
