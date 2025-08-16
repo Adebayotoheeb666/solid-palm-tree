@@ -38,6 +38,7 @@ const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
 const PaymentSuccess = React.lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCancel = React.lazy(() => import("./pages/PaymentCancel"));
 const CacheReset = React.lazy(() => import("./pages/CacheReset"));
+const TicketSample = React.lazy(() => import("./pages/TicketSample"));
 
 const queryClient = new QueryClient();
 
