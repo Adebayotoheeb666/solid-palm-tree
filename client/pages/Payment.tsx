@@ -457,27 +457,27 @@ export default function Payment() {
         },
       );
 
+      let paypalOrderData;
+
       if (!paypalOrderResponse.ok) {
-        const errorData = await paypalOrderResponse.text();
+        let errorMessage = `Failed to create PayPal order: ${paypalOrderResponse.status} ${paypalOrderResponse.statusText}`;
+
+        try {
+          const errorData = await paypalOrderResponse.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use the default error message
+        }
+
         console.error("PayPal order creation failed:", {
           status: paypalOrderResponse.status,
           statusText: paypalOrderResponse.statusText,
-          error: errorData,
         });
 
-        try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(
-            parsedError.message || "Failed to create PayPal order",
-          );
-        } catch {
-          throw new Error(
-            `Failed to create PayPal order: ${paypalOrderResponse.status} ${paypalOrderResponse.statusText}`,
-          );
-        }
+        throw new Error(errorMessage);
       }
 
-      const paypalOrderData = await paypalOrderResponse.json();
+      paypalOrderData = await paypalOrderResponse.json();
       console.log("PayPal order created:", paypalOrderData);
 
       const { orderID, approvalUrl } = paypalOrderData;
