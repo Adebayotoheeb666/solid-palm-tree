@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
 import { PaymentRequest, PaymentResponse } from "@shared/api";
 import { supabaseServerHelpers } from "../lib/supabaseServer";
-import { z } from 'zod';
-import StripeService from '../lib/stripeService';
+import { z } from "zod";
+import StripeService from "../lib/stripeService";
 
 // Payment validation schema
 const paymentSchema = z.object({
   bookingId: z.string(),
-  paymentMethod: z.enum(['card', 'paypal', 'stripe']),
+  paymentMethod: z.enum(["card", "paypal", "stripe"]),
   paymentDetails: z.object({
     cardNumber: z.string().optional(),
     expiryDate: z.string().optional(),
@@ -17,8 +17,8 @@ const paymentSchema = z.object({
     paypalOrderId: z.string().optional(),
     paypalPayerId: z.string().optional(),
     stripePaymentIntentId: z.string().optional(),
-    stripePaymentMethodId: z.string().optional()
-  })
+    stripePaymentMethodId: z.string().optional(),
+  }),
 });
 
 // Generate transaction ID
@@ -29,54 +29,68 @@ const generateTransactionId = (): string => {
 };
 
 // PayPal configuration
-const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || 'AeA1QIZXlsOl6reI7QjVAXt3CxbgZMOKe-6xB6RHWyYPUtE9JYOk0-l-uSQnf8BL2S1IZKqHNk1TCO5T';
-const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || 'demo-client-secret';
-const PAYPAL_SIGNATURE = process.env.PAYPAL_SIGNATURE || '';
-const PAYPAL_BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://api-m.paypal.com'
-  : 'https://api-m.sandbox.paypal.com';
+const PAYPAL_CLIENT_ID =
+  process.env.PAYPAL_CLIENT_ID ||
+  "AeA1QIZXlsOl6reI7QjVAXt3CxbgZMOKe-6xB6RHWyYPUtE9JYOk0-l-uSQnf8BL2S1IZKqHNk1TCO5T";
+const PAYPAL_CLIENT_SECRET =
+  process.env.PAYPAL_CLIENT_SECRET || "demo-client-secret";
+const PAYPAL_SIGNATURE = process.env.PAYPAL_SIGNATURE || "";
+const PAYPAL_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
 
 // Get PayPal access token
 const getPayPalAccessToken = async (): Promise<string> => {
   try {
-    const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
+    const auth = Buffer.from(
+      `${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`,
+    ).toString("base64");
 
-    console.log('Getting PayPal access token...');
+    console.log("Getting PayPal access token...");
     const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: 'grant_type=client_credentials',
+      body: "grant_type=client_credentials",
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('PayPal token request failed:', response.status, errorText);
-      throw new Error(`Failed to get PayPal access token: ${response.status} ${response.statusText}`);
+      console.error("PayPal token request failed:", response.status, errorText);
+      throw new Error(
+        `Failed to get PayPal access token: ${response.status} ${response.statusText}`,
+      );
     }
 
     const data = await response.json();
-    console.log('PayPal access token obtained successfully');
+    console.log("PayPal access token obtained successfully");
     return data.access_token;
   } catch (error) {
-    console.error('Error getting PayPal access token:', error);
+    console.error("Error getting PayPal access token:", error);
     throw error;
   }
 };
 
 // Verify PayPal payment
-const verifyPayPalPayment = async (orderId: string, payerId: string): Promise<boolean> => {
+const verifyPayPalPayment = async (
+  orderId: string,
+  payerId: string,
+): Promise<boolean> => {
   try {
     const accessToken = await getPayPalAccessToken();
 
-    const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       return false;
@@ -85,25 +99,29 @@ const verifyPayPalPayment = async (orderId: string, payerId: string): Promise<bo
     const order = await response.json();
 
     // Check if order is approved and payer matches
-    return order.status === 'APPROVED' && order.payer?.payer_id === payerId;
+    return order.status === "APPROVED" && order.payer?.payer_id === payerId;
   } catch (error) {
-    console.error('PayPal verification error:', error);
+    console.error("PayPal verification error:", error);
     return false;
   }
 };
 
 // Simulate card validation
-const validateCard = (cardNumber: string, expiryDate: string, cvv: string): boolean => {
+const validateCard = (
+  cardNumber: string,
+  expiryDate: string,
+  cvv: string,
+): boolean => {
   // Basic validation - in production, use proper payment processor
-  if (!cardNumber || cardNumber.replace(/\s/g, '').length !== 16) return false;
+  if (!cardNumber || cardNumber.replace(/\s/g, "").length !== 16) return false;
   if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) return false;
   if (!cvv || !/^\d{3,4}$/.test(cvv)) return false;
-  
+
   // Check if card is expired
-  const [month, year] = expiryDate.split('/');
+  const [month, year] = expiryDate.split("/");
   const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1);
   if (expiry <= new Date()) return false;
-  
+
   return true;
 };
 
@@ -112,11 +130,11 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
     const validation = paymentSchema.safeParse(req.body);
-    
+
     if (!validation.success) {
       const response: PaymentResponse = {
         success: false,
-        message: 'Invalid payment data'
+        message: "Invalid payment data",
       };
       return res.status(400).json(response);
     }
@@ -125,12 +143,13 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
 
     try {
       // Find booking in Supabase
-      const { data: booking, error: bookingError } = await supabaseServerHelpers.getBookingById(bookingId);
-      
+      const { data: booking, error: bookingError } =
+        await supabaseServerHelpers.getBookingById(bookingId);
+
       if (bookingError || !booking) {
         const response: PaymentResponse = {
           success: false,
-          message: 'Booking not found'
+          message: "Booking not found",
         };
         return res.status(404).json(response);
       }
@@ -139,27 +158,28 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
       if (booking.user_id !== user.id) {
         const response: PaymentResponse = {
           success: false,
-          message: 'Booking not found'
+          message: "Booking not found",
         };
         return res.status(404).json(response);
       }
 
-      if (booking.status !== 'pending') {
+      if (booking.status !== "pending") {
         const response: PaymentResponse = {
           success: false,
-          message: 'Booking is not eligible for payment'
+          message: "Booking is not eligible for payment",
         };
         return res.status(400).json(response);
       }
 
       // Validate payment method specific details
-      if (paymentMethod === 'card') {
-        const { cardNumber, expiryDate, cvv, cardholderName, country } = paymentDetails;
+      if (paymentMethod === "card") {
+        const { cardNumber, expiryDate, cvv, cardholderName, country } =
+          paymentDetails;
 
         if (!cardNumber || !expiryDate || !cvv || !cardholderName || !country) {
           const response: PaymentResponse = {
             success: false,
-            message: 'Missing required card details'
+            message: "Missing required card details",
           };
           return res.status(400).json(response);
         }
@@ -167,69 +187,80 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
         if (!validateCard(cardNumber, expiryDate, cvv)) {
           const response: PaymentResponse = {
             success: false,
-            message: 'Invalid card details'
+            message: "Invalid card details",
           };
           return res.status(400).json(response);
         }
-      } else if (paymentMethod === 'stripe') {
+      } else if (paymentMethod === "stripe") {
         const { stripePaymentIntentId, stripePaymentMethodId } = paymentDetails;
 
         if (!stripePaymentIntentId) {
           const response: PaymentResponse = {
             success: false,
-            message: 'Missing Stripe payment intent ID'
+            message: "Missing Stripe payment intent ID",
           };
           return res.status(400).json(response);
         }
 
         // Verify Stripe payment intent
         try {
-          const paymentIntent = await StripeService.retrievePaymentIntent(stripePaymentIntentId);
+          const paymentIntent = await StripeService.retrievePaymentIntent(
+            stripePaymentIntentId,
+          );
 
-          if (paymentIntent.status !== 'succeeded' && paymentIntent.status !== 'requires_action') {
+          if (
+            paymentIntent.status !== "succeeded" &&
+            paymentIntent.status !== "requires_action"
+          ) {
             const response: PaymentResponse = {
               success: false,
-              message: 'Stripe payment not completed'
+              message: "Stripe payment not completed",
             };
             return res.status(400).json(response);
           }
 
           // If payment requires confirmation
-          if (paymentIntent.status === 'requires_confirmation') {
-            await StripeService.confirmPaymentIntent(stripePaymentIntentId, stripePaymentMethodId);
+          if (paymentIntent.status === "requires_confirmation") {
+            await StripeService.confirmPaymentIntent(
+              stripePaymentIntentId,
+              stripePaymentMethodId,
+            );
           }
         } catch (error) {
-          console.error('Stripe payment verification failed:', error);
+          console.error("Stripe payment verification failed:", error);
           const response: PaymentResponse = {
             success: false,
-            message: 'Stripe payment verification failed'
+            message: "Stripe payment verification failed",
           };
           return res.status(400).json(response);
         }
-      } else if (paymentMethod === 'paypal') {
+      } else if (paymentMethod === "paypal") {
         const { paypalOrderId, paypalPayerId } = paymentDetails;
 
         if (!paypalOrderId || !paypalPayerId) {
           const response: PaymentResponse = {
             success: false,
-            message: 'Missing PayPal payment details'
+            message: "Missing PayPal payment details",
           };
           return res.status(400).json(response);
         }
 
         // Verify PayPal payment with PayPal API
-        const paypalVerified = await verifyPayPalPayment(paypalOrderId, paypalPayerId);
+        const paypalVerified = await verifyPayPalPayment(
+          paypalOrderId,
+          paypalPayerId,
+        );
         if (!paypalVerified) {
           const response: PaymentResponse = {
             success: false,
-            message: 'PayPal payment verification failed'
+            message: "PayPal payment verification failed",
           };
           return res.status(400).json(response);
         }
       }
 
       // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Simulate payment success/failure (95% success rate for demo)
       const paymentSuccess = Math.random() > 0.05;
@@ -238,81 +269,95 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
 
       if (!paymentSuccess) {
         // Create failed transaction record in Supabase
-        const { data: failedTransaction, error: transactionError } = await supabaseServerHelpers.createTransaction({
-          booking_id: bookingId,
-          user_id: user.id,
-          amount: booking.total_amount,
-          currency: booking.currency,
-          payment_method: paymentMethod,
-          status: 'failed',
-          stripe_payment_id: paymentMethod === 'stripe' ? paymentDetails.stripePaymentIntentId : null,
-          paypal_order_id: paymentMethod === 'paypal' ? paymentDetails.paypalOrderId : null,
-          paypal_payer_id: paymentMethod === 'paypal' ? paymentDetails.paypalPayerId : null,
-          payment_details: paymentDetails
-        });
+        const { data: failedTransaction, error: transactionError } =
+          await supabaseServerHelpers.createTransaction({
+            booking_id: bookingId,
+            user_id: user.id,
+            amount: booking.total_amount,
+            currency: booking.currency,
+            payment_method: paymentMethod,
+            status: "failed",
+            stripe_payment_id:
+              paymentMethod === "stripe"
+                ? paymentDetails.stripePaymentIntentId
+                : null,
+            paypal_order_id:
+              paymentMethod === "paypal" ? paymentDetails.paypalOrderId : null,
+            paypal_payer_id:
+              paymentMethod === "paypal" ? paymentDetails.paypalPayerId : null,
+            payment_details: paymentDetails,
+          });
 
         if (transactionError) {
-          console.error('Error creating failed transaction:', transactionError);
+          console.error("Error creating failed transaction:", transactionError);
         }
 
         const response: PaymentResponse = {
           success: false,
-          message: 'Payment failed. Please check your payment details and try again.'
+          message:
+            "Payment failed. Please check your payment details and try again.",
         };
         return res.status(400).json(response);
       }
 
       // Create successful transaction record in Supabase
-      const { data: transaction, error: transactionError } = await supabaseServerHelpers.createTransaction({
-        booking_id: bookingId,
-        user_id: user.id,
-        amount: booking.total_amount,
-        currency: booking.currency,
-        payment_method: paymentMethod,
-        status: 'completed',
-        stripe_payment_id: paymentMethod === 'stripe' ? paymentDetails.stripePaymentIntentId : null,
-        paypal_order_id: paymentMethod === 'paypal' ? paymentDetails.paypalOrderId : null,
-        paypal_payer_id: paymentMethod === 'paypal' ? paymentDetails.paypalPayerId : null,
-        payment_details: paymentDetails
-      });
+      const { data: transaction, error: transactionError } =
+        await supabaseServerHelpers.createTransaction({
+          booking_id: bookingId,
+          user_id: user.id,
+          amount: booking.total_amount,
+          currency: booking.currency,
+          payment_method: paymentMethod,
+          status: "completed",
+          stripe_payment_id:
+            paymentMethod === "stripe"
+              ? paymentDetails.stripePaymentIntentId
+              : null,
+          paypal_order_id:
+            paymentMethod === "paypal" ? paymentDetails.paypalOrderId : null,
+          paypal_payer_id:
+            paymentMethod === "paypal" ? paymentDetails.paypalPayerId : null,
+          payment_details: paymentDetails,
+        });
 
       if (transactionError || !transaction) {
-        console.error('Error creating transaction:', transactionError);
+        console.error("Error creating transaction:", transactionError);
         const response: PaymentResponse = {
           success: false,
-          message: 'Failed to record payment'
+          message: "Failed to record payment",
         };
         return res.status(500).json(response);
       }
 
       // Update booking status to confirmed in Supabase
-      const { error: updateError } = await supabaseServerHelpers.updateBookingStatus(bookingId, 'confirmed');
-      
+      const { error: updateError } =
+        await supabaseServerHelpers.updateBookingStatus(bookingId, "confirmed");
+
       if (updateError) {
-        console.error('Error updating booking status:', updateError);
+        console.error("Error updating booking status:", updateError);
         // Payment succeeded but booking update failed - this would need manual intervention
       }
 
       const response: PaymentResponse = {
         success: true,
         transactionId: transaction.id,
-        message: 'Payment processed successfully'
+        message: "Payment processed successfully",
       };
 
       res.json(response);
     } catch (supabaseError) {
-      console.error('Supabase payment processing error:', supabaseError);
+      console.error("Supabase payment processing error:", supabaseError);
       const response: PaymentResponse = {
         success: false,
-        message: 'Payment processing failed'
+        message: "Payment processing failed",
       };
       res.status(500).json(response);
     }
   } catch (error) {
-    console.error('Payment processing error:', error);
+    console.error("Payment processing error:", error);
     const response: PaymentResponse = {
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     };
     res.status(500).json(response);
   }
@@ -322,17 +367,18 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
 export const handleGetPaymentHistory: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
-    
+
     try {
-      const { data: transactions, error } = await supabaseServerHelpers.getUserTransactions(user.id);
+      const { data: transactions, error } =
+        await supabaseServerHelpers.getUserTransactions(user.id);
 
       if (error) {
-        console.error('Error fetching payment history:', error);
+        console.error("Error fetching payment history:", error);
         return res.json([]); // Return empty array as fallback
       }
 
       // Transform to expected format
-      const userTransactions = transactions.map(transaction => ({
+      const userTransactions = transactions.map((transaction) => ({
         id: transaction.id,
         bookingId: transaction.booking_id,
         userId: transaction.user_id,
@@ -342,17 +388,17 @@ export const handleGetPaymentHistory: RequestHandler = async (req, res) => {
         status: transaction.status,
         transactionId: transaction.id,
         createdAt: transaction.created_at,
-        updatedAt: transaction.updated_at
+        updatedAt: transaction.updated_at,
       }));
 
       res.json(userTransactions);
     } catch (supabaseError) {
-      console.error('Supabase payment history error:', supabaseError);
+      console.error("Supabase payment history error:", supabaseError);
       res.json([]); // Return empty array as fallback
     }
   } catch (error) {
-    console.error('Get payment history error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("Get payment history error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -361,19 +407,24 @@ export const handleGetTransaction: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
     const { transactionId } = req.params;
-    
+
     try {
-      const { data: transactions, error } = await supabaseServerHelpers.getUserTransactions(user.id);
+      const { data: transactions, error } =
+        await supabaseServerHelpers.getUserTransactions(user.id);
 
       if (error) {
-        console.error('Error fetching transaction:', error);
-        return res.status(404).json({ success: false, message: 'Transaction not found' });
+        console.error("Error fetching transaction:", error);
+        return res
+          .status(404)
+          .json({ success: false, message: "Transaction not found" });
       }
 
-      const transaction = transactions.find(t => t.id === transactionId);
-      
+      const transaction = transactions.find((t) => t.id === transactionId);
+
       if (!transaction) {
-        return res.status(404).json({ success: false, message: 'Transaction not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Transaction not found" });
       }
 
       // Transform to expected format
@@ -387,17 +438,19 @@ export const handleGetTransaction: RequestHandler = async (req, res) => {
         status: transaction.status,
         transactionId: transaction.id,
         createdAt: transaction.created_at,
-        updatedAt: transaction.updated_at
+        updatedAt: transaction.updated_at,
       };
 
       res.json(transactionData);
     } catch (supabaseError) {
-      console.error('Supabase get transaction error:', supabaseError);
-      res.status(404).json({ success: false, message: 'Transaction not found' });
+      console.error("Supabase get transaction error:", supabaseError);
+      res
+        .status(404)
+        .json({ success: false, message: "Transaction not found" });
     }
   } catch (error) {
-    console.error('Get transaction error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("Get transaction error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -405,67 +458,81 @@ export const handleGetTransaction: RequestHandler = async (req, res) => {
 export const handleRefundPayment: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
-    
+
     // Check if user is admin
     const isAdmin = await supabaseServerHelpers.isUserAdmin(user.id);
     if (!isAdmin) {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
+      return res
+        .status(403)
+        .json({ success: false, message: "Admin access required" });
     }
 
     const { transactionId } = req.params;
     const { reason } = req.body;
-    
+
     try {
       // Get transaction details
-      const { data: allTransactions, error: fetchError } = await supabaseServerHelpers.getAllTransactionsAdmin();
-      
+      const { data: allTransactions, error: fetchError } =
+        await supabaseServerHelpers.getAllTransactionsAdmin();
+
       if (fetchError) {
-        console.error('Error fetching transactions:', fetchError);
-        return res.status(404).json({ success: false, message: 'Transaction not found' });
+        console.error("Error fetching transactions:", fetchError);
+        return res
+          .status(404)
+          .json({ success: false, message: "Transaction not found" });
       }
 
-      const transaction = allTransactions.find(t => t.id === transactionId);
-      
+      const transaction = allTransactions.find((t) => t.id === transactionId);
+
       if (!transaction) {
-        return res.status(404).json({ success: false, message: 'Transaction not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Transaction not found" });
       }
-      
-      if (transaction.status !== 'completed') {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Only completed transactions can be refunded' 
+
+      if (transaction.status !== "completed") {
+        return res.status(400).json({
+          success: false,
+          message: "Only completed transactions can be refunded",
         });
       }
 
       // Simulate refund processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Update transaction status to refunded
-      const { data: updatedTransaction, error: updateError } = await supabaseServerHelpers.updateTransactionStatus(
-        transactionId,
-        'refunded',
-        { refund_reason: reason }
-      );
+      const { data: updatedTransaction, error: updateError } =
+        await supabaseServerHelpers.updateTransactionStatus(
+          transactionId,
+          "refunded",
+          { refund_reason: reason },
+        );
 
       if (updateError || !updatedTransaction) {
-        console.error('Error updating transaction status:', updateError);
-        return res.status(500).json({ success: false, message: 'Failed to process refund' });
+        console.error("Error updating transaction status:", updateError);
+        return res
+          .status(500)
+          .json({ success: false, message: "Failed to process refund" });
       }
 
       // Update booking status to cancelled
-      const { error: bookingUpdateError } = await supabaseServerHelpers.updateBookingStatus(
-        transaction.booking_id,
-        'cancelled'
-      );
+      const { error: bookingUpdateError } =
+        await supabaseServerHelpers.updateBookingStatus(
+          transaction.booking_id,
+          "cancelled",
+        );
 
       if (bookingUpdateError) {
-        console.error('Error updating booking status after refund:', bookingUpdateError);
+        console.error(
+          "Error updating booking status after refund:",
+          bookingUpdateError,
+        );
         // Refund succeeded but booking update failed - would need manual intervention
       }
 
-      res.json({ 
-        success: true, 
-        message: 'Refund processed successfully',
+      res.json({
+        success: true,
+        message: "Refund processed successfully",
         transaction: {
           id: updatedTransaction.id,
           bookingId: updatedTransaction.booking_id,
@@ -476,90 +543,114 @@ export const handleRefundPayment: RequestHandler = async (req, res) => {
           status: updatedTransaction.status,
           transactionId: updatedTransaction.id,
           createdAt: updatedTransaction.created_at,
-          updatedAt: updatedTransaction.updated_at
-        }
+          updatedAt: updatedTransaction.updated_at,
+        },
       });
     } catch (supabaseError) {
-      console.error('Supabase refund error:', supabaseError);
-      res.status(500).json({ success: false, message: 'Failed to process refund' });
+      console.error("Supabase refund error:", supabaseError);
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to process refund" });
     }
   } catch (error) {
-    console.error('Refund error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("Refund error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 // Create PayPal order
 export const handleCreatePayPalOrder: RequestHandler = async (req, res) => {
   try {
-    const { bookingId, amount, currency = 'USD' } = req.body;
+    const { bookingId, amount, currency = "USD" } = req.body;
 
     if (!bookingId || !amount) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields'
+        message: "Missing required fields",
       });
     }
 
-    console.log('Creating PayPal order for booking:', bookingId, 'amount:', amount);
+    console.log(
+      "Creating PayPal order for booking:",
+      bookingId,
+      "amount:",
+      amount,
+    );
 
     // For development/demo mode, return a mock response if PayPal credentials are not configured
-    if (!PAYPAL_CLIENT_ID || PAYPAL_CLIENT_ID === 'demo-client-id') {
-      console.log('PayPal demo mode - returning mock approval URL');
+    if (!PAYPAL_CLIENT_ID || PAYPAL_CLIENT_ID === "demo-client-id") {
+      console.log("PayPal demo mode - returning mock approval URL");
       return res.json({
         success: true,
         orderID: `mock_order_${Date.now()}`,
-        approvalUrl: `${req.headers.origin}/payment/success?token=mock_order_${Date.now()}&PayerID=mock_payer`
+        approvalUrl: `${req.headers.origin}/payment/success?token=mock_order_${Date.now()}&PayerID=mock_payer`,
+        demoMode: true,
       });
     }
 
-    const accessToken = await getPayPalAccessToken();
+    let accessToken;
+    try {
+      accessToken = await getPayPalAccessToken();
+    } catch (authError) {
+      console.log("PayPal authentication failed, falling back to demo mode");
+      return res.json({
+        success: true,
+        orderID: `demo_order_${Date.now()}`,
+        approvalUrl: `${req.headers.origin}/payment/success?token=demo_order_${Date.now()}&PayerID=demo_payer`,
+        demoMode: true,
+        message: "PayPal demo mode - credentials not configured",
+      });
+    }
 
     const orderData = {
-      intent: 'CAPTURE',
-      purchase_units: [{
-        reference_id: bookingId,
-        amount: {
-          currency_code: currency,
-          value: amount.toString()
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          reference_id: bookingId,
+          amount: {
+            currency_code: currency,
+            value: amount.toString(),
+          },
+          description: `OnboardTicket Flight Reservation - ${bookingId}`,
         },
-        description: `OnboardTicket Flight Reservation - ${bookingId}`
-      }],
+      ],
       application_context: {
-        brand_name: 'OnboardTicket',
-        landing_page: 'NO_PREFERENCE',
-        user_action: 'PAY_NOW',
+        brand_name: "OnboardTicket",
+        landing_page: "NO_PREFERENCE",
+        user_action: "PAY_NOW",
         return_url: `${req.headers.origin}/payment/success`,
-        cancel_url: `${req.headers.origin}/payment/cancel`
-      }
+        cancel_url: `${req.headers.origin}/payment/cancel`,
+      },
     };
 
     const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(orderData),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create PayPal order');
+      throw new Error("Failed to create PayPal order");
     }
 
     const order = await response.json();
-    const approvalUrl = order.links.find((link: any) => link.rel === 'approve')?.href;
+    const approvalUrl = order.links.find(
+      (link: any) => link.rel === "approve",
+    )?.href;
 
     res.json({
       success: true,
       orderID: order.id,
-      approvalUrl
+      approvalUrl,
     });
   } catch (error) {
-    console.error('PayPal order creation error:', error);
+    console.error("PayPal order creation error:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to create PayPal order'
+      message: "Failed to create PayPal order",
     });
   }
 };
@@ -572,34 +663,42 @@ export const handleCapturePayPalPayment: RequestHandler = async (req, res) => {
     if (!orderId || !payerId) {
       return res.status(400).json({
         success: false,
-        message: 'Missing order ID or payer ID'
+        message: "Missing order ID or payer ID",
       });
     }
 
-    console.log('Capturing PayPal payment for order:', orderId, 'payer:', payerId);
+    console.log(
+      "Capturing PayPal payment for order:",
+      orderId,
+      "payer:",
+      payerId,
+    );
 
     // Handle mock orders for development
-    if (orderId.startsWith('mock_order_') || payerId === 'mock_payer') {
-      console.log('PayPal demo mode - returning mock capture response');
+    if (orderId.startsWith("mock_order_") || payerId === "mock_payer") {
+      console.log("PayPal demo mode - returning mock capture response");
       return res.json({
         success: true,
         captureId: `mock_capture_${Date.now()}`,
-        status: 'COMPLETED'
+        status: "COMPLETED",
       });
     }
 
     const accessToken = await getPayPalAccessToken();
 
-    const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to capture PayPal payment');
+      throw new Error("Failed to capture PayPal payment");
     }
 
     const capture = await response.json();
@@ -607,38 +706,42 @@ export const handleCapturePayPalPayment: RequestHandler = async (req, res) => {
     res.json({
       success: true,
       captureId: capture.id,
-      status: capture.status
+      status: capture.status,
     });
   } catch (error) {
-    console.error('PayPal capture error:', error);
+    console.error("PayPal capture error:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to capture PayPal payment'
+      message: "Failed to capture PayPal payment",
     });
   }
 };
 
 // Create Stripe Payment Intent
-export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) => {
+export const handleCreateStripePaymentIntent: RequestHandler = async (
+  req,
+  res,
+) => {
   try {
     const user = (req as any).user;
-    const { bookingId, amount, currency = 'USD' } = req.body;
+    const { bookingId, amount, currency = "USD" } = req.body;
 
     if (!bookingId || !amount) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields'
+        message: "Missing required fields",
       });
     }
 
     try {
       // Find booking in Supabase
-      const { data: booking, error: bookingError } = await supabaseServerHelpers.getBookingById(bookingId);
+      const { data: booking, error: bookingError } =
+        await supabaseServerHelpers.getBookingById(bookingId);
 
       if (bookingError || !booking) {
         return res.status(404).json({
           success: false,
-          message: 'Booking not found'
+          message: "Booking not found",
         });
       }
 
@@ -646,44 +749,61 @@ export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) 
       if (booking.user_id !== user.id) {
         return res.status(404).json({
           success: false,
-          message: 'Booking not found'
+          message: "Booking not found",
         });
       }
 
-      if (booking.status !== 'pending') {
+      if (booking.status !== "pending") {
         return res.status(400).json({
           success: false,
-          message: 'Booking is not eligible for payment'
+          message: "Booking is not eligible for payment",
         });
       }
 
-      console.log('Creating Stripe payment intent for booking:', bookingId, 'amount:', amount);
+      console.log(
+        "Creating Stripe payment intent for booking:",
+        bookingId,
+        "amount:",
+        amount,
+      );
+
+      // Check if Stripe is configured
+      if (!StripeService.isConfigured()) {
+        return res.json({
+          success: true,
+          clientSecret: `pi_demo_${Date.now()}_secret`,
+          paymentIntentId: `pi_demo_${Date.now()}`,
+          demoMode: true,
+          message: "Stripe demo mode - payment will be simulated",
+        });
+      }
 
       const paymentIntent = await StripeService.createPaymentIntent({
         amount,
         currency,
         bookingId,
         customerEmail: user.email,
-        description: `OnboardTicket Flight Reservation - ${booking.pnr}`
+        description: `OnboardTicket Flight Reservation - ${booking.pnr}`,
       });
 
       res.json({
         success: true,
         clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id
+        paymentIntentId: paymentIntent.id,
+        demoMode: false,
       });
     } catch (supabaseError) {
-      console.error('Supabase error in Stripe payment intent:', supabaseError);
+      console.error("Supabase error in Stripe payment intent:", supabaseError);
       res.status(500).json({
         success: false,
-        message: 'Failed to create Stripe payment intent'
+        message: "Failed to create Stripe payment intent",
       });
     }
   } catch (error) {
-    console.error('Stripe payment intent creation error:', error);
+    console.error("Stripe payment intent creation error:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to create Stripe payment intent'
+      message: "Failed to create Stripe payment intent",
     });
   }
 };
@@ -691,14 +811,27 @@ export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) 
 // Get Stripe publishable key
 export const handleGetStripeConfig: RequestHandler = (req, res) => {
   try {
+    const publishableKey = StripeService.getPublishableKey();
+
+    if (!publishableKey || !StripeService.isConfigured()) {
+      // Return demo mode configuration
+      return res.json({
+        publishableKey: null,
+        demoMode: true,
+        message: "Stripe not configured - demo mode",
+      });
+    }
+
     res.json({
-      publishableKey: StripeService.getPublishableKey()
+      publishableKey,
+      demoMode: false,
     });
   } catch (error) {
-    console.error('Get Stripe config error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to get Stripe configuration'
+    console.error("Get Stripe config error:", error);
+    res.json({
+      publishableKey: null,
+      demoMode: true,
+      message: "Stripe configuration error - demo mode",
     });
   }
 };
@@ -707,11 +840,13 @@ export const handleGetStripeConfig: RequestHandler = (req, res) => {
 export const handleGetAllTransactions: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
-    
+
     // Check if user is admin
     const isAdmin = await supabaseServerHelpers.isUserAdmin(user.id);
     if (!isAdmin) {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
+      return res
+        .status(403)
+        .json({ success: false, message: "Admin access required" });
     }
 
     const page = parseInt(req.query.page as string) || 1;
@@ -719,35 +854,44 @@ export const handleGetAllTransactions: RequestHandler = async (req, res) => {
     const status = req.query.status as string;
 
     try {
-      const { data: allTransactions, error } = await supabaseServerHelpers.getAllTransactionsAdmin();
+      const { data: allTransactions, error } =
+        await supabaseServerHelpers.getAllTransactionsAdmin();
 
       if (error) {
-        console.error('Error fetching all transactions:', error);
+        console.error("Error fetching all transactions:", error);
         return res.json({
           transactions: [],
           total: 0,
           page,
           limit,
-          totalPages: 0
+          totalPages: 0,
         });
       }
 
       let filteredTransactions = allTransactions;
 
-      if (status && status !== 'all') {
-        filteredTransactions = allTransactions.filter(transaction => transaction.status === status);
+      if (status && status !== "all") {
+        filteredTransactions = allTransactions.filter(
+          (transaction) => transaction.status === status,
+        );
       }
 
       // Sort by creation date
-      filteredTransactions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      filteredTransactions.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
 
       // Pagination
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
-      const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
+      const paginatedTransactions = filteredTransactions.slice(
+        startIndex,
+        endIndex,
+      );
 
       // Transform to expected format
-      const transactions = paginatedTransactions.map(transaction => ({
+      const transactions = paginatedTransactions.map((transaction) => ({
         id: transaction.id,
         bookingId: transaction.booking_id,
         userId: transaction.user_id,
@@ -759,15 +903,19 @@ export const handleGetAllTransactions: RequestHandler = async (req, res) => {
         createdAt: transaction.created_at,
         updatedAt: transaction.updated_at,
         // Include booking and user info if available
-        booking: transaction.booking ? {
-          pnr: transaction.booking.pnr,
-          total_amount: transaction.booking.total_amount
-        } : undefined,
-        user: transaction.user ? {
-          firstName: transaction.user.first_name,
-          lastName: transaction.user.last_name,
-          email: transaction.user.email
-        } : undefined
+        booking: transaction.booking
+          ? {
+              pnr: transaction.booking.pnr,
+              total_amount: transaction.booking.total_amount,
+            }
+          : undefined,
+        user: transaction.user
+          ? {
+              firstName: transaction.user.first_name,
+              lastName: transaction.user.last_name,
+              email: transaction.user.email,
+            }
+          : undefined,
       }));
 
       res.json({
@@ -775,20 +923,20 @@ export const handleGetAllTransactions: RequestHandler = async (req, res) => {
         total: filteredTransactions.length,
         page,
         limit,
-        totalPages: Math.ceil(filteredTransactions.length / limit)
+        totalPages: Math.ceil(filteredTransactions.length / limit),
       });
     } catch (supabaseError) {
-      console.error('Supabase get all transactions error:', supabaseError);
+      console.error("Supabase get all transactions error:", supabaseError);
       res.json({
         transactions: [],
         total: 0,
         page,
         limit,
-        totalPages: 0
+        totalPages: 0,
       });
     }
   } catch (error) {
-    console.error('Get all transactions error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("Get all transactions error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

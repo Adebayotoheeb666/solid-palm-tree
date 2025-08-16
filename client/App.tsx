@@ -38,6 +38,7 @@ const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
 const PaymentSuccess = React.lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCancel = React.lazy(() => import("./pages/PaymentCancel"));
 const CacheReset = React.lazy(() => import("./pages/CacheReset"));
+const TicketSample = React.lazy(() => import("./pages/TicketSample"));
 
 const queryClient = new QueryClient();
 
@@ -134,6 +135,7 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/payment" element={<Payment />} />
+                <Route path="/ticket-sample" element={<TicketSample />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/cache-reset" element={<CacheReset />} />

@@ -13,6 +13,7 @@ import { PaymentRequest, PaymentResponse } from "@shared/api";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthenticatedFetch } from "../hooks/useAuth";
 import StripePaymentForm from "../components/StripePaymentForm";
+import { countries } from "../lib/countries";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -107,10 +108,28 @@ export default function Payment() {
         console.error("Error parsing booking data:", error);
       }
     } else {
-      // If no booking data, redirect back to booking flow
-      console.warn("No booking data found, redirecting to booking flow");
-      navigate("/userform/confirmation");
-      return;
+      // If no booking data, check if we have route and passenger data to reconstruct
+      const savedRoute =
+        localStorage.getItem("selectedRoute") ||
+        localStorage.getItem("bookingRoute");
+      const savedPassengers =
+        localStorage.getItem("passengerData") ||
+        localStorage.getItem("bookingPassengers");
+
+      if (savedRoute && savedPassengers) {
+        console.warn(
+          "No currentBooking but have route/passenger data, redirecting to confirmation",
+        );
+        navigate("/userform/confirmation");
+        return;
+      } else {
+        // No data at all, start from beginning
+        console.warn(
+          "No booking data found, redirecting to start of booking flow",
+        );
+        navigate("/userform/route");
+        return;
+      }
     }
 
     if (savedRoute) {
@@ -207,8 +226,8 @@ export default function Payment() {
       return flightPrice * passengerCount;
     }
 
-    // Fallback to $10 per passenger
-    return passengerCount * 10;
+    // Fallback to $15 per passenger
+    return passengerCount * 15;
   };
 
   const getBasePrice = () => {
@@ -286,24 +305,27 @@ export default function Payment() {
         body: JSON.stringify(bookingRequest),
       });
 
+      let bookingResult;
+
       if (!bookingResponse.ok) {
-        const errorData = await bookingResponse.text();
-        console.error("Booking creation failed:", {
-          status: bookingResponse.status,
-          error: errorData,
-        });
+        let errorMessage = `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`;
 
         try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(parsedError.message || "Failed to create booking");
+          const errorData = await bookingResponse.json();
+          errorMessage = errorData.message || errorMessage;
         } catch {
-          throw new Error(
-            `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`,
-          );
+          // If JSON parsing fails, use the default error message
         }
+
+        console.error("Booking creation failed:", {
+          status: bookingResponse.status,
+          url: "/api/bookings",
+        });
+
+        throw new Error(errorMessage);
       }
 
-      const bookingResult = await bookingResponse.json();
+      bookingResult = await bookingResponse.json();
       console.log("Booking created successfully for Stripe:", bookingResult);
 
       if (!bookingResult.success || !bookingResult.booking) {
@@ -399,28 +421,29 @@ export default function Payment() {
 
       console.log("Booking response status:", bookingResponse.status);
 
+      let bookingResult;
+
       if (!bookingResponse.ok) {
-        const errorData = await bookingResponse.text();
+        let errorMessage = `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`;
+
+        try {
+          const errorData = await bookingResponse.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use the default error message
+        }
+
         console.error("Booking creation failed:", {
           status: bookingResponse.status,
           statusText: bookingResponse.statusText,
-          error: errorData,
           url: "/api/bookings",
           requestData: bookingRequest,
         });
 
-        // Try to parse error message
-        try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(parsedError.message || "Failed to create booking");
-        } catch {
-          throw new Error(
-            `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`,
-          );
-        }
+        throw new Error(errorMessage);
       }
 
-      const bookingResult = await bookingResponse.json();
+      bookingResult = await bookingResponse.json();
       console.log("Booking created successfully:", bookingResult);
 
       if (!bookingResult.success || !bookingResult.booking) {
@@ -442,37 +465,48 @@ export default function Payment() {
         },
       );
 
+      let paypalOrderData;
+
       if (!paypalOrderResponse.ok) {
-        const errorData = await paypalOrderResponse.text();
+        let errorMessage = `Failed to create PayPal order: ${paypalOrderResponse.status} ${paypalOrderResponse.statusText}`;
+
+        try {
+          const errorData = await paypalOrderResponse.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use the default error message
+        }
+
         console.error("PayPal order creation failed:", {
           status: paypalOrderResponse.status,
           statusText: paypalOrderResponse.statusText,
-          error: errorData,
         });
 
-        try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(
-            parsedError.message || "Failed to create PayPal order",
-          );
-        } catch {
-          throw new Error(
-            `Failed to create PayPal order: ${paypalOrderResponse.status} ${paypalOrderResponse.statusText}`,
-          );
-        }
+        throw new Error(errorMessage);
       }
 
-      const paypalOrderData = await paypalOrderResponse.json();
+      paypalOrderData = await paypalOrderResponse.json();
       console.log("PayPal order created:", paypalOrderData);
 
-      const { orderID, approvalUrl } = paypalOrderData;
+      const { orderID, approvalUrl, demoMode, message } = paypalOrderData;
 
       if (!approvalUrl) {
         throw new Error("PayPal approval URL not received");
       }
 
-      // Redirect to PayPal for approval
-      window.location.href = approvalUrl;
+      // Show demo mode info if applicable
+      if (demoMode) {
+        setError(
+          `Demo Mode: ${message || "PayPal payment simulation. This will redirect to a success page."}`,
+        );
+        // Still redirect to show the flow
+        setTimeout(() => {
+          window.location.href = approvalUrl;
+        }, 2000);
+      } else {
+        // Redirect to PayPal for approval
+        window.location.href = approvalUrl;
+      }
     } catch (err) {
       console.error("PayPal payment error:", err);
       setError(
@@ -788,13 +822,11 @@ export default function Payment() {
                     }`}
                   >
                     <option value="">Select Country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="DE">Germany</option>
-                    <option value="FR">France</option>
-                    <option value="AU">Australia</option>
-                    <option value="other">Other</option>
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name}
+                      </option>
+                    ))}
                   </select>
                   {hasFieldError("country") && (
                     <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">

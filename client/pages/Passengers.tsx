@@ -506,7 +506,7 @@ export default function Passengers({
                         <div className="text-ticket-text font-semibold">
                           Flight
                         </div>
-                        <div className="font-bold">$10 USD</div>
+                        <div className="font-bold">$15 USD</div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 text-sm mt-2">

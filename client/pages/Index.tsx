@@ -83,14 +83,25 @@ const Index = () => {
   const totalTestimonials = testimonials.length;
 
   // Auto-slide effect for testimonials
+  // Auto-slide only the right testimonial
   useEffect(() => {
     const interval = setInterval(() => {
-      setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
       setTestimonialIdxRight((prev) => (prev + 1) % totalTestimonials);
     }, 4000); // Change every 4 seconds
 
     return () => clearInterval(interval);
   }, [totalTestimonials]);
+
+  // Navigation functions for left testimonial
+  const handleLeftPrev = () => {
+    setTestimonialIdxLeft(
+      (prev) => (prev - 1 + totalTestimonials) % totalTestimonials,
+    );
+  };
+
+  const handleLeftNext = () => {
+    setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
+  };
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
@@ -187,90 +198,66 @@ const Index = () => {
             That are fast, easy & verifiable
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* Fast Reservation */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+            <div className="relative flex flex-col justify-center h-64 md:h-72">
+              <div className="gradient-box rounded-2xl p-6 w-full h-full flex flex-col items-center justify-center text-center shadow-lg overflow-hidden">
+                <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-4">
                   <img
                     src="/onboard/fast.png"
                     alt="Fast Reservation Icon"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
+                <div className="flex-1 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white mb-3 font-jakarta">
                     Fast Reservation
                   </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
+                  <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
+                    Get your reservation instantly via email. Quick and
+                    hassle-free booking process.
                   </p>
                 </div>
               </div>
             </div>
             {/* Secure & Easy */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="flex items-center justify-center mr-4 md:mr-6 shrink-0">
+            <div className="relative flex flex-col justify-center h-64 md:h-72">
+              <div className="gradient-box rounded-2xl p-6 w-full h-full flex flex-col items-center justify-center text-center shadow-lg overflow-hidden">
+                <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-4">
                   <img
                     src="/onboard/secure.png"
                     alt="Secure Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: "none" }}
+                    className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
+                <div className="flex-1 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white mb-3 font-jakarta">
                     Secure & Easy
                   </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
+                  <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
+                    Secure payment processing with user-friendly interface for
+                    seamless experience.
                   </p>
                 </div>
               </div>
             </div>
             {/* Verifiable */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="flex items-center justify-center mr-4 md:mr-6 shrink-0">
+            <div className="relative flex flex-col justify-center h-64 md:h-72">
+              <div className="gradient-box rounded-2xl p-6 w-full h-full flex flex-col items-center justify-center text-center shadow-lg overflow-hidden">
+                <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-4">
                   <img
                     src="/onboard/verifiable.png"
                     alt="Verified Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: "none" }}
+                    className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
+                <div className="flex-1 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white mb-3 font-jakarta">
                     Verifiable
                   </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* Save Money */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box-pink rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="flex items-center justify-center mr-4 md:mr-6 shrink-0">
-                  <img
-                    src="/onboard/save.png"
-                    alt="Wallet Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: "none" }}
-                  />
-                </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
-                    Save Money
-                  </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
+                  <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
+                    All reservations are real and verifiable for visa
+                    applications and travel.
                   </p>
                 </div>
               </div>
@@ -343,16 +330,36 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Auto-sliding indicators */}
-              <div className="flex gap-1 justify-center lg:justify-start mt-4">
-                {testimonials.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === testimonialIdxLeft ? "bg-[#878EFF]" : "bg-gray-300"
-                    }`}
-                  />
-                ))}
+              {/* Navigation buttons and indicators */}
+              <div className="flex items-center justify-center lg:justify-start gap-4 mt-4">
+                <button
+                  onClick={handleLeftPrev}
+                  className="p-2 rounded-full bg-[#3839C9] text-white hover:bg-blue-700 transition-colors"
+                  aria-label="Previous testimonial"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+
+                <div className="flex gap-1">
+                  {testimonials.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === testimonialIdxLeft
+                          ? "bg-[#878EFF]"
+                          : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleLeftNext}
+                  className="p-2 rounded-full bg-[#3839C9] text-white hover:bg-blue-700 transition-colors"
+                  aria-label="Next testimonial"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
@@ -385,7 +392,9 @@ const Index = () => {
                       <div
                         key={index}
                         className={`w-2 h-2 rounded-full transition-colors ${
-                          index === testimonialIdxRight ? "bg-[#878EFF]" : "bg-gray-300"
+                          index === testimonialIdxRight
+                            ? "bg-[#878EFF]"
+                            : "bg-gray-300"
                         }`}
                       />
                     ))}
@@ -718,7 +727,7 @@ const Index = () => {
               <div className="flex gap-2 md:gap-4 mt-auto">
                 <button
                   className="border-2 border-[#5225B8] bg-transparent text-[#233789] px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold text-base md:text-lg hover:bg-purple-50 transition-colors shadow-none"
-                  onClick={() => navigate("/userform")}
+                  onClick={() => navigate("/ticket-sample")}
                 >
                   See sample ticket
                 </button>

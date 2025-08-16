@@ -125,9 +125,18 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
           {/* User Info (if authenticated) */}
           {isAuthenticated && user && (
             <div className="border-t p-4">
-              <div className="text-sm text-gray-600">Logged in as:</div>
-              <div className="font-medium text-brand-text-primary truncate">
-                {user.email}
+              <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                <div className="w-10 h-10 bg-[#3839C9] rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-900 text-sm">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-xs text-gray-500 truncate">
+                    {user.email}
+                  </div>
+                </div>
               </div>
             </div>
           )}

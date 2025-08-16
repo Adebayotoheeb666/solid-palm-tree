@@ -259,16 +259,28 @@ export function createServer() {
   const authMiddleware = hybridAuthMiddleware;
 
   // Security check: Warn about placeholder values in production
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     const dangerousValues = [
-      'placeholder', 'your-', 'test_', 'demo', 'example',
-      'sk_test_', 'pk_test_', 'whsec_test'
+      "placeholder",
+      "your-",
+      "test_",
+      "demo",
+      "example",
+      "sk_test_",
+      "pk_test_",
+      "whsec_test",
     ];
 
     Object.entries(process.env).forEach(([key, value]) => {
-      if (key.includes('SECRET') || key.includes('KEY') || key.includes('PRIVATE')) {
-        if (value && dangerousValues.some(danger => value.includes(danger))) {
-          console.warn(`⚠️ SECURITY WARNING: ${key} appears to contain placeholder/test values in production!`);
+      if (
+        key.includes("SECRET") ||
+        key.includes("KEY") ||
+        key.includes("PRIVATE")
+      ) {
+        if (value && dangerousValues.some((danger) => value.includes(danger))) {
+          console.warn(
+            `⚠️ SECURITY WARNING: ${key} appears to contain placeholder/test values in production!`,
+          );
         }
       }
     });
@@ -335,45 +347,37 @@ export function createServer() {
   );
 
   // Payment routes (authenticated)
-  app.post("/api/payments", authenticateUser, handleProcessPayment);
+  app.post("/api/payments", authMiddleware, handleProcessPayment);
   app.post(
     "/api/payments/paypal/create-order",
-    authenticateUser,
+    authMiddleware,
     handleCreatePayPalOrder,
   );
   app.post(
     "/api/payments/paypal/capture",
-    authenticateUser,
+    authMiddleware,
     handleCapturePayPalPayment,
   );
   app.post(
     "/api/payments/stripe/create-intent",
-    authenticateUser,
+    authMiddleware,
     handleCreateStripePaymentIntent,
   );
   app.get("/api/payments/stripe/config", handleGetStripeConfig);
-  app.get("/api/payments/history", authenticateUser, handleGetPaymentHistory);
-  app.get(
-    "/api/payments/:transactionId",
-    authenticateUser,
-    handleGetTransaction,
-  );
+  app.get("/api/payments/history", authMiddleware, handleGetPaymentHistory);
+  app.get("/api/payments/:transactionId", authMiddleware, handleGetTransaction);
 
   // Support ticket routes (authenticated)
-  app.post("/api/support/tickets", authenticateUser, handleCreateSupportTicket);
-  app.get(
-    "/api/support/tickets",
-    authenticateUser,
-    handleGetUserSupportTickets,
-  );
+  app.post("/api/support/tickets", authMiddleware, handleCreateSupportTicket);
+  app.get("/api/support/tickets", authMiddleware, handleGetUserSupportTickets);
   app.get(
     "/api/support/tickets/:ticketId",
-    authenticateUser,
+    authMiddleware,
     handleGetSupportTicket,
   );
   app.put(
     "/api/support/tickets/:ticketId/close",
-    authenticateUser,
+    authMiddleware,
     handleCloseSupportTicket,
   );
 
