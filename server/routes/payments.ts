@@ -691,14 +691,27 @@ export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) 
 // Get Stripe publishable key
 export const handleGetStripeConfig: RequestHandler = (req, res) => {
   try {
+    const publishableKey = StripeService.getPublishableKey();
+
+    if (!publishableKey || !StripeService.isConfigured()) {
+      // Return demo mode configuration
+      return res.json({
+        publishableKey: null,
+        demoMode: true,
+        message: 'Stripe not configured - demo mode'
+      });
+    }
+
     res.json({
-      publishableKey: StripeService.getPublishableKey()
+      publishableKey,
+      demoMode: false
     });
   } catch (error) {
     console.error('Get Stripe config error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to get Stripe configuration'
+    res.json({
+      publishableKey: null,
+      demoMode: true,
+      message: 'Stripe configuration error - demo mode'
     });
   }
 };
