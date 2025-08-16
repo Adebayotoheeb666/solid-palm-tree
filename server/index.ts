@@ -360,20 +360,20 @@ export function createServer() {
   );
 
   // Support ticket routes (authenticated)
-  app.post("/api/support/tickets", authenticateUser, handleCreateSupportTicket);
+  app.post("/api/support/tickets", authMiddleware, handleCreateSupportTicket);
   app.get(
     "/api/support/tickets",
-    authenticateUser,
+    authMiddleware,
     handleGetUserSupportTickets,
   );
   app.get(
     "/api/support/tickets/:ticketId",
-    authenticateUser,
+    authMiddleware,
     handleGetSupportTicket,
   );
   app.put(
     "/api/support/tickets/:ticketId/close",
-    authenticateUser,
+    authMiddleware,
     handleCloseSupportTicket,
   );
 
