@@ -45,8 +45,10 @@ export default function StripePaymentForm({
       const configResponse = await fetch('/api/payments/stripe/config');
       const configData = await configResponse.json();
       
-      if (!configData.publishableKey) {
-        throw new Error('Stripe not configured');
+      if (!configData.publishableKey || configData.demoMode) {
+        setError('Stripe is not configured on this server. Please use PayPal or Credit Card payment options.');
+        setLoading(false);
+        return;
       }
 
       // Initialize Stripe
