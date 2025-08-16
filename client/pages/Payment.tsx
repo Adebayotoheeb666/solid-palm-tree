@@ -410,28 +410,29 @@ export default function Payment() {
 
       console.log("Booking response status:", bookingResponse.status);
 
+      let bookingResult;
+
       if (!bookingResponse.ok) {
-        const errorData = await bookingResponse.text();
+        let errorMessage = `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`;
+
+        try {
+          const errorData = await bookingResponse.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use the default error message
+        }
+
         console.error("Booking creation failed:", {
           status: bookingResponse.status,
           statusText: bookingResponse.statusText,
-          error: errorData,
           url: "/api/bookings",
           requestData: bookingRequest,
         });
 
-        // Try to parse error message
-        try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(parsedError.message || "Failed to create booking");
-        } catch {
-          throw new Error(
-            `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`,
-          );
-        }
+        throw new Error(errorMessage);
       }
 
-      const bookingResult = await bookingResponse.json();
+      bookingResult = await bookingResponse.json();
       console.log("Booking created successfully:", bookingResult);
 
       if (!bookingResult.success || !bookingResult.booking) {
