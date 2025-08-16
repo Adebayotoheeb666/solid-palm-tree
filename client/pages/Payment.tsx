@@ -799,13 +799,11 @@ export default function Payment() {
                     }`}
                   >
                     <option value="">Select Country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="DE">Germany</option>
-                    <option value="FR">France</option>
-                    <option value="AU">Australia</option>
-                    <option value="other">Other</option>
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name}
+                      </option>
+                    ))}
                   </select>
                   {hasFieldError("country") && (
                     <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
