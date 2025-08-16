@@ -659,6 +659,17 @@ export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) 
 
       console.log('Creating Stripe payment intent for booking:', bookingId, 'amount:', amount);
 
+      // Check if Stripe is configured
+      if (!StripeService.isConfigured()) {
+        return res.json({
+          success: true,
+          clientSecret: `pi_demo_${Date.now()}_secret`,
+          paymentIntentId: `pi_demo_${Date.now()}`,
+          demoMode: true,
+          message: 'Stripe demo mode - payment will be simulated'
+        });
+      }
+
       const paymentIntent = await StripeService.createPaymentIntent({
         amount,
         currency,
@@ -670,7 +681,8 @@ export const handleCreateStripePaymentIntent: RequestHandler = async (req, res) 
       res.json({
         success: true,
         clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id
+        paymentIntentId: paymentIntent.id,
+        demoMode: false
       });
     } catch (supabaseError) {
       console.error('Supabase error in Stripe payment intent:', supabaseError);
