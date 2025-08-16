@@ -257,28 +257,6 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            {/* Save Money */}
-            <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
-              <div className="gradient-box-pink rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="flex items-center justify-center mr-4 md:mr-6 shrink-0">
-                  <img
-                    src="/onboard/save.png"
-                    alt="Wallet Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
-                    style={{ background: "none" }}
-                  />
-                </div>
-                <div className="flex-1 text-left min-w-0">
-                  <h3 className="text-xl md:text-3xl font-extrabold text-white mb-2 font-jakarta ">
-                    Save Money
-                  </h3>
-                  <p className="text-white text-sm md:text-lg font-semibold font-jakarta break-words">
-                    Arrives instantly via email. No delay or stress (cue sigh of
-                    relief!).
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
