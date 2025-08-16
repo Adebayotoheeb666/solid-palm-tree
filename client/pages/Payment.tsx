@@ -217,8 +217,8 @@ export default function Payment() {
       return flightPrice * passengerCount;
     }
 
-    // Fallback to $10 per passenger
-    return passengerCount * 10;
+    // Fallback to $15 per passenger
+    return passengerCount * 15;
   };
 
   const getBasePrice = () => {
