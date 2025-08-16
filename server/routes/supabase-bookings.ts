@@ -245,7 +245,17 @@ export const handleGetSupabaseBooking: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
     const { bookingId } = req.params;
-    
+
+    // Check if user ID is a valid UUID (Supabase format)
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id);
+
+    if (!isValidUUID) {
+      console.log('User ID is not a UUID, falling back to regular booking handler');
+      // Import and use the fallback booking handler
+      const { handleGetBooking } = await import('./bookings');
+      return handleGetBooking(req, res);
+    }
+
     const { data: booking, error } = await supabaseServerHelpers.getBookingById(bookingId);
 
     if (error || !booking) {
