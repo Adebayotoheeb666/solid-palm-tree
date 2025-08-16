@@ -352,16 +352,34 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Auto-sliding indicators */}
-              <div className="flex gap-1 justify-center lg:justify-start mt-4">
-                {testimonials.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === testimonialIdxLeft ? "bg-[#878EFF]" : "bg-gray-300"
-                    }`}
-                  />
-                ))}
+              {/* Navigation buttons and indicators */}
+              <div className="flex items-center justify-center lg:justify-start gap-4 mt-4">
+                <button
+                  onClick={handleLeftPrev}
+                  className="p-2 rounded-full bg-[#3839C9] text-white hover:bg-blue-700 transition-colors"
+                  aria-label="Previous testimonial"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+
+                <div className="flex gap-1">
+                  {testimonials.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === testimonialIdxLeft ? "bg-[#878EFF]" : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleLeftNext}
+                  className="p-2 rounded-full bg-[#3839C9] text-white hover:bg-blue-700 transition-colors"
+                  aria-label="Next testimonial"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
