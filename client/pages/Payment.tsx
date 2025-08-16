@@ -480,14 +480,23 @@ export default function Payment() {
       paypalOrderData = await paypalOrderResponse.json();
       console.log("PayPal order created:", paypalOrderData);
 
-      const { orderID, approvalUrl } = paypalOrderData;
+      const { orderID, approvalUrl, demoMode, message } = paypalOrderData;
 
       if (!approvalUrl) {
         throw new Error("PayPal approval URL not received");
       }
 
-      // Redirect to PayPal for approval
-      window.location.href = approvalUrl;
+      // Show demo mode info if applicable
+      if (demoMode) {
+        setError(`Demo Mode: ${message || 'PayPal payment simulation. This will redirect to a success page.'}`);
+        // Still redirect to show the flow
+        setTimeout(() => {
+          window.location.href = approvalUrl;
+        }, 2000);
+      } else {
+        // Redirect to PayPal for approval
+        window.location.href = approvalUrl;
+      }
     } catch (err) {
       console.error("PayPal payment error:", err);
       setError(
