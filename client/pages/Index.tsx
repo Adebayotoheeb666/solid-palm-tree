@@ -94,7 +94,9 @@ const Index = () => {
 
   // Navigation functions for left testimonial
   const handleLeftPrev = () => {
-    setTestimonialIdxLeft((prev) => (prev - 1 + totalTestimonials) % totalTestimonials);
+    setTestimonialIdxLeft(
+      (prev) => (prev - 1 + totalTestimonials) % totalTestimonials,
+    );
   };
 
   const handleLeftNext = () => {
@@ -212,7 +214,8 @@ const Index = () => {
                     Fast Reservation
                   </h3>
                   <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
-                    Get your reservation instantly via email. Quick and hassle-free booking process.
+                    Get your reservation instantly via email. Quick and
+                    hassle-free booking process.
                   </p>
                 </div>
               </div>
@@ -232,7 +235,8 @@ const Index = () => {
                     Secure & Easy
                   </h3>
                   <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
-                    Secure payment processing with user-friendly interface for seamless experience.
+                    Secure payment processing with user-friendly interface for
+                    seamless experience.
                   </p>
                 </div>
               </div>
@@ -252,7 +256,8 @@ const Index = () => {
                     Verifiable
                   </h3>
                   <p className="text-white text-sm md:text-base font-semibold font-jakarta leading-relaxed">
-                    All reservations are real and verifiable for visa applications and travel.
+                    All reservations are real and verifiable for visa
+                    applications and travel.
                   </p>
                 </div>
               </div>
@@ -340,7 +345,9 @@ const Index = () => {
                     <div
                       key={index}
                       className={`w-2 h-2 rounded-full transition-colors ${
-                        index === testimonialIdxLeft ? "bg-[#878EFF]" : "bg-gray-300"
+                        index === testimonialIdxLeft
+                          ? "bg-[#878EFF]"
+                          : "bg-gray-300"
                       }`}
                     />
                   ))}
@@ -385,7 +392,9 @@ const Index = () => {
                       <div
                         key={index}
                         className={`w-2 h-2 rounded-full transition-colors ${
-                          index === testimonialIdxRight ? "bg-[#878EFF]" : "bg-gray-300"
+                          index === testimonialIdxRight
+                            ? "bg-[#878EFF]"
+                            : "bg-gray-300"
                         }`}
                       />
                     ))}

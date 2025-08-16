@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { CreditCard, Lock, AlertCircle, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { CreditCard, Lock, AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface StripePaymentFormProps {
   amount: number;
@@ -19,20 +19,20 @@ export default function StripePaymentForm({
   onSuccess,
   onError,
   loading,
-  setLoading
+  setLoading,
 }: StripePaymentFormProps) {
   const [stripe, setStripe] = useState<any>(null);
-  const [clientSecret, setClientSecret] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>("");
   const [stripeLoading, setStripeLoading] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'manual'>('card');
-  
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "manual">("card");
+
   // Manual card form state
   const [cardData, setCardData] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardholderName: '',
-    country: ''
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: "",
+    country: "",
   });
 
   useEffect(() => {
@@ -42,11 +42,13 @@ export default function StripePaymentForm({
   const initializeStripe = async () => {
     try {
       // Get Stripe publishable key
-      const configResponse = await fetch('/api/payments/stripe/config');
+      const configResponse = await fetch("/api/payments/stripe/config");
       const configData = await configResponse.json();
-      
+
       if (!configData.publishableKey || configData.demoMode) {
-        setError('Stripe is not configured on this server. Please use PayPal or Credit Card payment options.');
+        setError(
+          "Stripe is not configured on this server. Please use PayPal or Credit Card payment options.",
+        );
         setLoading(false);
         return;
       }
@@ -56,29 +58,33 @@ export default function StripePaymentForm({
       setStripe(stripeInstance);
 
       // Create payment intent
-      const intentResponse = await fetch('/api/payments/stripe/create-intent', {
-        method: 'POST',
+      const intentResponse = await fetch("/api/payments/stripe/create-intent", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           bookingId,
           amount,
-          currency
-        })
+          currency,
+        }),
       });
 
       const intentData = await intentResponse.json();
-      
+
       if (intentData.success) {
         setClientSecret(intentData.clientSecret);
       } else {
-        throw new Error(intentData.message || 'Failed to create payment intent');
+        throw new Error(
+          intentData.message || "Failed to create payment intent",
+        );
       }
     } catch (error) {
-      console.error('Stripe initialization error:', error);
-      onError(error instanceof Error ? error.message : 'Failed to initialize payment');
+      console.error("Stripe initialization error:", error);
+      onError(
+        error instanceof Error ? error.message : "Failed to initialize payment",
+      );
     } finally {
       setStripeLoading(false);
     }
@@ -86,7 +92,7 @@ export default function StripePaymentForm({
 
   const handleCardPayment = async () => {
     if (!stripe || !clientSecret) {
-      onError('Payment system not ready');
+      onError("Payment system not ready");
       return;
     }
 
@@ -94,43 +100,45 @@ export default function StripePaymentForm({
 
     try {
       // Create payment method from manual card data
-      const { error: methodError, paymentMethod: createdMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: {
-          number: cardData.cardNumber.replace(/\s/g, ''),
-          exp_month: parseInt(cardData.expiryDate.split('/')[0]),
-          exp_year: 2000 + parseInt(cardData.expiryDate.split('/')[1]),
-          cvc: cardData.cvv,
-        },
-        billing_details: {
-          name: cardData.cardholderName,
-          address: {
-            country: cardData.country,
+      const { error: methodError, paymentMethod: createdMethod } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: {
+            number: cardData.cardNumber.replace(/\s/g, ""),
+            exp_month: parseInt(cardData.expiryDate.split("/")[0]),
+            exp_year: 2000 + parseInt(cardData.expiryDate.split("/")[1]),
+            cvc: cardData.cvv,
           },
-        },
-      });
+          billing_details: {
+            name: cardData.cardholderName,
+            address: {
+              country: cardData.country,
+            },
+          },
+        });
 
       if (methodError) {
-        throw new Error(methodError.message || 'Invalid card details');
+        throw new Error(methodError.message || "Invalid card details");
       }
 
       // Confirm payment
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: createdMethod.id,
-        return_url: `${window.location.origin}/payment/success`,
-      });
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: createdMethod.id,
+          return_url: `${window.location.origin}/payment/success`,
+        });
 
       if (confirmError) {
-        throw new Error(confirmError.message || 'Payment failed');
+        throw new Error(confirmError.message || "Payment failed");
       }
 
-      if (paymentIntent.status === 'succeeded') {
+      if (paymentIntent.status === "succeeded") {
         onSuccess(paymentIntent.id);
       } else {
-        throw new Error('Payment not completed');
+        throw new Error("Payment not completed");
       }
     } catch (error) {
-      onError(error instanceof Error ? error.message : 'Payment failed');
+      onError(error instanceof Error ? error.message : "Payment failed");
     } finally {
       setLoading(false);
     }
@@ -138,57 +146,57 @@ export default function StripePaymentForm({
 
   const validateCard = () => {
     const { cardNumber, expiryDate, cvv, cardholderName, country } = cardData;
-    
-    if (!cardNumber || cardNumber.replace(/\s/g, '').length !== 16) {
-      return 'Please enter a valid 16-digit card number';
+
+    if (!cardNumber || cardNumber.replace(/\s/g, "").length !== 16) {
+      return "Please enter a valid 16-digit card number";
     }
-    
+
     if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
-      return 'Please enter expiry date in MM/YY format';
+      return "Please enter expiry date in MM/YY format";
     }
-    
-    const [month, year] = expiryDate.split('/');
+
+    const [month, year] = expiryDate.split("/");
     const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1);
     if (expiry <= new Date()) {
-      return 'Card has expired';
+      return "Card has expired";
     }
-    
+
     if (!cvv || !/^\d{3,4}$/.test(cvv)) {
-      return 'Please enter a valid CVV';
+      return "Please enter a valid CVV";
     }
-    
+
     if (!cardholderName.trim()) {
-      return 'Please enter cardholder name';
+      return "Please enter cardholder name";
     }
-    
+
     if (!country) {
-      return 'Please select your country';
+      return "Please select your country";
     }
-    
+
     return null;
   };
 
   const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
     const matches = v.match(/\d{4,16}/g);
-    const match = matches && matches[0] || '';
+    const match = (matches && matches[0]) || "";
     const parts = [];
-    
+
     for (let i = 0, len = match.length; i < len; i += 4) {
       parts.push(match.substring(i, i + 4));
     }
-    
+
     if (parts.length) {
-      return parts.join(' ');
+      return parts.join(" ");
     } else {
       return v;
     }
   };
 
   const formatExpiryDate = (value: string) => {
-    const v = value.replace(/\D/g, '');
+    const v = value.replace(/\D/g, "");
     if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4);
+      return v.substring(0, 2) + "/" + v.substring(2, 4);
     }
     return v;
   };
@@ -222,10 +230,12 @@ export default function StripePaymentForm({
             type="text"
             placeholder="1234 5678 9012 3456"
             value={cardData.cardNumber}
-            onChange={(e) => setCardData({
-              ...cardData,
-              cardNumber: formatCardNumber(e.target.value)
-            })}
+            onChange={(e) =>
+              setCardData({
+                ...cardData,
+                cardNumber: formatCardNumber(e.target.value),
+              })
+            }
             maxLength={19}
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
           />
@@ -234,15 +244,19 @@ export default function StripePaymentForm({
         {/* Expiry and CVV */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Expiry Date</label>
+            <label className="block text-sm font-medium mb-2">
+              Expiry Date
+            </label>
             <input
               type="text"
               placeholder="MM/YY"
               value={cardData.expiryDate}
-              onChange={(e) => setCardData({
-                ...cardData,
-                expiryDate: formatExpiryDate(e.target.value)
-              })}
+              onChange={(e) =>
+                setCardData({
+                  ...cardData,
+                  expiryDate: formatExpiryDate(e.target.value),
+                })
+              }
               maxLength={5}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
             />
@@ -253,10 +267,12 @@ export default function StripePaymentForm({
               type="text"
               placeholder="123"
               value={cardData.cvv}
-              onChange={(e) => setCardData({
-                ...cardData,
-                cvv: e.target.value.replace(/\D/g, '')
-              })}
+              onChange={(e) =>
+                setCardData({
+                  ...cardData,
+                  cvv: e.target.value.replace(/\D/g, ""),
+                })
+              }
               maxLength={4}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
             />
@@ -265,15 +281,19 @@ export default function StripePaymentForm({
 
         {/* Cardholder Name */}
         <div>
-          <label className="block text-sm font-medium mb-2">Cardholder Name</label>
+          <label className="block text-sm font-medium mb-2">
+            Cardholder Name
+          </label>
           <input
             type="text"
             placeholder="John Doe"
             value={cardData.cardholderName}
-            onChange={(e) => setCardData({
-              ...cardData,
-              cardholderName: e.target.value
-            })}
+            onChange={(e) =>
+              setCardData({
+                ...cardData,
+                cardholderName: e.target.value,
+              })
+            }
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
           />
         </div>
@@ -283,10 +303,12 @@ export default function StripePaymentForm({
           <label className="block text-sm font-medium mb-2">Country</label>
           <select
             value={cardData.country}
-            onChange={(e) => setCardData({
-              ...cardData,
-              country: e.target.value
-            })}
+            onChange={(e) =>
+              setCardData({
+                ...cardData,
+                country: e.target.value,
+              })
+            }
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-ticket-accent"
           >
             <option value="">Select Country</option>
@@ -309,7 +331,9 @@ export default function StripePaymentForm({
         <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
         <div className="text-sm">
           <p className="font-medium text-green-400">Secure Payment</p>
-          <p className="text-green-300/80">Your payment information is encrypted and secure</p>
+          <p className="text-green-300/80">
+            Your payment information is encrypted and secure
+          </p>
         </div>
       </div>
 
@@ -319,8 +343,8 @@ export default function StripePaymentForm({
         disabled={loading || !!validationError}
         className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors ${
           loading || validationError
-            ? 'bg-gray-500 cursor-not-allowed'
-            : 'bg-ticket-accent text-black hover:bg-opacity-80'
+            ? "bg-gray-500 cursor-not-allowed"
+            : "bg-ticket-accent text-black hover:bg-opacity-80"
         }`}
       >
         {loading ? (

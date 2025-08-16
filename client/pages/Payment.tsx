@@ -109,16 +109,24 @@ export default function Payment() {
       }
     } else {
       // If no booking data, check if we have route and passenger data to reconstruct
-      const savedRoute = localStorage.getItem("selectedRoute") || localStorage.getItem("bookingRoute");
-      const savedPassengers = localStorage.getItem("passengerData") || localStorage.getItem("bookingPassengers");
+      const savedRoute =
+        localStorage.getItem("selectedRoute") ||
+        localStorage.getItem("bookingRoute");
+      const savedPassengers =
+        localStorage.getItem("passengerData") ||
+        localStorage.getItem("bookingPassengers");
 
       if (savedRoute && savedPassengers) {
-        console.warn("No currentBooking but have route/passenger data, redirecting to confirmation");
+        console.warn(
+          "No currentBooking but have route/passenger data, redirecting to confirmation",
+        );
         navigate("/userform/confirmation");
         return;
       } else {
         // No data at all, start from beginning
-        console.warn("No booking data found, redirecting to start of booking flow");
+        console.warn(
+          "No booking data found, redirecting to start of booking flow",
+        );
         navigate("/userform/route");
         return;
       }
@@ -488,7 +496,9 @@ export default function Payment() {
 
       // Show demo mode info if applicable
       if (demoMode) {
-        setError(`Demo Mode: ${message || 'PayPal payment simulation. This will redirect to a success page.'}`);
+        setError(
+          `Demo Mode: ${message || "PayPal payment simulation. This will redirect to a success page."}`,
+        );
         // Still redirect to show the flow
         setTimeout(() => {
           window.location.href = approvalUrl;
