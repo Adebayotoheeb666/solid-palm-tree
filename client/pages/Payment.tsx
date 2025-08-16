@@ -13,6 +13,7 @@ import { PaymentRequest, PaymentResponse } from "@shared/api";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthenticatedFetch } from "../hooks/useAuth";
 import StripePaymentForm from "../components/StripePaymentForm";
+import { countries } from "../lib/countries";
 
 export default function Payment() {
   const navigate = useNavigate();
