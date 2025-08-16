@@ -107,10 +107,20 @@ export default function Payment() {
         console.error("Error parsing booking data:", error);
       }
     } else {
-      // If no booking data, redirect back to booking flow
-      console.warn("No booking data found, redirecting to booking flow");
-      navigate("/userform/confirmation");
-      return;
+      // If no booking data, check if we have route and passenger data to reconstruct
+      const savedRoute = localStorage.getItem("selectedRoute") || localStorage.getItem("bookingRoute");
+      const savedPassengers = localStorage.getItem("passengerData") || localStorage.getItem("bookingPassengers");
+
+      if (savedRoute && savedPassengers) {
+        console.warn("No currentBooking but have route/passenger data, redirecting to confirmation");
+        navigate("/userform/confirmation");
+        return;
+      } else {
+        // No data at all, start from beginning
+        console.warn("No booking data found, redirecting to start of booking flow");
+        navigate("/userform/route");
+        return;
+      }
     }
 
     if (savedRoute) {
