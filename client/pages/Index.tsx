@@ -718,7 +718,7 @@ const Index = () => {
               <div className="flex gap-2 md:gap-4 mt-auto">
                 <button
                   className="border-2 border-[#5225B8] bg-transparent text-[#233789] px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold text-base md:text-lg hover:bg-purple-50 transition-colors shadow-none"
-                  onClick={() => navigate("/userform")}
+                  onClick={() => navigate("/ticket-sample")}
                 >
                   See sample ticket
                 </button>
