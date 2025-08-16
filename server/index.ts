@@ -335,27 +335,27 @@ export function createServer() {
   );
 
   // Payment routes (authenticated)
-  app.post("/api/payments", authenticateUser, handleProcessPayment);
+  app.post("/api/payments", authMiddleware, handleProcessPayment);
   app.post(
     "/api/payments/paypal/create-order",
-    authenticateUser,
+    authMiddleware,
     handleCreatePayPalOrder,
   );
   app.post(
     "/api/payments/paypal/capture",
-    authenticateUser,
+    authMiddleware,
     handleCapturePayPalPayment,
   );
   app.post(
     "/api/payments/stripe/create-intent",
-    authenticateUser,
+    authMiddleware,
     handleCreateStripePaymentIntent,
   );
   app.get("/api/payments/stripe/config", handleGetStripeConfig);
-  app.get("/api/payments/history", authenticateUser, handleGetPaymentHistory);
+  app.get("/api/payments/history", authMiddleware, handleGetPaymentHistory);
   app.get(
     "/api/payments/:transactionId",
-    authenticateUser,
+    authMiddleware,
     handleGetTransaction,
   );
 
