@@ -297,24 +297,27 @@ export default function Payment() {
         body: JSON.stringify(bookingRequest),
       });
 
+      let bookingResult;
+
       if (!bookingResponse.ok) {
-        const errorData = await bookingResponse.text();
-        console.error("Booking creation failed:", {
-          status: bookingResponse.status,
-          error: errorData,
-        });
+        let errorMessage = `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`;
 
         try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(parsedError.message || "Failed to create booking");
+          const errorData = await bookingResponse.json();
+          errorMessage = errorData.message || errorMessage;
         } catch {
-          throw new Error(
-            `Failed to create booking: ${bookingResponse.status} ${bookingResponse.statusText}`,
-          );
+          // If JSON parsing fails, use the default error message
         }
+
+        console.error("Booking creation failed:", {
+          status: bookingResponse.status,
+          url: "/api/bookings",
+        });
+
+        throw new Error(errorMessage);
       }
 
-      const bookingResult = await bookingResponse.json();
+      bookingResult = await bookingResponse.json();
       console.log("Booking created successfully for Stripe:", bookingResult);
 
       if (!bookingResult.success || !bookingResult.booking) {
