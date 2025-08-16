@@ -83,14 +83,23 @@ const Index = () => {
   const totalTestimonials = testimonials.length;
 
   // Auto-slide effect for testimonials
+  // Auto-slide only the right testimonial
   useEffect(() => {
     const interval = setInterval(() => {
-      setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
       setTestimonialIdxRight((prev) => (prev + 1) % totalTestimonials);
     }, 4000); // Change every 4 seconds
 
     return () => clearInterval(interval);
   }, [totalTestimonials]);
+
+  // Navigation functions for left testimonial
+  const handleLeftPrev = () => {
+    setTestimonialIdxLeft((prev) => (prev - 1 + totalTestimonials) % totalTestimonials);
+  };
+
+  const handleLeftNext = () => {
+    setTestimonialIdxLeft((prev) => (prev + 1) % totalTestimonials);
+  };
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
