@@ -46,7 +46,7 @@ export default function StripePaymentForm({
       const configData = await configResponse.json();
 
       if (!configData.publishableKey || configData.demoMode) {
-        setError(
+        onError(
           "Stripe is not configured on this server. Please use PayPal or Credit Card payment options.",
         );
         setLoading(false);
