@@ -1,11 +1,16 @@
 import sgMail from '@sendgrid/mail';
 
-// Initialize SendGrid only if API key is available
+// Initialize SendGrid only if API key is available and valid
 let sendgridConfigured = false;
 
-if (process.env.SENDGRID_API_KEY) {
+if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.startsWith('SG.') && !process.env.SENDGRID_API_KEY.includes('placeholder')) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   sendgridConfigured = true;
+  console.log('✅ SendGrid configured successfully');
+} else if (process.env.SENDGRID_API_KEY) {
+  console.warn('⚠️ SendGrid API key found but invalid format. Key should start with "SG." and not be a placeholder.');
+} else {
+  console.warn('⚠️ SendGrid API key not found. Email functionality will be disabled.');
 }
 
 export interface EmailTemplate {
@@ -143,7 +148,7 @@ export class EmailService {
             
             <div class="booking-details">
               <h3>Booking Reference: ${data.pnr}</h3>
-              <p><strong>Route:</strong> ${data.route.from} ��� ${data.route.to}</p>
+              <p><strong>Route:</strong> ${data.route.from} → ${data.route.to}</p>
               <p><strong>Departure:</strong> ${new Date(data.route.departureDate).toLocaleDateString()}</p>
               <p><strong>Total Amount:</strong> ${data.currency} ${data.totalAmount}</p>
               
