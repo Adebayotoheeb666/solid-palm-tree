@@ -1,16 +1,24 @@
-import sgMail from '@sendgrid/mail';
+import sgMail from "@sendgrid/mail";
 
 // Initialize SendGrid only if API key is available and valid
 let sendgridConfigured = false;
 
-if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY.startsWith('SG.') && !process.env.SENDGRID_API_KEY.includes('placeholder')) {
+if (
+  process.env.SENDGRID_API_KEY &&
+  process.env.SENDGRID_API_KEY.startsWith("SG.") &&
+  !process.env.SENDGRID_API_KEY.includes("placeholder")
+) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   sendgridConfigured = true;
-  console.log('✅ SendGrid configured successfully');
+  console.log("✅ SendGrid configured successfully");
 } else if (process.env.SENDGRID_API_KEY) {
-  console.warn('⚠️ SendGrid API key found but invalid format. Key should start with "SG." and not be a placeholder.');
+  console.warn(
+    '⚠️ SendGrid API key found but invalid format. Key should start with "SG." and not be a placeholder.',
+  );
 } else {
-  console.warn('⚠️ SendGrid API key not found. Email functionality will be disabled.');
+  console.warn(
+    "⚠️ SendGrid API key not found. Email functionality will be disabled.",
+  );
 }
 
 export interface EmailTemplate {
@@ -61,8 +69,8 @@ export interface SupportTicketData {
 }
 
 export class EmailService {
-  private static readonly FROM_EMAIL = 'services@onboardticket.com';
-  private static readonly FROM_NAME = 'OnboardTicket';
+  private static readonly FROM_EMAIL = "services@onboardticket.com";
+  private static readonly FROM_NAME = "OnboardTicket";
 
   /**
    * Check if SendGrid is configured
@@ -75,8 +83,11 @@ export class EmailService {
    * Check if we're in demo mode (development with placeholder keys)
    */
   private static isDemoMode(): boolean {
-    return process.env.NODE_ENV === 'development' &&
-           (!process.env.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY.includes('placeholder'));
+    return (
+      process.env.NODE_ENV === "development" &&
+      (!process.env.SENDGRID_API_KEY ||
+        process.env.SENDGRID_API_KEY.includes("placeholder"))
+    );
   }
 
   /**
@@ -85,18 +96,22 @@ export class EmailService {
   static async sendEmail(emailData: EmailTemplate): Promise<boolean> {
     // Demo mode - log email instead of sending
     if (this.isDemoMode()) {
-      console.log('📧 [DEMO MODE] Email would be sent:', {
+      console.log("📧 [DEMO MODE] Email would be sent:", {
         to: emailData.to,
         from: emailData.from || this.FROM_EMAIL,
         subject: emailData.subject,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      console.log('📧 [DEMO MODE] To enable real emails, configure a valid SendGrid API key');
+      console.log(
+        "📧 [DEMO MODE] To enable real emails, configure a valid SendGrid API key",
+      );
       return true; // Return true in demo mode to not break the flow
     }
 
     if (!this.isSendGridConfigured()) {
-      console.warn('❌ SendGrid is not configured. Please set a valid SENDGRID_API_KEY environment variable.');
+      console.warn(
+        "❌ SendGrid is not configured. Please set a valid SENDGRID_API_KEY environment variable.",
+      );
       return false;
     }
 
@@ -105,7 +120,7 @@ export class EmailService {
         to: emailData.to,
         from: {
           email: emailData.from || this.FROM_EMAIL,
-          name: this.FROM_NAME
+          name: this.FROM_NAME,
         },
         subject: emailData.subject,
         html: emailData.html,
@@ -118,7 +133,7 @@ export class EmailService {
       console.log(`Email sent successfully to ${emailData.to}`);
       return true;
     } catch (error) {
-      console.error('SendGrid email error:', error);
+      console.error("SendGrid email error:", error);
       return false;
     }
   }
@@ -126,9 +141,12 @@ export class EmailService {
   /**
    * Send booking confirmation email
    */
-  static async sendBookingConfirmation(to: string, data: BookingConfirmationData): Promise<boolean> {
+  static async sendBookingConfirmation(
+    to: string,
+    data: BookingConfirmationData,
+  ): Promise<boolean> {
     const subject = `Booking Confirmation - ${data.pnr}`;
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -174,9 +192,13 @@ export class EmailService {
               
               <h4>Passengers:</h4>
               <div class="passenger-list">
-                ${data.passengers.map(p => `
+                ${data.passengers
+                  .map(
+                    (p) => `
                   <div class="passenger">${p.title} ${p.firstName} ${p.lastName}</div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
               </div>
             </div>
             
@@ -201,16 +223,19 @@ export class EmailService {
     return this.sendEmail({
       to,
       subject,
-      html
+      html,
     });
   }
 
   /**
    * Send payment confirmation email
    */
-  static async sendPaymentConfirmation(to: string, data: PaymentConfirmationData): Promise<boolean> {
+  static async sendPaymentConfirmation(
+    to: string,
+    data: PaymentConfirmationData,
+  ): Promise<boolean> {
     const subject = `Payment Confirmed - ${data.pnr}`;
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -279,16 +304,19 @@ export class EmailService {
     return this.sendEmail({
       to,
       subject,
-      html
+      html,
     });
   }
 
   /**
    * Send support ticket confirmation email
    */
-  static async sendSupportTicketConfirmation(to: string, data: SupportTicketData): Promise<boolean> {
+  static async sendSupportTicketConfirmation(
+    to: string,
+    data: SupportTicketData,
+  ): Promise<boolean> {
     const subject = `Support Ticket Created - ${data.ticketId}`;
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -359,16 +387,20 @@ export class EmailService {
     return this.sendEmail({
       to,
       subject,
-      html
+      html,
     });
   }
 
   /**
    * Send password reset email
    */
-  static async sendPasswordReset(to: string, resetToken: string, resetUrl: string): Promise<boolean> {
-    const subject = 'Reset Your OnboardTicket Password';
-    
+  static async sendPasswordReset(
+    to: string,
+    resetToken: string,
+    resetUrl: string,
+  ): Promise<boolean> {
+    const subject = "Reset Your OnboardTicket Password";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -443,16 +475,19 @@ export class EmailService {
     return this.sendEmail({
       to,
       subject,
-      html
+      html,
     });
   }
 
   /**
    * Send welcome email to new users
    */
-  static async sendWelcomeEmail(to: string, customerName: string): Promise<boolean> {
-    const subject = 'Welcome to OnboardTicket!';
-    
+  static async sendWelcomeEmail(
+    to: string,
+    customerName: string,
+  ): Promise<boolean> {
+    const subject = "Welcome to OnboardTicket!";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -511,7 +546,7 @@ export class EmailService {
             </div>
             
             <p style="text-align: center;">
-              <a href="${process.env.CLIENT_URL || 'https://onboardticket.com'}" class="cta-button">Start Booking Flights</a>
+              <a href="${process.env.CLIENT_URL || "https://onboardticket.com"}" class="cta-button">Start Booking Flights</a>
             </p>
             
             <p>Ready to take off? Start exploring destinations and book your next adventure with OnboardTicket!</p>
@@ -531,7 +566,7 @@ export class EmailService {
     return this.sendEmail({
       to,
       subject,
-      html
+      html,
     });
   }
 }

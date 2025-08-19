@@ -68,19 +68,25 @@ const sendBookingConfirmationEmail = async (booking: any) => {
     console.log("Sending booking confirmation email:", emailData);
 
     try {
-      const response = await fetch(`${process.env.CLIENT_URL || 'http://localhost:8080'}/api/email/booking-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.SYSTEM_API_KEY || 'system'}` // Use system auth for webhooks
+      const response = await fetch(
+        `${process.env.CLIENT_URL || "http://localhost:8080"}/api/email/booking-confirmation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.SYSTEM_API_KEY || "system"}`, // Use system auth for webhooks
+          },
+          body: JSON.stringify(emailData),
         },
-        body: JSON.stringify(emailData)
-      });
+      );
 
       if (response.ok) {
         console.log("✅ Booking confirmation email sent successfully");
       } else {
-        console.error("❌ Failed to send booking confirmation email:", response.status);
+        console.error(
+          "❌ Failed to send booking confirmation email:",
+          response.status,
+        );
       }
     } catch (error) {
       console.error("❌ Error sending booking confirmation email:", error);

@@ -340,26 +340,32 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
 
       // Send payment confirmation email automatically
       try {
-        const { data: booking } = await supabaseServerHelpers.getBooking(bookingId);
+        const { data: booking } =
+          await supabaseServerHelpers.getBooking(bookingId);
         if (booking && user?.email) {
           const emailData = {
             to: user.email,
             paymentData: {
-              customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+              customerName:
+                `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
+                user.email,
               pnr: booking.pnr,
               transactionId: transaction.id,
               amount: transaction.amount,
               currency: transaction.currency,
               paymentMethod: transaction.payment_method,
-              bookingUrl: `${process.env.CLIENT_URL || 'http://localhost:8080'}/booking/${booking.id}`
-            }
+              bookingUrl: `${process.env.CLIENT_URL || "http://localhost:8080"}/booking/${booking.id}`,
+            },
           };
 
           console.log("🚀 Sending payment confirmation email to:", user.email);
 
           // Import EmailService to send email directly (more reliable than HTTP call)
-          const { EmailService } = await import('../lib/emailService');
-          const emailSent = await EmailService.sendPaymentConfirmation(emailData.to, emailData.paymentData);
+          const { EmailService } = await import("../lib/emailService");
+          const emailSent = await EmailService.sendPaymentConfirmation(
+            emailData.to,
+            emailData.paymentData,
+          );
 
           if (emailSent) {
             console.log("✅ Payment confirmation email sent successfully");
@@ -368,7 +374,10 @@ export const handleProcessPayment: RequestHandler = async (req, res) => {
           }
         }
       } catch (emailError) {
-        console.error("📧 Error sending payment confirmation email:", emailError);
+        console.error(
+          "📧 Error sending payment confirmation email:",
+          emailError,
+        );
         // Don't fail the payment if email fails
       }
 
