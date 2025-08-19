@@ -83,8 +83,20 @@ export class EmailService {
    * Send a generic email
    */
   static async sendEmail(emailData: EmailTemplate): Promise<boolean> {
+    // Demo mode - log email instead of sending
+    if (this.isDemoMode()) {
+      console.log('📧 [DEMO MODE] Email would be sent:', {
+        to: emailData.to,
+        from: emailData.from || this.FROM_EMAIL,
+        subject: emailData.subject,
+        timestamp: new Date().toISOString()
+      });
+      console.log('📧 [DEMO MODE] To enable real emails, configure a valid SendGrid API key');
+      return true; // Return true in demo mode to not break the flow
+    }
+
     if (!this.isSendGridConfigured()) {
-      console.warn('SendGrid is not configured. Please set SENDGRID_API_KEY environment variable.');
+      console.warn('❌ SendGrid is not configured. Please set a valid SENDGRID_API_KEY environment variable.');
       return false;
     }
 
@@ -484,7 +496,7 @@ export class EmailService {
             </div>
             
             <div class="feature-box">
-              <h3><span class="icon">��</span>Secure Payments</h3>
+              <h3><span class="icon">💳</span>Secure Payments</h3>
               <p>Pay safely with multiple payment options including cards, PayPal, and Stripe.</p>
             </div>
             
