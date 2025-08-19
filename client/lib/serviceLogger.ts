@@ -115,7 +115,7 @@ class ServiceLogger {
     message?: string;
   }> {
     try {
-      const response = await fetch("/api/amadeus/airports/search?q=NYC", {
+      const response = await fetch("/api/amadeus/airports/search?keyword=NYC", {
         method: "GET",
       });
       if (response.ok) {
