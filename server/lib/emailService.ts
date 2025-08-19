@@ -72,6 +72,14 @@ export class EmailService {
   }
 
   /**
+   * Check if we're in demo mode (development with placeholder keys)
+   */
+  private static isDemoMode(): boolean {
+    return process.env.NODE_ENV === 'development' &&
+           (!process.env.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY.includes('placeholder'));
+  }
+
+  /**
    * Send a generic email
    */
   static async sendEmail(emailData: EmailTemplate): Promise<boolean> {
@@ -476,7 +484,7 @@ export class EmailService {
             </div>
             
             <div class="feature-box">
-              <h3><span class="icon">💳</span>Secure Payments</h3>
+              <h3><span class="icon">��</span>Secure Payments</h3>
               <p>Pay safely with multiple payment options including cards, PayPal, and Stripe.</p>
             </div>
             
