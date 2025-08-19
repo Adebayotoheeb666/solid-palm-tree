@@ -56,7 +56,7 @@ export interface SupportTicketData {
 }
 
 export class EmailService {
-  private static readonly FROM_EMAIL = 'email-services@onboardticket.com';
+  private static readonly FROM_EMAIL = 'services@onboardticket.com';
   private static readonly FROM_NAME = 'OnboardTicket';
 
   /**
@@ -143,7 +143,7 @@ export class EmailService {
             
             <div class="booking-details">
               <h3>Booking Reference: ${data.pnr}</h3>
-              <p><strong>Route:</strong> ${data.route.from} → ${data.route.to}</p>
+              <p><strong>Route:</strong> ${data.route.from} ��� ${data.route.to}</p>
               <p><strong>Departure:</strong> ${new Date(data.route.departureDate).toLocaleDateString()}</p>
               <p><strong>Total Amount:</strong> ${data.currency} ${data.totalAmount}</p>
               
