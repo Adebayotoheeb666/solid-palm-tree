@@ -326,7 +326,9 @@ export function createServer() {
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
   // Guest booking routes (no authentication required)
-  const { handleCreateGuestBooking, handleGetGuestBooking } = await import("./routes/guest-bookings.js");
+  const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
+    "./routes/guest-bookings.js"
+  );
   app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 

@@ -92,7 +92,7 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
             <div className="flex items-center gap-2 md:gap-4">
               <button
                 className="px-4 md:px-6 py-2 text-brand-text-primary font-medium text-sm md:text-base hover:bg-gray-100 rounded-lg transition-colors"
-                onClick={() => navigate('/guest-booking-lookup')}
+                onClick={() => navigate("/guest-booking-lookup")}
               >
                 Find Booking
               </button>

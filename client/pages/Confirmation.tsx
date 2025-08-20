@@ -150,7 +150,9 @@ export default function Confirmation({
       console.log("Creating booking:", bookingRequest);
 
       // Choose API endpoint based on authentication status
-      const apiEndpoint = isAuthenticated ? "/api/bookings" : "/api/guest/bookings";
+      const apiEndpoint = isAuthenticated
+        ? "/api/bookings"
+        : "/api/guest/bookings";
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
@@ -404,10 +406,11 @@ export default function Confirmation({
                   </h4>
                 </div>
                 <p className="text-xs text-white/80">
-                  You're booking as a guest. Your booking confirmation and e-ticket will be sent to your email.
-                  You can view your booking anytime using our{" "}
+                  You're booking as a guest. Your booking confirmation and
+                  e-ticket will be sent to your email. You can view your booking
+                  anytime using our{" "}
                   <button
-                    onClick={() => navigate('/guest-booking-lookup')}
+                    onClick={() => navigate("/guest-booking-lookup")}
                     className="text-ticket-accent hover:underline font-medium"
                   >
                     booking lookup
@@ -460,10 +463,11 @@ export default function Confirmation({
               <div className="bg-white/5 border border-white/10 rounded-lg p-4">
                 <div className="text-center">
                   <p className="text-sm text-white/80 mb-3">
-                    Want to save your booking history and manage future bookings easily?
+                    Want to save your booking history and manage future bookings
+                    easily?
                   </p>
                   <button
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate("/login")}
                     className="text-ticket-accent hover:text-ticket-accent/80 text-sm font-medium underline"
                   >
                     Sign In or Create Account (Optional)

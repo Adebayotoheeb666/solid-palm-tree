@@ -1,6 +1,6 @@
-import PDFDocument from 'pdfkit';
-import fs from 'fs';
-import path from 'path';
+import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
 
 export interface TicketData {
   pnr: string;
@@ -32,7 +32,11 @@ export interface TicketData {
 }
 
 export class TicketGenerator {
-  private static readonly TICKETS_DIR = path.join(process.cwd(), 'public', 'tickets');
+  private static readonly TICKETS_DIR = path.join(
+    process.cwd(),
+    "public",
+    "tickets",
+  );
 
   /**
    * Initialize tickets directory
@@ -56,16 +60,16 @@ export class TicketGenerator {
     return new Promise((resolve, reject) => {
       try {
         // Create PDF document
-        const doc = new PDFDocument({ 
-          size: 'A4', 
+        const doc = new PDFDocument({
+          size: "A4",
           margin: 40,
           info: {
             Title: `E-Ticket - ${ticketData.pnr}`,
-            Subject: 'OnboardTicket E-Ticket',
-            Author: 'OnboardTicket',
-            Creator: 'OnboardTicket',
-            Producer: 'OnboardTicket'
-          }
+            Subject: "OnboardTicket E-Ticket",
+            Author: "OnboardTicket",
+            Creator: "OnboardTicket",
+            Producer: "OnboardTicket",
+          },
         });
 
         // Stream to file
@@ -73,182 +77,223 @@ export class TicketGenerator {
         doc.pipe(stream);
 
         // Colors
-        const primaryColor = '#505BFB';
-        const secondaryColor = '#878EFF';
-        const accentColor = '#C6FF9A';
-        const textColor = '#20242A';
-        const lightGray = '#F6F6FF';
+        const primaryColor = "#505BFB";
+        const secondaryColor = "#878EFF";
+        const accentColor = "#C6FF9A";
+        const textColor = "#20242A";
+        const lightGray = "#F6F6FF";
 
         // Header with company branding
         this.addHeader(doc, primaryColor, accentColor);
 
         // Title
-        doc.fontSize(24)
-           .fillColor(primaryColor)
-           .text('E-TICKET RECEIPT', 40, 120, { align: 'center' })
-           .fontSize(14)
-           .fillColor(textColor)
-           .text('Electronic Ticket Confirmation', 40, 150, { align: 'center' });
+        doc
+          .fontSize(24)
+          .fillColor(primaryColor)
+          .text("E-TICKET RECEIPT", 40, 120, { align: "center" })
+          .fontSize(14)
+          .fillColor(textColor)
+          .text("Electronic Ticket Confirmation", 40, 150, { align: "center" });
 
         // Booking reference section
-        doc.rect(40, 180, 515, 60)
-           .fillAndStroke(lightGray, primaryColor)
-           .fillColor(primaryColor)
-           .fontSize(16)
-           .text('BOOKING REFERENCE', 50, 195)
-           .fontSize(24)
-           .text(ticketData.pnr, 50, 215);
+        doc
+          .rect(40, 180, 515, 60)
+          .fillAndStroke(lightGray, primaryColor)
+          .fillColor(primaryColor)
+          .fontSize(16)
+          .text("BOOKING REFERENCE", 50, 195)
+          .fontSize(24)
+          .text(ticketData.pnr, 50, 215);
 
         // Flight details section
         let yPos = 260;
-        doc.fillColor(primaryColor)
-           .fontSize(16)
-           .text('FLIGHT DETAILS', 40, yPos);
+        doc
+          .fillColor(primaryColor)
+          .fontSize(16)
+          .text("FLIGHT DETAILS", 40, yPos);
 
         yPos += 30;
-        doc.rect(40, yPos, 515, 140)
-           .stroke(primaryColor);
+        doc.rect(40, yPos, 515, 140).stroke(primaryColor);
 
         // Route info
-        doc.fillColor(textColor)
-           .fontSize(14)
-           .text('FROM', 60, yPos + 20)
-           .fontSize(18)
-           .fillColor(primaryColor)
-           .text(ticketData.route.fromCode, 60, yPos + 40)
-           .fontSize(12)
-           .fillColor(textColor)
-           .text(ticketData.route.from, 60, yPos + 65, { width: 150 });
+        doc
+          .fillColor(textColor)
+          .fontSize(14)
+          .text("FROM", 60, yPos + 20)
+          .fontSize(18)
+          .fillColor(primaryColor)
+          .text(ticketData.route.fromCode, 60, yPos + 40)
+          .fontSize(12)
+          .fillColor(textColor)
+          .text(ticketData.route.from, 60, yPos + 65, { width: 150 });
 
         // Arrow
-        doc.fontSize(20)
-           .fillColor(secondaryColor)
-           .text('→', 270, yPos + 40);
+        doc
+          .fontSize(20)
+          .fillColor(secondaryColor)
+          .text("→", 270, yPos + 40);
 
         // Destination
-        doc.fillColor(textColor)
-           .fontSize(14)
-           .text('TO', 350, yPos + 20)
-           .fontSize(18)
-           .fillColor(primaryColor)
-           .text(ticketData.route.toCode, 350, yPos + 40)
-           .fontSize(12)
-           .fillColor(textColor)
-           .text(ticketData.route.to, 350, yPos + 65, { width: 150 });
+        doc
+          .fillColor(textColor)
+          .fontSize(14)
+          .text("TO", 350, yPos + 20)
+          .fontSize(18)
+          .fillColor(primaryColor)
+          .text(ticketData.route.toCode, 350, yPos + 40)
+          .fontSize(12)
+          .fillColor(textColor)
+          .text(ticketData.route.to, 350, yPos + 65, { width: 150 });
 
         // Date and time info
         yPos += 85;
-        doc.fontSize(12)
-           .fillColor(textColor)
-           .text(`Departure: ${new Date(ticketData.route.departureDate).toLocaleDateString()}`, 60, yPos)
-           .text(`Departure Time: ${ticketData.route.departureTime || 'TBA'}`, 60, yPos + 15)
-           .text(`Arrival Time: ${ticketData.route.arrivalTime || 'TBA'}`, 60, yPos + 30);
+        doc
+          .fontSize(12)
+          .fillColor(textColor)
+          .text(
+            `Departure: ${new Date(ticketData.route.departureDate).toLocaleDateString()}`,
+            60,
+            yPos,
+          )
+          .text(
+            `Departure Time: ${ticketData.route.departureTime || "TBA"}`,
+            60,
+            yPos + 15,
+          )
+          .text(
+            `Arrival Time: ${ticketData.route.arrivalTime || "TBA"}`,
+            60,
+            yPos + 30,
+          );
 
         // Flight info
         if (ticketData.airline || ticketData.flightNumber) {
-          doc.text(`Airline: ${ticketData.airline || 'TBA'}`, 300, yPos)
-             .text(`Flight: ${ticketData.flightNumber || 'TBA'}`, 300, yPos + 15)
-             .text(`Gate: ${ticketData.gate || 'TBA'}`, 300, yPos + 30);
+          doc
+            .text(`Airline: ${ticketData.airline || "TBA"}`, 300, yPos)
+            .text(`Flight: ${ticketData.flightNumber || "TBA"}`, 300, yPos + 15)
+            .text(`Gate: ${ticketData.gate || "TBA"}`, 300, yPos + 30);
         }
 
         // Passenger details
         yPos += 70;
-        doc.fillColor(primaryColor)
-           .fontSize(16)
-           .text('PASSENGER DETAILS', 40, yPos);
+        doc
+          .fillColor(primaryColor)
+          .fontSize(16)
+          .text("PASSENGER DETAILS", 40, yPos);
 
         yPos += 30;
-        const passengerHeight = 30 + (ticketData.passengers.length * 25);
-        doc.rect(40, yPos, 515, passengerHeight)
-           .stroke(primaryColor);
+        const passengerHeight = 30 + ticketData.passengers.length * 25;
+        doc.rect(40, yPos, 515, passengerHeight).stroke(primaryColor);
 
-        doc.fillColor(textColor)
-           .fontSize(12)
-           .text('Name', 60, yPos + 15)
-           .text('Seat', 400, yPos + 15);
+        doc
+          .fillColor(textColor)
+          .fontSize(12)
+          .text("Name", 60, yPos + 15)
+          .text("Seat", 400, yPos + 15);
 
         ticketData.passengers.forEach((passenger, index) => {
-          const passengerY = yPos + 40 + (index * 25);
-          doc.text(`${passenger.title} ${passenger.firstName} ${passenger.lastName}`, 60, passengerY)
-             .text(passenger.seatNumber || 'TBA', 400, passengerY);
+          const passengerY = yPos + 40 + index * 25;
+          doc
+            .text(
+              `${passenger.title} ${passenger.firstName} ${passenger.lastName}`,
+              60,
+              passengerY,
+            )
+            .text(passenger.seatNumber || "TBA", 400, passengerY);
         });
 
         // Payment details
         yPos += passengerHeight + 30;
-        doc.fillColor(primaryColor)
-           .fontSize(16)
-           .text('PAYMENT DETAILS', 40, yPos);
+        doc
+          .fillColor(primaryColor)
+          .fontSize(16)
+          .text("PAYMENT DETAILS", 40, yPos);
 
         yPos += 30;
-        doc.rect(40, yPos, 515, 80)
-           .stroke(primaryColor);
+        doc.rect(40, yPos, 515, 80).stroke(primaryColor);
 
-        doc.fillColor(textColor)
-           .fontSize(12)
-           .text('Total Amount Paid:', 60, yPos + 20)
-           .fontSize(18)
-           .fillColor(primaryColor)
-           .text(`${ticketData.currency} ${ticketData.totalAmount}`, 60, yPos + 40)
-           .fontSize(12)
-           .fillColor(textColor)
-           .text(`Booking Date: ${new Date(ticketData.bookingDate).toLocaleDateString()}`, 300, yPos + 30);
+        doc
+          .fillColor(textColor)
+          .fontSize(12)
+          .text("Total Amount Paid:", 60, yPos + 20)
+          .fontSize(18)
+          .fillColor(primaryColor)
+          .text(
+            `${ticketData.currency} ${ticketData.totalAmount}`,
+            60,
+            yPos + 40,
+          )
+          .fontSize(12)
+          .fillColor(textColor)
+          .text(
+            `Booking Date: ${new Date(ticketData.bookingDate).toLocaleDateString()}`,
+            300,
+            yPos + 30,
+          );
 
         // Important information
         yPos += 110;
-        doc.fillColor(primaryColor)
-           .fontSize(14)
-           .text('IMPORTANT INFORMATION', 40, yPos);
+        doc
+          .fillColor(primaryColor)
+          .fontSize(14)
+          .text("IMPORTANT INFORMATION", 40, yPos);
 
         yPos += 25;
         const importantInfo = [
-          '• Please arrive at the airport at least 2 hours before domestic flights and 3 hours before international flights',
-          '• Check-in online 24 hours before departure to save time',
-          '• Ensure you have valid identification and travel documents',
-          '• Review baggage allowance and restrictions on our website',
-          '• Contact customer service for any changes or cancellations'
+          "• Please arrive at the airport at least 2 hours before domestic flights and 3 hours before international flights",
+          "• Check-in online 24 hours before departure to save time",
+          "• Ensure you have valid identification and travel documents",
+          "• Review baggage allowance and restrictions on our website",
+          "• Contact customer service for any changes or cancellations",
         ];
 
-        doc.fontSize(10)
-           .fillColor(textColor);
+        doc.fontSize(10).fillColor(textColor);
 
         importantInfo.forEach((info, index) => {
-          doc.text(info, 40, yPos + (index * 15), { width: 515 });
+          doc.text(info, 40, yPos + index * 15, { width: 515 });
         });
 
         // Footer
         yPos += 110;
-        doc.rect(40, yPos, 515, 60)
-           .fillAndStroke(lightGray, primaryColor);
+        doc.rect(40, yPos, 515, 60).fillAndStroke(lightGray, primaryColor);
 
-        doc.fontSize(12)
-           .fillColor(primaryColor)
-           .text('Thank you for choosing OnboardTicket!', 40, yPos + 15, { align: 'center' })
-           .fontSize(10)
-           .fillColor(textColor)
-           .text('For support, visit www.onboardticket.com or call our 24/7 helpline', 40, yPos + 35, { align: 'center' });
+        doc
+          .fontSize(12)
+          .fillColor(primaryColor)
+          .text("Thank you for choosing OnboardTicket!", 40, yPos + 15, {
+            align: "center",
+          })
+          .fontSize(10)
+          .fillColor(textColor)
+          .text(
+            "For support, visit www.onboardticket.com or call our 24/7 helpline",
+            40,
+            yPos + 35,
+            { align: "center" },
+          );
 
         // QR Code placeholder (you can add a real QR code library later)
-        doc.rect(480, 180, 60, 60)
-           .stroke(primaryColor)
-           .fontSize(8)
-           .text('QR CODE', 485, 205)
-           .text('PLACEHOLDER', 485, 215);
+        doc
+          .rect(480, 180, 60, 60)
+          .stroke(primaryColor)
+          .fontSize(8)
+          .text("QR CODE", 485, 205)
+          .text("PLACEHOLDER", 485, 215);
 
         // Finalize PDF
         doc.end();
 
-        stream.on('finish', () => {
+        stream.on("finish", () => {
           console.log(`✅ Ticket PDF generated: ${publicUrl}`);
           resolve(publicUrl);
         });
 
-        stream.on('error', (error) => {
-          console.error('❌ Error generating ticket PDF:', error);
+        stream.on("error", (error) => {
+          console.error("❌ Error generating ticket PDF:", error);
           reject(error);
         });
-
       } catch (error) {
-        console.error('❌ Error creating ticket PDF:', error);
+        console.error("❌ Error creating ticket PDF:", error);
         reject(error);
       }
     });
@@ -257,23 +302,21 @@ export class TicketGenerator {
   /**
    * Add header with branding
    */
-  private static addHeader(doc: PDFKit.PDFDocument, primaryColor: string, accentColor: string): void {
+  private static addHeader(
+    doc: PDFKit.PDFDocument,
+    primaryColor: string,
+    accentColor: string,
+  ): void {
     // Header background
-    doc.rect(0, 0, 595, 100)
-       .fillAndStroke(primaryColor, primaryColor);
+    doc.rect(0, 0, 595, 100).fillAndStroke(primaryColor, primaryColor);
 
     // Company name
-    doc.fontSize(28)
-       .fillColor('white')
-       .text('OnboardTicket', 40, 35);
+    doc.fontSize(28).fillColor("white").text("OnboardTicket", 40, 35);
 
     // Accent decoration
-    doc.rect(450, 30, 100, 40)
-       .fillAndStroke(accentColor, accentColor);
+    doc.rect(450, 30, 100, 40).fillAndStroke(accentColor, accentColor);
 
-    doc.fillColor(primaryColor)
-       .fontSize(14)
-       .text('✈️ FLY', 460, 45);
+    doc.fillColor(primaryColor).fontSize(14).text("✈️ FLY", 460, 45);
   }
 
   /**
@@ -296,17 +339,17 @@ export class TicketGenerator {
         title: p.title,
         firstName: p.firstName,
         lastName: p.lastName,
-        seatNumber: p.seatNumber
+        seatNumber: p.seatNumber,
       })),
       totalAmount: bookingData.totalAmount,
-      currency: bookingData.currency || 'USD',
+      currency: bookingData.currency || "USD",
       bookingDate: new Date().toISOString(),
       airline: bookingData.airline,
       flightNumber: bookingData.flightNumber,
       gate: bookingData.gate,
       terminal: bookingData.terminal,
       checkInTime: bookingData.checkInTime,
-      boardingTime: bookingData.boardingTime
+      boardingTime: bookingData.boardingTime,
     };
 
     return await this.generateTicketPDF(ticketData);
@@ -325,7 +368,7 @@ export class TicketGenerator {
       }
       return false;
     } catch (error) {
-      console.error('❌ Error deleting ticket:', error);
+      console.error("❌ Error deleting ticket:", error);
       return false;
     }
   }

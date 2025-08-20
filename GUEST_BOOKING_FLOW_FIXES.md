@@ -1,31 +1,37 @@
 # Guest Booking Flow Fixes
 
 ## Problem
+
 Users clicking "Book Now" on the landing page were still being redirected to sign up/in, preventing immediate guest booking.
 
 ## Issues Fixed
 
 ### 1. Landing Page Book Now Button
+
 - **File**: `client/pages/Index.tsx`
 - **Fix**: Updated `handleBookNow()` function to navigate to `/userform/search` instead of `/register`
 - **Result**: Users can now start booking immediately without authentication
 
-### 2. Header Book Now Button  
+### 2. Header Book Now Button
+
 - **File**: `client/components/Header.tsx`
 - **Fix**: Updated `defaultHandleBookNow()` to navigate to `/userform/search`
 - **Result**: Consistent behavior across all "Book Now" buttons
 
 ### 3. Payment Page Authentication Check
+
 - **File**: `client/pages/Payment.tsx`
 - **Fix**: Removed authentication requirement that redirected users to login
 - **Result**: Guest users can now complete payments without signing in
 
 ### 4. Search Flights Navigation
+
 - **File**: `client/pages/SearchFlights.tsx`
 - **Fix**: Updated "Try Different Route" and "Modify Search" buttons to use correct routes
 - **Result**: Users don't get stuck in authentication-required pages
 
 ### 5. Enhanced User Experience
+
 - **File**: `client/pages/Confirmation.tsx`
 - **Additions**:
   - Guest booking notice explaining the process
@@ -37,7 +43,7 @@ Users clicking "Book Now" on the landing page were still being redirected to sig
 
 1. **Landing Page**: User clicks "Book Now" → Goes to flight search
 2. **Flight Search**: User searches and selects flights → No authentication required
-3. **Route Selection**: User configures travel details → No authentication required  
+3. **Route Selection**: User configures travel details → No authentication required
 4. **Passengers**: User enters passenger details → No authentication required
 5. **Confirmation**: User reviews booking with clear guest notice → Optional sign-in prompt
 6. **Payment**: User completes payment → No authentication required
@@ -57,9 +63,11 @@ Users clicking "Book Now" on the landing page were still being redirected to sig
 ## User Journey Comparison
 
 ### Before (Forced Authentication)
+
 Landing Page → Book Now → **FORCED REGISTRATION** → Search → Book → Pay
 
 ### After (Guest-Friendly)
-Landing Page → Book Now → Search → Book → Pay *(with optional sign-in)*
+
+Landing Page → Book Now → Search → Book → Pay _(with optional sign-in)_
 
 The booking process is now truly friction-free while still offering the option to create an account for users who want booking history and easier management.

@@ -130,7 +130,7 @@ export const supabaseServerHelpers = {
 
   async updateBooking(
     id: string,
-    updates: Partial<Database["public"]["Tables"]["bookings"]["Update"]>
+    updates: Partial<Database["public"]["Tables"]["bookings"]["Update"]>,
   ) {
     return await supabase
       .from("bookings")
@@ -141,20 +141,18 @@ export const supabaseServerHelpers = {
   },
 
   // Guest booking operations
-  async createGuestBooking(
-    bookingData: {
-      from_airport_id: string;
-      to_airport_id: string;
-      departure_date: string;
-      return_date?: string | null;
-      trip_type: string;
-      total_amount: number;
-      contact_email: string;
-      contact_phone?: string | null;
-      terms_accepted: boolean;
-      is_guest: boolean;
-    }
-  ) {
+  async createGuestBooking(bookingData: {
+    from_airport_id: string;
+    to_airport_id: string;
+    departure_date: string;
+    return_date?: string | null;
+    trip_type: string;
+    total_amount: number;
+    contact_email: string;
+    contact_phone?: string | null;
+    terms_accepted: boolean;
+    is_guest: boolean;
+  }) {
     const pnr = this.generatePNR();
 
     return await supabase
@@ -181,11 +179,7 @@ export const supabaseServerHelpers = {
   },
 
   async getAirportById(id: string) {
-    return await supabase
-      .from("airports")
-      .select("*")
-      .eq("id", id)
-      .single();
+    return await supabase.from("airports").select("*").eq("id", id).single();
   },
 
   async getPassengersByBookingId(bookingId: string) {

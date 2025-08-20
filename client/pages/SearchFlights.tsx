@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FlightOffer, FlightSegment } from "@shared/api";
-import { Plane, Clock, DollarSign, Loader2, AlertCircle, Zap, Wifi, Coffee } from "lucide-react";
+import {
+  Plane,
+  Clock,
+  DollarSign,
+  Loader2,
+  AlertCircle,
+  Zap,
+  Wifi,
+  Coffee,
+} from "lucide-react";
 
 interface SearchFlightsProps {
   onNext: () => void;
@@ -12,7 +21,9 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
   const [flights, setFlights] = useState<FlightOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedFlight, setSelectedFlight] = useState<FlightOffer | null>(null);
+  const [selectedFlight, setSelectedFlight] = useState<FlightOffer | null>(
+    null,
+  );
 
   useEffect(() => {
     searchFlights();
@@ -22,31 +33,31 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Get saved route data from localStorage
-      const routeData = localStorage.getItem('bookingRoute');
+      const routeData = localStorage.getItem("bookingRoute");
       if (!routeData) {
-        setError('No route data found. Please go back and select your route.');
+        setError("No route data found. Please go back and select your route.");
         return;
       }
 
       const route = JSON.parse(routeData);
-      
+
       // Search for flights using Amadeus API
       const params = new URLSearchParams({
         originLocationCode: route.from.code,
         destinationLocationCode: route.to.code,
         departureDate: route.departureDate,
-        adults: '1', // For now, assuming 1 adult - can be made dynamic
-        currencyCode: 'USD',
-        max: '10'
+        adults: "1", // For now, assuming 1 adult - can be made dynamic
+        currencyCode: "USD",
+        max: "10",
       });
 
-      if (route.returnDate && route.tripType === 'roundtrip') {
-        params.append('returnDate', route.returnDate);
+      if (route.returnDate && route.tripType === "roundtrip") {
+        params.append("returnDate", route.returnDate);
       }
 
-      console.log('Searching flights with params:', params.toString());
+      console.log("Searching flights with params:", params.toString());
 
       const response = await fetch(`/api/amadeus/flights/search?${params}`);
       const data = await response.json();
@@ -55,11 +66,15 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
         setFlights(data.data);
       } else {
         // If no flights found or API failed, show a helpful message
-        setError('No flights found for this route. Please try different dates or destinations.');
+        setError(
+          "No flights found for this route. Please try different dates or destinations.",
+        );
       }
     } catch (err) {
-      console.error('Flight search error:', err);
-      setError('Unable to search flights at the moment. Please try again later.');
+      console.error("Flight search error:", err);
+      setError(
+        "Unable to search flights at the moment. Please try again later.",
+      );
     } finally {
       setLoading(false);
     }
@@ -68,7 +83,7 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
   const selectFlight = (flight: FlightOffer) => {
     setSelectedFlight(flight);
     // Save selected flight to localStorage
-    localStorage.setItem('selectedFlight', JSON.stringify(flight));
+    localStorage.setItem("selectedFlight", JSON.stringify(flight));
   };
 
   const confirmSelection = () => {
@@ -81,38 +96,49 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
     // Convert PT4H30M to "4h 30m"
     const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
     if (!match) return duration;
-    
-    const hours = match[1] ? `${match[1]}h` : '';
-    const minutes = match[2] ? `${match[2]}m` : '';
+
+    const hours = match[1] ? `${match[1]}h` : "";
+    const minutes = match[2] ? `${match[2]}m` : "";
     return `${hours} ${minutes}`.trim();
   };
 
   const formatTime = (datetime: string) => {
-    return new Date(datetime).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
+    return new Date(datetime).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
   const formatDate = (datetime: string) => {
-    return new Date(datetime).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
+    return new Date(datetime).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
   };
 
   const renderFlightSegment = (segment: FlightSegment, index: number) => (
-    <div key={segment.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+    <div
+      key={segment.id}
+      className="flex items-center justify-between p-4 bg-white/5 rounded-lg"
+    >
       <div className="flex items-center gap-4">
         <div className="text-center">
-          <div className="text-xl font-bold">{formatTime(segment.departure.at)}</div>
-          <div className="text-sm text-white/60">{segment.departure.iataCode}</div>
-          <div className="text-xs text-white/40">{formatDate(segment.departure.at)}</div>
+          <div className="text-xl font-bold">
+            {formatTime(segment.departure.at)}
+          </div>
+          <div className="text-sm text-white/60">
+            {segment.departure.iataCode}
+          </div>
+          <div className="text-xs text-white/40">
+            {formatDate(segment.departure.at)}
+          </div>
         </div>
-        
+
         <div className="flex flex-col items-center gap-2 min-w-[80px] sm:min-w-[100px] lg:min-w-[120px]">
-          <div className="text-xs text-white/60">{formatDuration(segment.duration)}</div>
+          <div className="text-xs text-white/60">
+            {formatDuration(segment.duration)}
+          </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-white rounded-full"></div>
             <div className="flex-1 h-px bg-white/30"></div>
@@ -121,19 +147,30 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
             <div className="w-2 h-2 bg-white rounded-full"></div>
           </div>
           <div className="text-xs text-white/60">
-            {segment.numberOfStops === 0 ? 'Direct' : `${segment.numberOfStops} stop${segment.numberOfStops > 1 ? 's' : ''}`}
+            {segment.numberOfStops === 0
+              ? "Direct"
+              : `${segment.numberOfStops} stop${segment.numberOfStops > 1 ? "s" : ""}`}
           </div>
         </div>
-        
+
         <div className="text-center">
-          <div className="text-xl font-bold">{formatTime(segment.arrival.at)}</div>
-          <div className="text-sm text-white/60">{segment.arrival.iataCode}</div>
-          <div className="text-xs text-white/40">{formatDate(segment.arrival.at)}</div>
+          <div className="text-xl font-bold">
+            {formatTime(segment.arrival.at)}
+          </div>
+          <div className="text-sm text-white/60">
+            {segment.arrival.iataCode}
+          </div>
+          <div className="text-xs text-white/40">
+            {formatDate(segment.arrival.at)}
+          </div>
         </div>
       </div>
-      
+
       <div className="text-right">
-        <div className="text-sm text-white/60">Flight {segment.carrierCode}{segment.number}</div>
+        <div className="text-sm text-white/60">
+          Flight {segment.carrierCode}
+          {segment.number}
+        </div>
         <div className="text-xs text-white/40">{segment.aircraft.code}</div>
       </div>
     </div>
@@ -145,7 +182,9 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Searching for flights...</h2>
-          <p className="text-white/60">Finding the best options for your journey</p>
+          <p className="text-white/60">
+            Finding the best options for your journey
+          </p>
         </div>
       </div>
     );
@@ -155,22 +194,25 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
     return (
       <div className="min-h-screen bg-ticket-primary text-white">
         <header className="p-4">
-          <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-            <img 
-              src="/onboard/result.png" 
-              alt="OnboardTicket Logo" 
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <img
+              src="/onboard/result.png"
+              alt="OnboardTicket Logo"
               className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
             />
           </div>
         </header>
-        
+
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
           <AlertCircle className="w-16 h-16 text-red-400 mb-6" />
           <h2 className="text-2xl font-bold mb-4">Unable to Find Flights</h2>
           <p className="text-white/60 text-center mb-8 max-w-md">{error}</p>
           <div className="flex gap-4">
             <button
-              onClick={() => navigate('/userform/route')}
+              onClick={() => navigate("/userform/route")}
               className="bg-white text-ticket-primary font-bold px-6 py-3 rounded-lg hover:bg-white/90 transition-colors"
             >
               Try Different Route
@@ -192,15 +234,18 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
       {/* Header */}
       <header className="p-4 border-b border-white/10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-            <img 
-              src="/onboard/result.png" 
-              alt="OnboardTicket Logo" 
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <img
+              src="/onboard/result.png"
+              alt="OnboardTicket Logo"
               className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
             />
           </div>
           <button
-            onClick={() => navigate('/userform/route')}
+            onClick={() => navigate("/userform/route")}
             className="text-white/60 hover:text-white transition-colors"
           >
             Modify Search
@@ -213,7 +258,9 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Available Flights</h1>
           <div className="flex items-center gap-4 text-white/60">
-            <span>Found {flights.length} flight{flights.length !== 1 ? 's' : ''}</span>
+            <span>
+              Found {flights.length} flight{flights.length !== 1 ? "s" : ""}
+            </span>
             <span>•</span>
             <span>Best prices guaranteed</span>
           </div>
@@ -225,7 +272,9 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
             <div
               key={flight.id}
               className={`bg-white/10 backdrop-blur-sm rounded-xl p-6 cursor-pointer transition-all hover:bg-white/15 ${
-                selectedFlight?.id === flight.id ? 'ring-2 ring-ticket-accent bg-white/20' : ''
+                selectedFlight?.id === flight.id
+                  ? "ring-2 ring-ticket-accent bg-white/20"
+                  : ""
               }`}
               onClick={() => selectFlight(flight)}
             >
@@ -243,13 +292,16 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
                     )}
                   </div>
                   <div className="text-white/60 text-sm">
-                    {flight.oneWay ? 'One way' : 'Round trip'} • {flight.travelerPricings.length} passenger{flight.travelerPricings.length > 1 ? 's' : ''}
+                    {flight.oneWay ? "One way" : "Round trip"} •{" "}
+                    {flight.travelerPricings.length} passenger
+                    {flight.travelerPricings.length > 1 ? "s" : ""}
                   </div>
                 </div>
-                
+
                 <div className="text-right">
                   <div className="text-3xl font-bold text-ticket-accent">
-                    {flight.price.currency} {parseInt(flight.price.total).toLocaleString()}
+                    {flight.price.currency}{" "}
+                    {parseInt(flight.price.total).toLocaleString()}
                   </div>
                   <div className="text-white/60 text-sm">per person</div>
                 </div>
@@ -265,8 +317,8 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
                       </div>
                     )}
                     <div className="space-y-3">
-                      {itinerary.segments.map((segment, segIndex) => 
-                        renderFlightSegment(segment, segIndex)
+                      {itinerary.segments.map((segment, segIndex) =>
+                        renderFlightSegment(segment, segIndex),
                       )}
                     </div>
                   </div>

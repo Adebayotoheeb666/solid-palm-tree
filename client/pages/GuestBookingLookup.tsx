@@ -1,42 +1,47 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function GuestBookingLookup() {
   const navigate = useNavigate();
-  const [pnr, setPnr] = useState('');
-  const [email, setEmail] = useState('');
+  const [pnr, setPnr] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!pnr.trim() || !email.trim()) {
-      setError('Please enter both PNR and email address');
+      setError("Please enter both PNR and email address");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch(`/api/guest/bookings/${pnr}?email=${encodeURIComponent(email)}`);
+      const response = await fetch(
+        `/api/guest/bookings/${pnr}?email=${encodeURIComponent(email)}`,
+      );
       const result = await response.json();
 
       if (result.success && result.booking) {
         // Store guest booking data and navigate to booking details
-        localStorage.setItem('guestBooking', JSON.stringify(result.booking));
+        localStorage.setItem("guestBooking", JSON.stringify(result.booking));
         navigate(`/guest-booking/${pnr}`);
       } else {
-        setError(result.message || 'Booking not found. Please check your PNR and email address.');
+        setError(
+          result.message ||
+            "Booking not found. Please check your PNR and email address.",
+        );
       }
     } catch (error) {
-      console.error('Error looking up guest booking:', error);
-      setError('Network error. Please try again.');
+      console.error("Error looking up guest booking:", error);
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -50,14 +55,18 @@ export default function GuestBookingLookup() {
             Find Your Booking
           </CardTitle>
           <p className="text-gray-600 mt-2">
-            Enter your booking reference (PNR) and email to view your booking details
+            Enter your booking reference (PNR) and email to view your booking
+            details
           </p>
         </CardHeader>
-        
+
         <CardContent>
           <form onSubmit={handleLookup} className="space-y-4">
             <div>
-              <label htmlFor="pnr" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="pnr"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Booking Reference (PNR)
               </label>
               <Input
@@ -73,7 +82,10 @@ export default function GuestBookingLookup() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email Address
               </label>
               <Input
@@ -92,20 +104,20 @@ export default function GuestBookingLookup() {
               </Alert>
             )}
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full bg-ticket-primary hover:bg-ticket-darker"
               disabled={loading}
             >
-              {loading ? 'Looking up...' : 'Find My Booking'}
+              {loading ? "Looking up..." : "Find My Booking"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Need help finding your booking?{' '}
+              Need help finding your booking?{" "}
               <button
-                onClick={() => navigate('/contact')}
+                onClick={() => navigate("/contact")}
                 className="text-ticket-primary hover:underline"
               >
                 Contact Support
@@ -115,9 +127,9 @@ export default function GuestBookingLookup() {
 
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
-              Have an account?{' '}
+              Have an account?{" "}
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
                 className="text-ticket-primary hover:underline"
               >
                 Sign In
