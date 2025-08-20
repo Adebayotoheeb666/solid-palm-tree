@@ -13,8 +13,8 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
   const { user, logout, isAuthenticated } = useAuth();
 
   const defaultHandleBookNow = useCallback(() => {
-    // Always go to search flights - let users choose to login/register or continue as guest
-    navigate("/userform/search");
+    // Start with route selection - let users choose to login/register or continue as guest
+    navigate("/userform/route");
   }, [navigate]);
 
   const bookNowHandler = handleBookNow || defaultHandleBookNow;
