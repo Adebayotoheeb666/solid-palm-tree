@@ -128,6 +128,18 @@ export const supabaseServerHelpers = {
       .single();
   },
 
+  async updateBooking(
+    id: string,
+    updates: Partial<Database["public"]["Tables"]["bookings"]["Update"]>
+  ) {
+    return await supabase
+      .from("bookings")
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+  },
+
   // Airport operations
   async getAllAirports() {
     return await withServerErrorHandling(
