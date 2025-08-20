@@ -149,12 +149,23 @@ export default function Confirmation({
 
       console.log("Creating booking:", bookingRequest);
 
-      const response = await fetch("/api/bookings", {
+      // Choose API endpoint based on authentication status
+      const apiEndpoint = isAuthenticated ? "/api/bookings" : "/api/guest/bookings";
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      // Add authorization header only for authenticated users
+      if (isAuthenticated) {
+        headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`;
+      } else {
+        // For guest bookings, add guest checkout flag
+        (bookingRequest as any).guestCheckout = true;
+      }
+
+      const response = await fetch(apiEndpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
+        headers,
         body: JSON.stringify(bookingRequest),
       });
 
