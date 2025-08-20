@@ -475,76 +475,123 @@ export class AmadeusService {
   }
 
   /**
-   * Mock airports for development/demo
+   * Comprehensive airport data for development/demo and when Amadeus fails
    */
   private static getMockAirports(keyword: string): Airport[] {
-    const mockAirports = [
-      {
-        type: 'location',
-        subType: 'AIRPORT',
-        name: 'John F Kennedy International Airport',
-        detailedName: 'NEW YORK/NY/US:JOHN F KENNEDY INTERNATIONAL AIRPORT',
-        id: 'AJFK',
-        self: {
-          href: 'https://test.api.amadeus.com/v1/reference-data/locations/AJFK',
-          methods: ['GET']
-        },
-        timeZoneOffset: '-05:00',
-        iataCode: 'JFK',
-        geoCode: {
-          latitude: 40.63975,
-          longitude: -73.77893
-        },
-        address: {
-          cityName: 'NEW YORK',
-          cityCode: 'NYC',
-          countryName: 'UNITED STATES OF AMERICA',
-          countryCode: 'US',
-          regionCode: 'NAMER'
-        },
-        analytics: {
-          travelers: {
-            score: 31
-          }
-        }
+    // Import comprehensive airport data
+    const { searchAirports } = require('./airportData.js');
+
+    const airportResults = searchAirports(keyword, 15);
+
+    // Convert to Amadeus format
+    return airportResults.map(airport => ({
+      type: 'location',
+      subType: 'AIRPORT',
+      name: airport.name,
+      detailedName: `${airport.city.toUpperCase()}/${airport.country.toUpperCase()}:${airport.name.toUpperCase()}`,
+      id: `A${airport.code}`,
+      self: {
+        href: `https://test.api.amadeus.com/v1/reference-data/locations/A${airport.code}`,
+        methods: ['GET']
       },
-      {
-        type: 'location',
-        subType: 'AIRPORT',
-        name: 'Los Angeles International Airport',
-        detailedName: 'LOS ANGELES/CA/US:LOS ANGELES INTERNATIONAL AIRPORT',
-        id: 'ALAX',
-        self: {
-          href: 'https://test.api.amadeus.com/v1/reference-data/locations/ALAX',
-          methods: ['GET']
-        },
-        timeZoneOffset: '-08:00',
-        iataCode: 'LAX',
-        geoCode: {
-          latitude: 33.94254,
-          longitude: -118.40807
-        },
-        address: {
-          cityName: 'LOS ANGELES',
-          cityCode: 'LAX',
-          countryName: 'UNITED STATES OF AMERICA',
-          countryCode: 'US',
-          regionCode: 'NAMER'
-        },
-        analytics: {
-          travelers: {
-            score: 28
-          }
+      timeZoneOffset: '+00:00', // Default timezone
+      iataCode: airport.code,
+      geoCode: {
+        latitude: 0, // Default coordinates - in real app you'd have actual coordinates
+        longitude: 0
+      },
+      address: {
+        cityName: airport.city.toUpperCase(),
+        cityCode: airport.code,
+        countryName: airport.country.toUpperCase(),
+        countryCode: this.getCountryCode(airport.country),
+        regionCode: this.getRegionCode(airport.region)
+      },
+      analytics: {
+        travelers: {
+          score: 25 // Default score
         }
       }
-    ];
+    }));
+  }
 
-    // Filter mock data based on keyword
-    return mockAirports.filter(airport => 
-      airport.name.toLowerCase().includes(keyword.toLowerCase()) ||
-      airport.iataCode.toLowerCase().includes(keyword.toLowerCase()) ||
-      airport.address.cityName.toLowerCase().includes(keyword.toLowerCase())
-    );
+  /**
+   * Get country code from country name
+   */
+  private static getCountryCode(country: string): string {
+    const countryCodes: { [key: string]: string } = {
+      'United States': 'US',
+      'Canada': 'CA',
+      'Mexico': 'MX',
+      'United Kingdom': 'GB',
+      'France': 'FR',
+      'Germany': 'DE',
+      'Netherlands': 'NL',
+      'Spain': 'ES',
+      'Italy': 'IT',
+      'Switzerland': 'CH',
+      'Austria': 'AT',
+      'Denmark': 'DK',
+      'Sweden': 'SE',
+      'Norway': 'NO',
+      'Finland': 'FI',
+      'Turkey': 'TR',
+      'Greece': 'GR',
+      'Ireland': 'IE',
+      'Belgium': 'BE',
+      'Portugal': 'PT',
+      'Czech Republic': 'CZ',
+      'Poland': 'PL',
+      'Hungary': 'HU',
+      'Japan': 'JP',
+      'South Korea': 'KR',
+      'China': 'CN',
+      'Hong Kong': 'HK',
+      'Taiwan': 'TW',
+      'Singapore': 'SG',
+      'Malaysia': 'MY',
+      'Thailand': 'TH',
+      'Indonesia': 'ID',
+      'Philippines': 'PH',
+      'India': 'IN',
+      'United Arab Emirates': 'AE',
+      'Qatar': 'QA',
+      'Kuwait': 'KW',
+      'Bahrain': 'BH',
+      'Saudi Arabia': 'SA',
+      'Israel': 'IL',
+      'Egypt': 'EG',
+      'South Africa': 'ZA',
+      'Morocco': 'MA',
+      'Nigeria': 'NG',
+      'Ethiopia': 'ET',
+      'Australia': 'AU',
+      'New Zealand': 'NZ',
+      'Brazil': 'BR',
+      'Argentina': 'AR',
+      'Chile': 'CL',
+      'Peru': 'PE',
+      'Colombia': 'CO',
+      'Ecuador': 'EC',
+      'Venezuela': 'VE'
+    };
+    return countryCodes[country] || 'XX';
+  }
+
+  /**
+   * Get region code from region name
+   */
+  private static getRegionCode(region: string): string {
+    const regionCodes: { [key: string]: string } = {
+      'North America': 'NAMER',
+      'Europe': 'EUR',
+      'Asia': 'ASIA',
+      'Middle East': 'MEAST',
+      'Africa': 'AFR',
+      'Oceania': 'OCEANIA',
+      'South America': 'SAMER'
+    };
+    return regionCodes[region] || 'UNKNOWN';
   }
 }
 
