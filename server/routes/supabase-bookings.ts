@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import { BookingRequest, BookingResponse, Booking } from "@shared/api";
 import { supabaseServerHelpers } from "../lib/supabaseServer";
+import TicketGenerator from '../lib/ticketGenerator.js';
+import EmailService from '../lib/emailService.js';
 import { z } from 'zod';
 
 // Validation schema for booking request
