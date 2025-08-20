@@ -200,7 +200,7 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
             />
           </div>
           <button
-            onClick={() => navigate('/userform/route')}
+            onClick={() => navigate('/search-flights')}
             className="text-white/60 hover:text-white transition-colors"
           >
             Modify Search
