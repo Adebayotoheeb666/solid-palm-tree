@@ -191,8 +191,32 @@ export const handleCreateSupabaseBooking: RequestHandler = async (req, res) => {
       currency: booking.currency,
       createdAt: booking.created_at,
       updatedAt: booking.updated_at,
-      ticketUrl: booking.ticket_url || undefined
+      ticketUrl: ticketUrl || booking.ticket_url || undefined
     };
+
+    // Send booking confirmation email
+    try {
+      await EmailService.sendBookingConfirmation(
+        bookingData.contactEmail,
+        {
+          customerName: bookingData.passengers[0]?.firstName || 'Customer',
+          pnr: booking.pnr,
+          route: {
+            from: fromAirport.name,
+            to: toAirport.name,
+            departureDate: bookingData.route.departureDate,
+          },
+          passengers: bookingData.passengers,
+          totalAmount: totalAmount,
+          currency: booking.currency || 'USD',
+          bookingUrl: `${process.env.CLIENT_URL || 'http://localhost:8080'}/booking/${booking.id}`,
+        }
+      );
+      console.log('✅ Booking confirmation email sent');
+    } catch (emailError) {
+      console.error('❌ Failed to send booking confirmation email:', emailError);
+      // Continue without email - don't fail the booking
+    }
 
     const response: BookingResponse = {
       success: true,
