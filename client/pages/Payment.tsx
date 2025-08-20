@@ -168,11 +168,7 @@ export default function Payment() {
       }));
     }
 
-    // Check authentication
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    // Note: Removed authentication check to support guest checkout
   }, [user, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
