@@ -38,7 +38,7 @@ const Footer: React.FC = memo(() => {
               loading="lazy"
               onClick={handleLogoClick}
             />
-            <hr className="border-black w-32 sm:w-40 md:w-72" />
+            <hr className="border-black w-24 sm:w-32 md:w-40 lg:w-48" />
             <h4 className="font-semibold text-black text-xs sm:text-sm md:text-base">
               Onboardticket.com
             </h4>
