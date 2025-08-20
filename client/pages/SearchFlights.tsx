@@ -170,7 +170,7 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
           <p className="text-white/60 text-center mb-8 max-w-md">{error}</p>
           <div className="flex gap-4">
             <button
-              onClick={() => navigate('/userform/route')}
+              onClick={() => navigate('/search-flights')}
               className="bg-white text-ticket-primary font-bold px-6 py-3 rounded-lg hover:bg-white/90 transition-colors"
             >
               Try Different Route
