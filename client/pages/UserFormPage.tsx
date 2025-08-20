@@ -18,12 +18,7 @@ export default function UserFormPage({ step }: { step?: string }) {
     (step as Step) || "route",
   );
 
-  // Redirect to register if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/register");
-    }
-  }, [isAuthenticated, navigate]);
+  // Note: Removed authentication requirement to support guest checkout
 
   useEffect(() => {
     if (step) {
