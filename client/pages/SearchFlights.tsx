@@ -301,10 +301,10 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
 
         {/* Continue Button */}
         {selectedFlight && (
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="fixed bottom-4 inset-x-4 z-10 flex justify-center">
             <button
               onClick={confirmSelection}
-              className="bg-ticket-accent text-black font-bold text-lg px-8 py-4 rounded-full hover:bg-opacity-80 transition-colors shadow-lg"
+              className="bg-ticket-accent text-black font-bold text-base sm:text-lg px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full hover:bg-opacity-80 transition-colors shadow-lg w-full max-w-xs sm:max-w-sm"
             >
               Continue with Selected Flight
             </button>
