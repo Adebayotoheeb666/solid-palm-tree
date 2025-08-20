@@ -132,10 +132,7 @@ export default function Confirmation({
       return;
     }
 
-    if (!isAuthenticated) {
-      setError("Please log in to create a booking.");
-      return;
-    }
+    // Note: Removed authentication check to support guest checkout
 
     setLoading(true);
     setError("");
