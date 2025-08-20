@@ -31,6 +31,8 @@ const TermsConditions = React.lazy(() => import("./pages/TermsConditions"));
 const Login = React.lazy(() => import("./pages/Login"));
 const Register = React.lazy(() => import("./pages/Register"));
 const VerifyEmail = React.lazy(() => import("./pages/VerifyEmail"));
+const GuestBookingLookup = React.lazy(() => import("./pages/GuestBookingLookup"));
+const GuestBookingDetails = React.lazy(() => import("./pages/GuestBookingDetails"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const BookingHistory = React.lazy(() => import("./pages/BookingHistory"));
 const SupportTickets = React.lazy(() => import("./pages/SupportTickets"));
