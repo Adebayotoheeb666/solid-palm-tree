@@ -97,6 +97,10 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
+
+                {/* Guest booking routes */}
+                <Route path="/guest-booking-lookup" element={<GuestBookingLookup />} />
+                <Route path="/guest-booking/:pnr" element={<GuestBookingDetails />} />
                 <Route
                   path="/dashboard"
                   element={
