@@ -134,6 +134,35 @@ export const handleCreateSupabaseBooking: RequestHandler = async (req, res) => {
       // Note: We should probably clean up the booking here, but for simplicity we'll leave it
     }
 
+    // Generate PDF ticket
+    let ticketUrl = '';
+    try {
+      const ticketData = {
+        pnr: booking.pnr,
+        contactEmail: bookingData.contactEmail,
+        route: {
+          from: fromAirport.name,
+          to: toAirport.name,
+          fromCode: fromAirport.code,
+          toCode: toAirport.code,
+          departureDate: bookingData.route.departureDate,
+        },
+        passengers: bookingData.passengers,
+        totalAmount: totalAmount,
+        currency: booking.currency || 'USD',
+      };
+
+      ticketUrl = await TicketGenerator.createTicket(ticketData);
+
+      // Update booking with ticket URL
+      if (ticketUrl) {
+        await supabaseServerHelpers.updateBooking(booking.id, { ticket_url: ticketUrl });
+      }
+    } catch (ticketError) {
+      console.error('Failed to generate ticket:', ticketError);
+      // Continue without ticket URL
+    }
+
     // Format response to match expected API structure
     const bookingResponse: Booking = {
       id: booking.id,
