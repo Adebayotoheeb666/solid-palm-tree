@@ -106,7 +106,7 @@ const Index = () => {
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
     // Always go to search flights - users can book as guest or sign in later
-    navigate("/search-flights");
+    navigate("/userform/search");
   };
 
   return (
