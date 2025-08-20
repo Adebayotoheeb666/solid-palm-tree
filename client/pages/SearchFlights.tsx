@@ -111,7 +111,7 @@ export default function SearchFlights({ onNext }: SearchFlightsProps) {
           <div className="text-xs text-white/40">{formatDate(segment.departure.at)}</div>
         </div>
         
-        <div className="flex flex-col items-center gap-2 min-w-[120px]">
+        <div className="flex flex-col items-center gap-2 min-w-[80px] sm:min-w-[100px] lg:min-w-[120px]">
           <div className="text-xs text-white/60">{formatDuration(segment.duration)}</div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-white rounded-full"></div>
