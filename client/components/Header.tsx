@@ -13,12 +13,9 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
   const { user, logout, isAuthenticated } = useAuth();
 
   const defaultHandleBookNow = useCallback(() => {
-    if (isAuthenticated) {
-      navigate("/userform");
-    } else {
-      navigate("/register");
-    }
-  }, [isAuthenticated, navigate]);
+    // Start with route selection - let users choose to login/register or continue as guest
+    navigate("/userform/route");
+  }, [navigate]);
 
   const bookNowHandler = handleBookNow || defaultHandleBookNow;
 
@@ -48,7 +45,7 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
           <img
             src="/onboard/logos.png"
             alt="OnboardTicket Logo"
-            className="h-20 md:h-32 w-auto max-w-[300px] md:max-w-[450px] object-contain cursor-pointer"
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[200px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[350px] object-contain cursor-pointer"
             loading="eager"
             onClick={handleLogoClick}
           />
@@ -57,7 +54,7 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-4 md:gap-8">
           <button
-            className="px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
+            className="px-4 sm:px-6 md:px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
             onClick={handleContactClick}
           >
             Get Support
@@ -92,9 +89,15 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <button
-                className="px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
+                className="px-4 md:px-6 py-2 text-brand-text-primary font-medium text-sm md:text-base hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={() => navigate("/guest-booking-lookup")}
+              >
+                Find Booking
+              </button>
+              <button
+                className="px-6 md:px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
                 onClick={handleLoginClick}
               >
                 Sign In

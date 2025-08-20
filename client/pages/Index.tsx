@@ -105,11 +105,8 @@ const Index = () => {
 
   // Helper function to handle Book Now navigation
   const handleBookNow = () => {
-    if (isAuthenticated) {
-      navigate("/userform");
-    } else {
-      navigate("/register");
-    }
+    // Start with route selection - users can book as guest or sign in later
+    navigate("/userform/route");
   };
 
   return (

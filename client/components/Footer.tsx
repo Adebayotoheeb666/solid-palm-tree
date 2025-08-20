@@ -26,7 +26,7 @@ const Footer: React.FC = memo(() => {
   );
 
   return (
-    <footer className="mt-24 px-4 sm:px-8 lg:px-36">
+    <footer className="mt-12 sm:mt-16 md:mt-20 lg:mt-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
       <div className="bg-ticket-footer rounded-t-lg p-8 lg:p-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-left">
           {/* Logo and Copyright - Always left aligned */}
@@ -34,11 +34,11 @@ const Footer: React.FC = memo(() => {
             <img
               src="/onboard/logos-01.png"
               alt="OnboardTicket Footer Logo"
-              className="h-14 md:h-24 w-auto max-w-[220px] md:max-w-[320px] object-contain cursor-pointer"
+              className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto max-w-[160px] sm:max-w-[200px] md:max-w-[240px] lg:max-w-[280px] object-contain cursor-pointer"
               loading="lazy"
               onClick={handleLogoClick}
             />
-            <hr className="border-black w-32 sm:w-40 md:w-72" />
+            <hr className="border-black w-24 sm:w-32 md:w-40 lg:w-48" />
             <h4 className="font-semibold text-black text-xs sm:text-sm md:text-base">
               Onboardticket.com
             </h4>

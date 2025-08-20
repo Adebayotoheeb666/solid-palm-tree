@@ -168,11 +168,7 @@ export default function Payment() {
       }));
     }
 
-    // Check authentication
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    // Note: Removed authentication check to support guest checkout
   }, [user, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -657,7 +653,7 @@ export default function Payment() {
           <img
             src="/onboard/result.png"
             alt="OnboardTicket Logo"
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
+            className="h-8 sm:h-10 lg:h-12 w-auto max-w-[150px] sm:max-w-[200px] lg:max-w-[250px] cursor-pointer"
             loading="eager"
             onClick={() => navigate("/")}
           />

@@ -128,6 +128,67 @@ export const supabaseServerHelpers = {
       .single();
   },
 
+  async updateBooking(
+    id: string,
+    updates: Partial<Database["public"]["Tables"]["bookings"]["Update"]>,
+  ) {
+    return await supabase
+      .from("bookings")
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+  },
+
+  // Guest booking operations
+  async createGuestBooking(bookingData: {
+    from_airport_id: string;
+    to_airport_id: string;
+    departure_date: string;
+    return_date?: string | null;
+    trip_type: string;
+    total_amount: number;
+    contact_email: string;
+    contact_phone?: string | null;
+    terms_accepted: boolean;
+    is_guest: boolean;
+  }) {
+    const pnr = this.generatePNR();
+
+    return await supabase
+      .from("bookings")
+      .insert({
+        ...bookingData,
+        pnr,
+        status: "pending",
+        currency: "USD",
+        user_id: null, // Guest booking has no user
+      })
+      .select()
+      .single();
+  },
+
+  async getGuestBookingByPNR(pnr: string, email: string) {
+    return await supabase
+      .from("bookings")
+      .select("*")
+      .eq("pnr", pnr)
+      .eq("contact_email", email)
+      .eq("is_guest", true)
+      .single();
+  },
+
+  async getAirportById(id: string) {
+    return await supabase.from("airports").select("*").eq("id", id).single();
+  },
+
+  async getPassengersByBookingId(bookingId: string) {
+    return await supabase
+      .from("passengers")
+      .select("*")
+      .eq("booking_id", bookingId);
+  },
+
   // Airport operations
   async getAllAirports() {
     return await withServerErrorHandling(
