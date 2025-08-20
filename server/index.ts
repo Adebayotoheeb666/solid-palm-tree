@@ -325,6 +325,11 @@ export function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
+  // Guest booking routes (no authentication required)
+  const { handleCreateGuestBooking, handleGetGuestBooking } = await import("./routes/guest-bookings.js");
+  app.post("/api/guest/bookings", handleCreateGuestBooking);
+  app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
+
   // Booking routes (authenticated) - prefer Supabase but fallback when needed
   app.post(
     "/api/bookings",
