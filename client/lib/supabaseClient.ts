@@ -132,7 +132,7 @@ export type Database = {
       bookings: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null; // Allow null for guest bookings
           pnr: string;
           status: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id: string;
@@ -150,7 +150,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          user_id: string;
+          user_id?: string | null; // Allow null for guest bookings
           pnr?: string;
           status?: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id: string;
@@ -168,7 +168,7 @@ export type Database = {
         };
         Update: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
           pnr?: string;
           status?: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id?: string;
