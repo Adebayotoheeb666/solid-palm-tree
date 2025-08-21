@@ -211,11 +211,22 @@ export default function Confirmation({
       }
     } catch (error) {
       console.error("Error creating booking:", error);
-      // More specific error message for body stream issues
-      if (error instanceof TypeError && error.message.includes("body stream")) {
-        setError("Request conflict detected. Please try again in a moment.");
+
+      // Handle different types of errors with specific messages
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          setError("Request timed out. Please try again.");
+        } else if (error.message.includes("body stream")) {
+          setError("Request conflict detected. Please try again in a moment.");
+        } else if (error.message.includes("HTTP")) {
+          setError(`Server error: ${error.message}. Please try again.`);
+        } else if (error.message.includes("Failed to fetch")) {
+          setError("Network connection failed. Please check your internet connection.");
+        } else {
+          setError(`Booking error: ${error.message}`);
+        }
       } else {
-        setError("Network error. Please check your connection and try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
