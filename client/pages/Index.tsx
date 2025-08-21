@@ -417,11 +417,11 @@ const Index = () => {
             {/* Digital Nomads*/}
             <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
               <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+                <div className="bg-transparent rounded-full w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mr-4 md:mr-6 shrink-0">
                   <img
                     src="/onboard/normands.png"
                     alt="Normands Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
+                    className="w-24 h-24 md:w-40 md:h-40 object-contain"
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -438,11 +438,11 @@ const Index = () => {
             {/*  Frequent travelers*/}
             <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
               <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+                <div className="bg-transparent rounded-full w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mr-4 md:mr-6 shrink-0">
                   <img
                     src="/onboard/frequent.png"
                     alt="Frequent Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
+                    className="w-24 h-24 md:w-40 md:h-40 object-contain"
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -459,11 +459,11 @@ const Index = () => {
             {/* Visa applicants */}
             <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
               <div className="gradient-box rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+                <div className="bg-transparent rounded-full w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mr-4 md:mr-6 shrink-0">
                   <img
                     src="/onboard/visa.png"
                     alt="Visa Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
+                    className="w-24 h-24 md:w-40 md:h-40 object-contain"
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
@@ -480,11 +480,11 @@ const Index = () => {
             {/* Last minute trips */}
             <div className="relative flex flex-col justify-center h-52 sm:h-52 md:h-56">
               <div className="gradient-box-pink rounded-2xl p-6 md:p-8 w-full h-full flex flex-row items-center shadow-lg overflow-hidden">
-                <div className="bg-transparent rounded-full w-32 h-32 md:w-56 md:h-56 flex items-center justify-center mr-4 md:mr-6 shrink-0">
+                <div className="bg-transparent rounded-full w-24 h-24 md:w-40 md:h-40 flex items-center justify-center mr-4 md:mr-6 shrink-0">
                   <img
                     src="/onboard/trip.png"
                     alt="Trip Icon"
-                    className="w-32 h-32 md:w-56 md:h-56 object-contain"
+                    className="w-24 h-24 md:w-40 md:h-40 object-contain"
                   />
                 </div>
                 <div className="flex-1 text-left min-w-0">
