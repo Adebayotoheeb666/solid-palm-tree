@@ -212,14 +212,14 @@ export default function Contact() {
             </div>
             {/* Follow Us */}
             <div className="space-y-4">
-              <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
+              <h4 className="text-lg sm:text-xl font-bold text-[#3150DA]">
                 Follow US
               </h4>
-              <div className="space-y-1 md:space-y-2">
-                <h5 className="text-base md:text-lg font-bold text-[#3150DA]">
+              <div className="space-y-2">
+                <h5 className="text-lg sm:text-xl font-bold text-[#3150DA]">
                   Stay in touch
                 </h5>
-                <p className="text-xs sm:text-sm font-semibold text-black">
+                <p className="text-sm sm:text-base text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium">
                   Blog
                 </p>
               </div>
