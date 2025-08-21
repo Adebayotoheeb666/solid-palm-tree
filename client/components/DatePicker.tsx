@@ -9,10 +9,14 @@ interface DatePickerProps {
   placeholder: string;
 }
 
-export default function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
+export default function DatePicker({
+  value,
+  onChange,
+  placeholder,
+}: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    value ? new Date(value) : undefined
+    value ? new Date(value) : undefined,
   );
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -37,9 +41,11 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
     <div className="relative">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-lg p-4 text-gray-600 cursor-pointer flex items-center justify-between"
+        className={`w-full bg-white border border-gray-300 rounded-lg p-4 cursor-pointer flex items-center justify-between min-h-[56px] shadow-sm hover:border-gray-400 hover:shadow-md transition-all ${isOpen ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
       >
-        <span className={value ? "text-gray-900" : "text-gray-500"}>
+        <span
+          className={`font-medium ${value ? "text-gray-900" : "text-gray-500"}`}
+        >
           {value ? formatDisplayDate(value) : placeholder}
         </span>
         <Calendar className="w-5 h-5 text-gray-600" />
@@ -49,12 +55,12 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-10"
+            className="fixed inset-0 z-10 bg-black/10 sm:bg-transparent"
             onClick={() => setIsOpen(false)}
           />
-          
+
           {/* Calendar Dropdown */}
-          <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border z-20 p-4 min-w-[280px]">
+          <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border z-[100] p-4 min-w-[280px] max-w-[calc(100vw-2rem)] sm:max-w-none">
             <style>{`
               .calendar-day {
                 transition: background-color 0.15s ease;
@@ -76,12 +82,15 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
               classNames={{
                 months: "flex flex-col gap-4",
                 month: "flex flex-col gap-4",
-                caption: "flex justify-center items-center py-2 font-medium text-gray-900",
+                caption:
+                  "flex justify-center items-center py-2 font-medium text-gray-900",
                 nav: "flex items-center gap-1",
-                nav_button: "w-7 h-7 bg-transparent border-none text-gray-500 hover:text-gray-900 cursor-pointer",
+                nav_button:
+                  "w-7 h-7 bg-transparent border-none text-gray-500 hover:text-gray-900 cursor-pointer",
                 table: "w-full border-collapse",
                 head_row: "flex gap-1",
-                head_cell: "text-gray-500 rounded-md w-8 font-normal text-xs text-center",
+                head_cell:
+                  "text-gray-500 rounded-md w-8 font-normal text-xs text-center",
                 row: "flex w-full mt-2 gap-1",
                 cell: "h-8 w-8 text-center text-sm p-0 relative",
                 day: "calendar-day h-8 w-8 p-0 font-normal text-gray-900 rounded-md border-none bg-transparent cursor-pointer",
@@ -94,7 +103,6 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
           </div>
         </>
       )}
-
     </div>
   );
 }

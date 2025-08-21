@@ -562,7 +562,7 @@ export default function Passengers({
                 <img
                   src="/onboard/result.png"
                   alt="OnboardTicket Logo"
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />

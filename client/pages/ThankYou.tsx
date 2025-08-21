@@ -11,11 +11,14 @@ export default function ThankYou(props) {
     <div className="min-h-screen bg-ticket-primary text-white">
       {/* Header */}
       <header className="text-left">
-        <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-          <img 
-            src="/onboard/result.png" 
-            alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <img
+            src="/onboard/result.png"
+            alt="OnboardTicket Logo"
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[360px] object-contain drop-shadow-sm cursor-pointer"
             loading="eager"
             onClick={() => navigate("/")}
           />
@@ -26,9 +29,9 @@ export default function ThankYou(props) {
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
         {/* Logo decoration */}
         <div className="mb-8">
-          <img 
-            src="https://api.builder.io/api/v1/image/assets/TEMP/32517cf9083990538089da73223e0188f0ea3284?width=850" 
-            alt="Success decoration" 
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/32517cf9083990538089da73223e0188f0ea3284?width=850"
+            alt="Success decoration"
             className="w-64 h-64 opacity-20"
           />
         </div>
@@ -40,7 +43,8 @@ export default function ThankYou(props) {
 
         {/* Description */}
         <p className="text-lg text-white/50 text-center mb-12 max-w-lg leading-relaxed">
-          Your itinerary has been successfully generated and sent to your email. Please check your inbox, for your confirmation and travel document.
+          Your itinerary has been successfully generated and sent to your email.
+          Please check your inbox, for your confirmation and travel document.
         </p>
 
         {/* Book Again Button */}
@@ -59,18 +63,29 @@ export default function ThankYou(props) {
             {/* Logo and Copyright */}
             <div className="space-y-4 text-left">
               <div>
-                <img 
-                  src="/onboard/result.png" 
-                  alt="OnboardTicket Logo" 
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                <img
+                  src="/onboard/result.png"
+                  alt="OnboardTicket Logo"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
-                <div className="text-base font-semibold text-white text-left">Onboardticket.com</div>
-                <div className="text-xs opacity-80 mt-2 text-white text-left">© 2025 — Copyright</div>
+                <div className="text-base font-semibold text-white text-left">
+                  Onboardticket.com
+                </div>
+                <div className="text-xs opacity-80 mt-2 text-white text-left">
+                  © 2025 — Copyright
+                </div>
               </div>
               <p className="text-xs opacity-80 leading-relaxed text-white text-left">
-                OnboardTicket is committed to upholding the highest standards in compliance with international civil aviation regulations and ethical booking practices. This includes, but is not limited to, strict avoidance of misuse of booking classes, fraudulent activities, duplicate, speculative, or fictitious reservations. Users who engage in repeated cancellations without legitimate intent will be subject to monitoring, and may face usage restrictions or permanent bans from our platform.
+                OnboardTicket is committed to upholding the highest standards in
+                compliance with international civil aviation regulations and
+                ethical booking practices. This includes, but is not limited to,
+                strict avoidance of misuse of booking classes, fraudulent
+                activities, duplicate, speculative, or fictitious reservations.
+                Users who engage in repeated cancellations without legitimate
+                intent will be subject to monitoring, and may face usage
+                restrictions or permanent bans from our platform.
               </p>
             </div>
             {/* About */}
@@ -79,9 +94,24 @@ export default function ThankYou(props) {
                 About
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-white text-left">
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/about")}>Who We are ?</li>
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/about")}
+                >
+                  Who We are ?
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/privacy-policy")}
+                >
+                  Privacy Policy
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/terms-conditions")}
+                >
+                  Terms & Conditions
+                </li>
               </ul>
             </div>
             {/* Get Help */}
@@ -90,9 +120,24 @@ export default function ThankYou(props) {
                 Get Help
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-white text-left">
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/faq")}>FAQs</li>
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/payment")}>Payment</li>
-                <li className="cursor-pointer hover:text-[#3839C9] text-left" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/faq")}
+                >
+                  FAQs
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/payment")}
+                >
+                  Payment
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9] text-left"
+                  onClick={() => navigate("/contact")}
+                >
+                  Contact Support 24/7
+                </li>
               </ul>
             </div>
             {/* Follow Us */}

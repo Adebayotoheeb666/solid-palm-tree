@@ -45,7 +45,47 @@ export default function StripePaymentForm({
       const configResponse = await fetch("/api/payments/stripe/config");
       const configData = await configResponse.json();
 
-      if (!configData.publishableKey || configData.demoMode) {
+      if (configData.demoMode) {
+        console.warn("Stripe in demo mode - using simulated payment flow");
+        // Create payment intent anyway (server returns demo clientSecret)
+        try {
+          const intentResponse = await fetch(
+            "/api/payments/stripe/create-intent",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({
+                amount: Math.round(amount * 100),
+                currency: currency.toLowerCase(),
+                bookingId: bookingId,
+              }),
+            },
+          );
+
+          const intentData = await intentResponse.json();
+          if (intentData.success) {
+            setClientSecret(intentData.clientSecret);
+            setStripeLoading(false);
+            // Keep stripe as null for demo mode
+            return;
+          } else {
+            onError(
+              intentData.message || "Failed to create demo payment intent",
+            );
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          onError("Failed to initialize demo payment");
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!configData.publishableKey) {
         onError(
           "Stripe is not configured on this server. Please use PayPal or Credit Card payment options.",
         );
@@ -139,6 +179,28 @@ export default function StripePaymentForm({
       }
     } catch (error) {
       onError(error instanceof Error ? error.message : "Payment failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoPayment = async () => {
+    if (!clientSecret) {
+      onError("Payment system not ready");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Simulate payment processing delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Extract payment intent ID from demo client secret
+      const paymentIntentId = clientSecret.split("_secret")[0];
+      onSuccess(paymentIntentId);
+    } catch (error) {
+      onError("Demo payment failed");
     } finally {
       setLoading(false);
     }
@@ -339,29 +401,46 @@ export default function StripePaymentForm({
 
       {/* Pay Button */}
       <button
-        onClick={handleCardPayment}
-        disabled={loading || !!validationError}
+        onClick={stripe ? handleCardPayment : handleDemoPayment}
+        disabled={loading || (stripe && !!validationError)}
         className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors ${
-          loading || validationError
+          loading || (stripe && validationError)
             ? "bg-gray-500 cursor-not-allowed"
-            : "bg-ticket-accent text-black hover:bg-opacity-80"
+            : stripe
+              ? "bg-ticket-accent text-black hover:bg-opacity-80"
+              : "bg-orange-500 text-white hover:bg-orange-600"
         }`}
       >
         {loading ? (
           <div className="flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
-            Processing Payment...
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+            {stripe ? "Processing Payment..." : "Simulating Payment..."}
           </div>
-        ) : (
+        ) : stripe ? (
           `Pay ${currency} ${amount.toLocaleString()}`
+        ) : (
+          `Simulate Payment ${currency} ${amount.toLocaleString()}`
         )}
       </button>
 
-      {/* Validation Error */}
-      {validationError && (
+      {/* Validation Error - only show for real Stripe payments */}
+      {stripe && validationError && (
         <div className="flex items-center gap-2 text-red-400 text-sm">
           <AlertCircle className="w-4 h-4" />
           {validationError}
+        </div>
+      )}
+
+      {/* Demo Mode Notice */}
+      {!stripe && clientSecret && (
+        <div className="flex items-center gap-2 text-orange-400 text-sm bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
+          <AlertCircle className="w-4 h-4" />
+          <div>
+            <p className="font-medium">Demo Mode</p>
+            <p className="text-xs text-orange-300">
+              This is a simulated payment for testing purposes
+            </p>
+          </div>
         </div>
       )}
     </div>

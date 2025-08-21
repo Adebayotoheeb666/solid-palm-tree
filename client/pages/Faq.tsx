@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // FAQ Card Component (Single Card, Multiple Questions)
 const FaqCard = ({ faqs }: { faqs: { q: string; a: string }[] }) => {
@@ -146,23 +146,26 @@ export default function Faq() {
     },
     {
       q: "Does this service keep a history of my reservations?",
-      a: "The system uses a database to store user orders and reservation details for your records."
+      a: "The system uses a database to store user orders and reservation details for your records.",
     },
     {
       q: "Will the platform be able to handle many users?",
-      a: "The technical design of the platform emphasizes scalability to handle a growing number of users and reservation requests."
-    }
+      a: "The technical design of the platform emphasizes scalability to handle a growing number of users and reservation requests.",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-ob-background font-plus-jakarta">
       {/* Header */}
       <header className="text-left">
-        <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-          <img 
-            src="/onboard/result.png" 
-            alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <img
+            src="/onboard/result.png"
+            alt="OnboardTicket Logo"
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[360px] object-contain drop-shadow-sm cursor-pointer"
             loading="eager"
             onClick={() => navigate("/")}
           />
@@ -181,7 +184,8 @@ export default function Faq() {
               Get support within 30 min, on average
             </p>
             <p className="text-lg text-left md:text-2xl text-[#8A8A8F] mb-8 md:mb-12 font-light font-jakarta">
-              Check out our frequently asked questions below or reach out to our team for fast, friendly support
+              Check out our frequently asked questions below or reach out to our
+              team for fast, friendly support
             </p>
 
             <div className="w-full text-left">
@@ -190,7 +194,7 @@ export default function Faq() {
             </div>
 
             <div className="flex gap-2 md:gap-4 mt-8 justify-start">
-              <button 
+              <button
                 className="bg-[#3839C9] text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-base md:text-lg hover:bg-blue-700 transition-colors shadow-md"
                 onClick={() => navigate("/contact")}
               >
@@ -208,18 +212,29 @@ export default function Faq() {
             {/* Logo and Copyright */}
             <div className="space-y-4">
               <div>
-                <img 
-                  src="/onboard/result.png" 
-                  alt="OnboardTicket Logo" 
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                <img
+                  src="/onboard/result.png"
+                  alt="OnboardTicket Logo"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
-                <div className="text-base font-semibold text-[#3150DA]">Onboardticket.com</div>
-                <div className="text-xs opacity-80 mt-2 text-black">© 2025 — Copyright</div>
+                <div className="text-base font-semibold text-[#3150DA]">
+                  Onboardticket.com
+                </div>
+                <div className="text-xs opacity-80 mt-2 text-black">
+                  © 2025 — Copyright
+                </div>
               </div>
               <p className="text-xs opacity-80 leading-relaxed text-black">
-                OnboardTicket is committed to upholding the highest standards in compliance with international civil aviation regulations and ethical booking practices. This includes, but is not limited to, strict avoidance of misuse of booking classes, fraudulent activities, duplicate, speculative, or fictitious reservations. Users who engage in repeated cancellations without legitimate intent will be subject to monitoring, and may face usage restrictions or permanent bans from our platform.
+                OnboardTicket is committed to upholding the highest standards in
+                compliance with international civil aviation regulations and
+                ethical booking practices. This includes, but is not limited to,
+                strict avoidance of misuse of booking classes, fraudulent
+                activities, duplicate, speculative, or fictitious reservations.
+                Users who engage in repeated cancellations without legitimate
+                intent will be subject to monitoring, and may face usage
+                restrictions or permanent bans from our platform.
               </p>
             </div>
             {/* About */}
@@ -228,9 +243,24 @@ export default function Faq() {
                 About
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-black">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/about")}>Who We are ?</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/about")}
+                >
+                  Who We are ?
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/privacy-policy")}
+                >
+                  Privacy Policy
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/terms-conditions")}
+                >
+                  Terms & Conditions
+                </li>
               </ul>
             </div>
             {/* Get Help */}
@@ -239,9 +269,24 @@ export default function Faq() {
                 Get Help
               </h4>
               <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-black">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/faq")}>FAQs</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/payment")}>Payment</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/faq")}
+                >
+                  FAQs
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/payment")}
+                >
+                  Payment
+                </li>
+                <li
+                  className="cursor-pointer hover:text-[#3839C9]"
+                  onClick={() => navigate("/contact")}
+                >
+                  Contact Support 24/7
+                </li>
               </ul>
             </div>
             {/* Follow Us */}

@@ -28,6 +28,10 @@ export default function Payment() {
   const [routeData, setRouteData] = useState<any>(null);
   const [selectedFlight, setSelectedFlight] = useState<any>(null);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [stripeConfig, setStripeConfig] = useState<{
+    publishableKey: string | null;
+    demoMode: boolean;
+  }>({ publishableKey: null, demoMode: true });
 
   const [paymentDetails, setPaymentDetails] = useState({
     country: "",
@@ -87,6 +91,25 @@ export default function Payment() {
     clearFieldError,
     hasAnyError,
   } = useFormValidation(validationRules);
+
+  // Fetch Stripe configuration
+  useEffect(() => {
+    const fetchStripeConfig = async () => {
+      try {
+        const response = await fetch("/api/payments/stripe/config");
+        const configData = await response.json();
+        setStripeConfig({
+          publishableKey: configData.publishableKey,
+          demoMode: configData.demoMode || false,
+        });
+      } catch (error) {
+        console.warn("Failed to fetch Stripe config:", error);
+        setStripeConfig({ publishableKey: null, demoMode: true });
+      }
+    };
+
+    fetchStripeConfig();
+  }, []);
 
   // Load booking data from previous steps
   useEffect(() => {
@@ -776,23 +799,41 @@ export default function Payment() {
             {/* Payment Method Tabs */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               {[
-                { key: "stripe", label: "Stripe (Recommended)", icon: Zap },
-                { key: "card", label: "Credit Card", icon: CreditCard },
-                { key: "paypal", label: "PayPal", icon: null },
+                {
+                  key: "stripe",
+                  label: stripeConfig.demoMode
+                    ? "Stripe (Demo Mode)"
+                    : "Stripe (Recommended)",
+                  icon: Zap,
+                  disabled: false,
+                },
+                {
+                  key: "card",
+                  label: "Credit Card",
+                  icon: CreditCard,
+                  disabled: false,
+                },
+                { key: "paypal", label: "PayPal", icon: null, disabled: false },
               ].map((method) => (
-                <button
-                  key={method.key}
-                  onClick={() => setSelectedPaymentMethod(method.key)}
-                  disabled={loading || success}
-                  className={`flex-1 px-6 py-4 rounded-lg border-2 font-bold text-lg transition-colors flex items-center justify-center gap-2 ${
-                    selectedPaymentMethod === method.key
-                      ? "bg-[#505BFB] border-[#505BFB] text-white shadow-lg"
-                      : "bg-[#EBECFF] border-white text-[#848484] hover:bg-white"
-                  } ${loading || success ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {method.icon && <method.icon className="w-5 h-5" />}
-                  {method.label}
-                </button>
+                <div key={method.key} className="flex-1">
+                  <button
+                    onClick={() => setSelectedPaymentMethod(method.key)}
+                    disabled={loading || success || method.disabled}
+                    className={`w-full px-6 py-4 rounded-lg border-2 font-bold text-lg transition-colors flex items-center justify-center gap-2 ${
+                      selectedPaymentMethod === method.key
+                        ? "bg-[#505BFB] border-[#505BFB] text-white shadow-lg"
+                        : "bg-[#EBECFF] border-white text-[#848484] hover:bg-white"
+                    } ${loading || success || method.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    {method.icon && <method.icon className="w-5 h-5" />}
+                    {method.label}
+                  </button>
+                  {method.key === "stripe" && stripeConfig.demoMode && (
+                    <p className="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded px-2 py-1 mt-2 text-center font-medium">
+                      Demo Mode: Stripe demo mode - credentials not configured
+                    </p>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -1135,7 +1176,7 @@ export default function Payment() {
                 <img
                   src="/onboard/result.png"
                   alt="OnboardTicket Logo"
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />

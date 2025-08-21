@@ -39,13 +39,13 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div
-          className="flex items-center cursor-pointer"
+          className="flex items-center cursor-pointer p-2 hover:bg-gray-50 rounded-lg transition-colors"
           onClick={handleLogoClick}
         >
           <img
-            src="/onboard/logos.png"
+            src="/onboard/logos-01.png"
             alt="OnboardTicket Logo"
-            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[200px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[350px] object-contain cursor-pointer"
+            className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[300px] object-contain drop-shadow-sm"
             loading="eager"
             onClick={handleLogoClick}
           />

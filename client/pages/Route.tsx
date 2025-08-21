@@ -149,7 +149,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "bookingPassengers" || e.key === "bookingContactEmail") {
         loadPassengerData();
-        setRefreshKey(prev => prev + 1);
+        setRefreshKey((prev) => prev + 1);
       }
     };
 
@@ -339,14 +339,16 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24">
           {/* Left Side - Form */}
-          <div className="space-y-8">
+          <div className="space-y-6 lg:space-y-8">
             {/* Trip Type Selection */}
             <div>
-              <h2 className="text-2xl font-bold mb-8 text-[#F6F6FF]">Route</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 lg:mb-8 text-[#F6F6FF]">
+                Route
+              </h2>
 
-              <div className="flex gap-0 mb-8 max-w-md">
+              <div className="flex gap-0 mb-6 lg:mb-8 w-full max-w-md">
                 <button
                   onClick={() => setTripType("oneway")}
                   className={`flex-1 py-3 px-6 text-sm font-semibold rounded-l-lg transition-colors ${
@@ -374,8 +376,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
             <div>
               <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Route</h3>
 
-              <div className="space-y-6 mb-8">
-                <div className="flex items-center gap-4">
+              <div className="space-y-6 mb-6 lg:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                   <div className="flex-1">
                     <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
                       From (Departure Airport)
@@ -402,7 +404,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                     />
                   </div>
 
-                  <div className="bg-ticket-secondary rounded p-3 mt-6">
+                  <div className="bg-ticket-secondary rounded-lg p-3 self-center sm:mt-6 hidden sm:block">
                     <Plane className="w-5 h-5 text-white" />
                   </div>
 
@@ -599,7 +601,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 )}
               </div>
 
-{(() => {
+              {(() => {
                 // Get current passenger data from state or localStorage
                 let passengers = [];
                 let contactEmail = "";
@@ -610,8 +612,11 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 } else {
                   // Fallback to localStorage (for immediate access)
                   try {
-                    const savedPassengers = localStorage.getItem("bookingPassengers");
-                    const savedContactEmail = localStorage.getItem("bookingContactEmail");
+                    const savedPassengers =
+                      localStorage.getItem("bookingPassengers");
+                    const savedContactEmail = localStorage.getItem(
+                      "bookingContactEmail",
+                    );
                     if (savedPassengers) {
                       passengers = JSON.parse(savedPassengers);
                     }
@@ -627,7 +632,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                   /* Passenger Info */
                   <div className="mb-6">
                     <div className="text-sm font-semibold text-ticket-text mb-1">
-                      Passenger{passengers.length > 1 ? "s" : ""} / {passengers.length || 1}
+                      Passenger{passengers.length > 1 ? "s" : ""} /{" "}
+                      {passengers.length || 1}
                     </div>
                     {passengers.length > 0 ? (
                       passengers.slice(0, 2).map((passenger, index) => (
@@ -644,13 +650,17 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                               </div>
                             </div>
                             <div>
-                              <div className="text-ticket-text font-semibold">Flight</div>
+                              <div className="text-ticket-text font-semibold">
+                                Flight
+                              </div>
                               <div className="font-bold">$15 USD</div>
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-4 text-sm mt-2">
                             <div>
-                              <div className="text-ticket-text font-semibold">Seat</div>
+                              <div className="text-ticket-text font-semibold">
+                                Seat
+                              </div>
                               <div className="font-bold">{20 + index}C</div>
                             </div>
                             <div>
@@ -671,7 +681,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                           <div className="font-bold">Mr. Passenger Name</div>
                         </div>
                         <div>
-                          <div className="text-ticket-text font-semibold">Flight</div>
+                          <div className="text-ticket-text font-semibold">
+                            Flight
+                          </div>
                           <div className="font-bold">$15 USD</div>
                         </div>
                       </div>
@@ -684,7 +696,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                     )}
                     <div className="grid grid-cols-2 gap-4 text-sm mt-2">
                       <div>
-                        <div className="text-ticket-text font-semibold">Seat</div>
+                        <div className="text-ticket-text font-semibold">
+                          Seat
+                        </div>
                         <div className="font-bold">20C</div>
                       </div>
                       <div>
@@ -732,7 +746,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 <img
                   src="/onboard/result.png"
                   alt="OnboardTicket Logo"
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
