@@ -29,10 +29,10 @@ export default function Contact() {
       {/* Header */}
       <header className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-36 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 
-          <img 
-            src="/onboard/result.png" 
-            alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
+          <img
+            src="/onboard/result.png"
+            alt="OnboardTicket Logo"
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[360px] object-contain drop-shadow-sm cursor-pointer"
             loading="eager"
             onClick={() => navigate("/")}
           />
@@ -174,10 +174,10 @@ export default function Contact() {
             {/* Logo and Copyright */}
             <div className="space-y-4">
               <div>
-                <img 
-                  src="/onboard/result.png" 
-                  alt="OnboardTicket Logo" 
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                <img
+                  src="/onboard/result.png"
+                  alt="OnboardTicket Logo"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
@@ -189,29 +189,29 @@ export default function Contact() {
               </p>
             </div>
             {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
-              <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
+            <div className="space-y-4">
+              <h4 className="text-lg sm:text-xl font-bold text-[#3150DA]">
                 About
               </h4>
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-black">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/about")}>Who We are ?</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
+              <ul className="space-y-3 text-sm sm:text-base">
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/about")}>Who We are ?</li>
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/privacy-policy")}>Privacy Policy</li>
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/terms-conditions")}>Terms & Conditions</li>
               </ul>
             </div>
             {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
-              <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
+            <div className="space-y-4">
+              <h4 className="text-lg sm:text-xl font-bold text-[#3150DA]">
                 Get Help
               </h4>
-              <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm font-semibold text-black">
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/faq")}>FAQs</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/payment")}>Payment</li>
-                <li className="cursor-pointer hover:text-[#3839C9]" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
+              <ul className="space-y-3 text-sm sm:text-base">
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/faq")}>FAQs</li>
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/payment")}>Payment</li>
+                <li className="text-black cursor-pointer hover:text-[#3839C9] transition-colors duration-200 font-medium" onClick={() => navigate("/contact")}>Contact Support 24/7</li>
               </ul>
             </div>
             {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-4">
               <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
                 Follow US
               </h4>
