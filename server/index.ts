@@ -504,14 +504,18 @@ export async function createServer() {
   return app;
 }
 
-// Start the server
+// Start the server only in production or when not running via Vite
 const PORT = process.env.PORT || 3000;
+const isViteMode = process.env.VITE_MODE || process.env.NODE_ENV === 'development';
 
-createServer().then((app) => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`📋 API status: http://localhost:${PORT}/api/status`);
-    console.log(`🔧 Services status: http://localhost:${PORT}/api/services`);
+// Only start standalone server if not running via Vite dev server
+if (!isViteMode) {
+  createServer().then((app) => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/health`);
+      console.log(`📋 API status: http://localhost:${PORT}/api/status`);
+      console.log(`🔧 Services status: http://localhost:${PORT}/api/services`);
+    });
   });
-});
+}
