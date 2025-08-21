@@ -92,6 +92,25 @@ export default function Payment() {
     hasAnyError,
   } = useFormValidation(validationRules);
 
+  // Fetch Stripe configuration
+  useEffect(() => {
+    const fetchStripeConfig = async () => {
+      try {
+        const response = await fetch("/api/payments/stripe/config");
+        const configData = await response.json();
+        setStripeConfig({
+          publishableKey: configData.publishableKey,
+          demoMode: configData.demoMode || false,
+        });
+      } catch (error) {
+        console.warn("Failed to fetch Stripe config:", error);
+        setStripeConfig({ publishableKey: null, demoMode: true });
+      }
+    };
+
+    fetchStripeConfig();
+  }, []);
+
   // Load booking data from previous steps
   useEffect(() => {
     // Load booking data (most important)
