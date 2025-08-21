@@ -98,7 +98,6 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
         trip_type: bookingData.route.tripType,
         total_amount: totalAmount,
         contact_email: bookingData.contactEmail,
-        contact_phone: bookingData.contactPhone || null,
         terms_accepted: bookingData.termsAccepted,
       });
 
