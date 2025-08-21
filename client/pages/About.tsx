@@ -148,7 +148,7 @@ export default function About() {
               </p>
             </div>
             {/* About */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center justify-start md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
                 About
               </h4>
@@ -174,7 +174,7 @@ export default function About() {
               </ul>
             </div>
             {/* Get Help */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center justify-start md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
                 Get Help
               </h4>
@@ -200,7 +200,7 @@ export default function About() {
               </ul>
             </div>
             {/* Follow Us */}
-            <div className="space-y-2 md:space-y-4 flex flex-col items-center justify-center ">
+            <div className="space-y-2 md:space-y-4 flex flex-col items-start md:items-center justify-start md:justify-center">
               <h4 className="text-base md:text-lg font-bold text-[#3150DA]">
                 Follow US
               </h4>
