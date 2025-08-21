@@ -49,18 +49,21 @@ export default function StripePaymentForm({
         console.warn("Stripe in demo mode - using simulated payment flow");
         // Create payment intent anyway (server returns demo clientSecret)
         try {
-          const intentResponse = await fetch("/api/payments/stripe/create-intent", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+          const intentResponse = await fetch(
+            "/api/payments/stripe/create-intent",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({
+                amount: Math.round(amount * 100),
+                currency: currency.toLowerCase(),
+                bookingId: bookingId,
+              }),
             },
-            body: JSON.stringify({
-              amount: Math.round(amount * 100),
-              currency: currency.toLowerCase(),
-              bookingId: bookingId,
-            }),
-          });
+          );
 
           const intentData = await intentResponse.json();
           if (intentData.success) {
@@ -69,7 +72,9 @@ export default function StripePaymentForm({
             // Keep stripe as null for demo mode
             return;
           } else {
-            onError(intentData.message || "Failed to create demo payment intent");
+            onError(
+              intentData.message || "Failed to create demo payment intent",
+            );
             setLoading(false);
             return;
           }
@@ -189,7 +194,7 @@ export default function StripePaymentForm({
 
     try {
       // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Extract payment intent ID from demo client secret
       const paymentIntentId = clientSecret.split("_secret")[0];
@@ -432,7 +437,9 @@ export default function StripePaymentForm({
           <AlertCircle className="w-4 h-4" />
           <div>
             <p className="font-medium">Demo Mode</p>
-            <p className="text-xs text-orange-300">This is a simulated payment for testing purposes</p>
+            <p className="text-xs text-orange-300">
+              This is a simulated payment for testing purposes
+            </p>
           </div>
         </div>
       )}

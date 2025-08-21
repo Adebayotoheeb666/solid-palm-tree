@@ -149,7 +149,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "bookingPassengers" || e.key === "bookingContactEmail") {
         loadPassengerData();
-        setRefreshKey(prev => prev + 1);
+        setRefreshKey((prev) => prev + 1);
       }
     };
 
@@ -344,7 +344,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
           <div className="space-y-6 lg:space-y-8">
             {/* Trip Type Selection */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-6 lg:mb-8 text-[#F6F6FF]">Route</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 lg:mb-8 text-[#F6F6FF]">
+                Route
+              </h2>
 
               <div className="flex gap-0 mb-6 lg:mb-8 w-full max-w-md">
                 <button
@@ -599,7 +601,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 )}
               </div>
 
-{(() => {
+              {(() => {
                 // Get current passenger data from state or localStorage
                 let passengers = [];
                 let contactEmail = "";
@@ -610,8 +612,11 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                 } else {
                   // Fallback to localStorage (for immediate access)
                   try {
-                    const savedPassengers = localStorage.getItem("bookingPassengers");
-                    const savedContactEmail = localStorage.getItem("bookingContactEmail");
+                    const savedPassengers =
+                      localStorage.getItem("bookingPassengers");
+                    const savedContactEmail = localStorage.getItem(
+                      "bookingContactEmail",
+                    );
                     if (savedPassengers) {
                       passengers = JSON.parse(savedPassengers);
                     }
@@ -627,7 +632,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                   /* Passenger Info */
                   <div className="mb-6">
                     <div className="text-sm font-semibold text-ticket-text mb-1">
-                      Passenger{passengers.length > 1 ? "s" : ""} / {passengers.length || 1}
+                      Passenger{passengers.length > 1 ? "s" : ""} /{" "}
+                      {passengers.length || 1}
                     </div>
                     {passengers.length > 0 ? (
                       passengers.slice(0, 2).map((passenger, index) => (
@@ -644,13 +650,17 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                               </div>
                             </div>
                             <div>
-                              <div className="text-ticket-text font-semibold">Flight</div>
+                              <div className="text-ticket-text font-semibold">
+                                Flight
+                              </div>
                               <div className="font-bold">$15 USD</div>
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-4 text-sm mt-2">
                             <div>
-                              <div className="text-ticket-text font-semibold">Seat</div>
+                              <div className="text-ticket-text font-semibold">
+                                Seat
+                              </div>
                               <div className="font-bold">{20 + index}C</div>
                             </div>
                             <div>
@@ -671,7 +681,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                           <div className="font-bold">Mr. Passenger Name</div>
                         </div>
                         <div>
-                          <div className="text-ticket-text font-semibold">Flight</div>
+                          <div className="text-ticket-text font-semibold">
+                            Flight
+                          </div>
                           <div className="font-bold">$15 USD</div>
                         </div>
                       </div>
@@ -684,7 +696,9 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                     )}
                     <div className="grid grid-cols-2 gap-4 text-sm mt-2">
                       <div>
-                        <div className="text-ticket-text font-semibold">Seat</div>
+                        <div className="text-ticket-text font-semibold">
+                          Seat
+                        </div>
                         <div className="font-bold">20C</div>
                       </div>
                       <div>

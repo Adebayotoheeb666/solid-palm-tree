@@ -132,7 +132,9 @@ export default function SearchableSelect({
           error ? "border-red-500" : "border-gray-300"
         } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-gray-400 hover:shadow-md"} ${isOpen ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
       >
-        <span className={`font-medium ${value ? "text-gray-900" : "text-gray-500"}`}>
+        <span
+          className={`font-medium ${value ? "text-gray-900" : "text-gray-500"}`}
+        >
           {displayText || placeholder}
         </span>
         <ChevronDown

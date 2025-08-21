@@ -807,7 +807,12 @@ export default function Payment() {
                   icon: Zap,
                   disabled: false,
                 },
-                { key: "card", label: "Credit Card", icon: CreditCard, disabled: false },
+                {
+                  key: "card",
+                  label: "Credit Card",
+                  icon: CreditCard,
+                  disabled: false,
+                },
                 { key: "paypal", label: "PayPal", icon: null, disabled: false },
               ].map((method) => (
                 <div key={method.key} className="flex-1">
