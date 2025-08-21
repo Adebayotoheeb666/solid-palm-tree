@@ -129,7 +129,7 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
-export function createServer() {
+export async function createServer() {
   const app = express();
 
   // Middleware
@@ -314,7 +314,7 @@ export function createServer() {
   }
 
   // Authentication routes (public) - using hybrid system
-  console.log("📋 Setting up hybrid auth routes (Supabase + fallback)");
+  console.log("�� Setting up hybrid auth routes (Supabase + fallback)");
   app.post("/api/auth/register", handleHybridRegister);
   app.post("/api/auth/login", handleHybridLogin);
   app.get("/api/auth/validate", handleHybridValidateToken);
