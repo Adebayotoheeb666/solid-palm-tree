@@ -179,6 +179,28 @@ export default function StripePaymentForm({
     }
   };
 
+  const handleDemoPayment = async () => {
+    if (!clientSecret) {
+      onError("Payment system not ready");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Extract payment intent ID from demo client secret
+      const paymentIntentId = clientSecret.split("_secret")[0];
+      onSuccess(paymentIntentId);
+    } catch (error) {
+      onError("Demo payment failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const validateCard = () => {
     const { cardNumber, expiryDate, cvv, cardholderName, country } = cardData;
 
@@ -374,29 +396,44 @@ export default function StripePaymentForm({
 
       {/* Pay Button */}
       <button
-        onClick={handleCardPayment}
-        disabled={loading || !!validationError}
+        onClick={stripe ? handleCardPayment : handleDemoPayment}
+        disabled={loading || (stripe && !!validationError)}
         className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors ${
-          loading || validationError
+          loading || (stripe && validationError)
             ? "bg-gray-500 cursor-not-allowed"
-            : "bg-ticket-accent text-black hover:bg-opacity-80"
+            : stripe
+              ? "bg-ticket-accent text-black hover:bg-opacity-80"
+              : "bg-orange-500 text-white hover:bg-orange-600"
         }`}
       >
         {loading ? (
           <div className="flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
-            Processing Payment...
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+            {stripe ? "Processing Payment..." : "Simulating Payment..."}
           </div>
-        ) : (
+        ) : stripe ? (
           `Pay ${currency} ${amount.toLocaleString()}`
+        ) : (
+          `Simulate Payment ${currency} ${amount.toLocaleString()}`
         )}
       </button>
 
-      {/* Validation Error */}
-      {validationError && (
+      {/* Validation Error - only show for real Stripe payments */}
+      {stripe && validationError && (
         <div className="flex items-center gap-2 text-red-400 text-sm">
           <AlertCircle className="w-4 h-4" />
           {validationError}
+        </div>
+      )}
+
+      {/* Demo Mode Notice */}
+      {!stripe && clientSecret && (
+        <div className="flex items-center gap-2 text-orange-400 text-sm bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
+          <AlertCircle className="w-4 h-4" />
+          <div>
+            <p className="font-medium">Demo Mode</p>
+            <p className="text-xs text-orange-300">This is a simulated payment for testing purposes</p>
+          </div>
         </div>
       )}
     </div>
