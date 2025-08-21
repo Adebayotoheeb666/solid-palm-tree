@@ -129,7 +129,7 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
-export function createServer() {
+export async function createServer() {
   const app = express();
 
   // Middleware
@@ -327,7 +327,7 @@ export function createServer() {
 
   // Guest booking routes (no authentication required)
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
-    "./routes/guest-bookings.js"
+    "./routes/guest-bookings"
   );
   app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
