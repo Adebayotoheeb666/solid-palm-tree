@@ -402,7 +402,7 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
                     />
                   </div>
 
-                  <div className="bg-ticket-secondary rounded p-3 mt-6">
+                  <div className="bg-ticket-secondary rounded-lg p-3 self-center sm:mt-6 hidden sm:block">
                     <Plane className="w-5 h-5 text-white" />
                   </div>
 
