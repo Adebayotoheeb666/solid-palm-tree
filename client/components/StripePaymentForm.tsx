@@ -45,7 +45,42 @@ export default function StripePaymentForm({
       const configResponse = await fetch("/api/payments/stripe/config");
       const configData = await configResponse.json();
 
-      if (!configData.publishableKey || configData.demoMode) {
+      if (configData.demoMode) {
+        console.warn("Stripe in demo mode - using simulated payment flow");
+        // Create payment intent anyway (server returns demo clientSecret)
+        try {
+          const intentResponse = await fetch("/api/payments/stripe/create-intent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              amount: Math.round(amount * 100),
+              currency: currency.toLowerCase(),
+              bookingId: bookingId,
+            }),
+          });
+
+          const intentData = await intentResponse.json();
+          if (intentData.success) {
+            setClientSecret(intentData.clientSecret);
+            setStripeLoading(false);
+            // Keep stripe as null for demo mode
+            return;
+          } else {
+            onError(intentData.message || "Failed to create demo payment intent");
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          onError("Failed to initialize demo payment");
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!configData.publishableKey) {
         onError(
           "Stripe is not configured on this server. Please use PayPal or Credit Card payment options.",
         );
