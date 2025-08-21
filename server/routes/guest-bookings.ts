@@ -159,9 +159,11 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
     }
 
     // Format response to match expected API structure
+    const isGuestBooking = booking.user_id === "00000000-0000-0000-0000-000000000000";
+
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null, // Guest booking has no user ID
+      userId: isGuestBooking ? null : booking.user_id, // Return null for guest bookings
       pnr: booking.pnr,
       status: booking.status,
       route: {
@@ -187,7 +189,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
       createdAt: booking.created_at,
       updatedAt: booking.updated_at,
       ticketUrl: ticketUrl || booking.ticket_url || undefined,
-      isGuest: true,
+      isGuest: isGuestBooking,
     };
 
     // Send booking confirmation email
