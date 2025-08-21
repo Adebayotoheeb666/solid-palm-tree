@@ -169,14 +169,34 @@ export const supabaseServerHelpers = {
     contact_email: string;
     contact_phone?: string | null;
     terms_accepted: boolean;
-    is_guest: boolean;
   }) {
     const pnr = this.generatePNR();
+
+    // Extract only the fields that exist in the database schema
+    const {
+      from_airport_id,
+      to_airport_id,
+      departure_date,
+      return_date,
+      trip_type,
+      total_amount,
+      contact_email,
+      contact_phone,
+      terms_accepted,
+    } = bookingData;
 
     return await supabase
       .from("bookings")
       .insert({
-        ...bookingData,
+        from_airport_id,
+        to_airport_id,
+        departure_date,
+        return_date,
+        trip_type,
+        total_amount,
+        contact_email,
+        contact_phone,
+        terms_accepted,
         pnr,
         status: "pending",
         currency: "USD",
