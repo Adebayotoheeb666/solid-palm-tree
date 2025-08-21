@@ -195,7 +195,12 @@ export default function Confirmation({
       }
     } catch (error) {
       console.error("Error creating booking:", error);
-      setError("Network error. Please check your connection and try again.");
+      // More specific error message for body stream issues
+      if (error instanceof TypeError && error.message.includes("body stream")) {
+        setError("Request conflict detected. Please try again in a moment.");
+      } else {
+        setError("Network error. Please check your connection and try again.");
+      }
     } finally {
       setLoading(false);
     }
