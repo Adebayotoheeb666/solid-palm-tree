@@ -22,7 +22,7 @@ const guestBookingSchema = z.object({
     }),
     departureDate: z.string(),
     returnDate: z.string().optional(),
-    tripType: z.enum(["one-way", "round-trip"]),
+    tripType: z.enum(["oneway", "roundtrip"]),
   }),
   passengers: z.array(
     z.object({
