@@ -120,6 +120,12 @@ export default function Confirmation({
 
   // Handle booking creation
   const handleCreateBooking = async () => {
+    // Prevent multiple concurrent calls
+    if (loading) {
+      console.log("Booking creation already in progress, ignoring duplicate call");
+      return;
+    }
+
     if (!acceptTerms) {
       setError("Please accept the terms and conditions to continue.");
       return;
