@@ -776,23 +776,36 @@ export default function Payment() {
             {/* Payment Method Tabs */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               {[
-                { key: "stripe", label: "Stripe (Recommended)", icon: Zap },
-                { key: "card", label: "Credit Card", icon: CreditCard },
-                { key: "paypal", label: "PayPal", icon: null },
+                {
+                  key: "stripe",
+                  label: stripeConfig.demoMode
+                    ? "Stripe (Demo Mode)"
+                    : "Stripe (Recommended)",
+                  icon: Zap,
+                  disabled: false,
+                },
+                { key: "card", label: "Credit Card", icon: CreditCard, disabled: false },
+                { key: "paypal", label: "PayPal", icon: null, disabled: false },
               ].map((method) => (
-                <button
-                  key={method.key}
-                  onClick={() => setSelectedPaymentMethod(method.key)}
-                  disabled={loading || success}
-                  className={`flex-1 px-6 py-4 rounded-lg border-2 font-bold text-lg transition-colors flex items-center justify-center gap-2 ${
-                    selectedPaymentMethod === method.key
-                      ? "bg-[#505BFB] border-[#505BFB] text-white shadow-lg"
-                      : "bg-[#EBECFF] border-white text-[#848484] hover:bg-white"
-                  } ${loading || success ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {method.icon && <method.icon className="w-5 h-5" />}
-                  {method.label}
-                </button>
+                <div key={method.key} className="flex-1">
+                  <button
+                    onClick={() => setSelectedPaymentMethod(method.key)}
+                    disabled={loading || success || method.disabled}
+                    className={`w-full px-6 py-4 rounded-lg border-2 font-bold text-lg transition-colors flex items-center justify-center gap-2 ${
+                      selectedPaymentMethod === method.key
+                        ? "bg-[#505BFB] border-[#505BFB] text-white shadow-lg"
+                        : "bg-[#EBECFF] border-white text-[#848484] hover:bg-white"
+                    } ${loading || success || method.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    {method.icon && <method.icon className="w-5 h-5" />}
+                    {method.label}
+                  </button>
+                  {method.key === "stripe" && stripeConfig.demoMode && (
+                    <p className="text-xs text-orange-600 mt-1 text-center">
+                      Demo Mode: PayPal demo mode - credentials not configured
+                    </p>
+                  )}
+                </div>
               ))}
             </div>
 
