@@ -28,6 +28,10 @@ export default function Payment() {
   const [routeData, setRouteData] = useState<any>(null);
   const [selectedFlight, setSelectedFlight] = useState<any>(null);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [stripeConfig, setStripeConfig] = useState<{
+    publishableKey: string | null;
+    demoMode: boolean;
+  }>({ publishableKey: null, demoMode: true });
 
   const [paymentDetails, setPaymentDetails] = useState({
     country: "",
