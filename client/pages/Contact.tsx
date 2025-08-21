@@ -87,28 +87,28 @@ export default function Contact() {
       <section className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-36 py-12">
         <div className="flex flex-col sm:flex-row gap-6 max-w-4xl mx-auto">
           {/* Contact Support */}
-          <div className="flex-1 rounded-3xl p-8 relative overflow-hidden bg-[linear-gradient(90deg,_rgb(172,178,241)_0%,_rgb(235,215,237)_100%)] flex items-center justify-center">
+          <div className="flex-1 rounded-3xl p-6 sm:p-8 relative overflow-hidden bg-[linear-gradient(90deg,_rgb(172,178,241)_0%,_rgb(235,215,237)_100%)] flex flex-col sm:flex-row items-center justify-center sm:justify-start min-h-[140px] sm:min-h-[120px]">
             <img
               src="/onboard/contact.png"
               alt="Contact Support"
-              className="w-32 h-32 object-contain"
+              className="w-24 h-24 sm:w-32 sm:h-32 object-contain mb-3 sm:mb-0"
             />
-            <div className="relative z-10 ml-6">
-              <h3 className="text-xl lg:text-2xl font-semibold text-black mb-2">
+            <div className="relative z-10 sm:ml-6 text-center sm:text-left">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-black">
                 Contact Support
               </h3>
             </div>
           </div>
 
           {/* FAQs */}
-          <div className="flex-1 rounded-3xl p-8 relative overflow-hidden bg-[linear-gradient(90deg,_rgb(175,181,245)_0%,_rgb(204,233,220)_100%)] flex items-center justify-center">
+          <div className="flex-1 rounded-3xl p-6 sm:p-8 relative overflow-hidden bg-[linear-gradient(90deg,_rgb(175,181,245)_0%,_rgb(204,233,220)_100%)] flex flex-col sm:flex-row items-center justify-center sm:justify-start min-h-[140px] sm:min-h-[120px]">
             <img
               src="/onboard/faq.png"
               alt="FAQs"
-              className="w-32 h-32 object-contain"
+              className="w-24 h-24 sm:w-32 sm:h-32 object-contain mb-3 sm:mb-0"
             />
-            <div className="relative z-10 ml-6">
-              <h3 className="text-xl lg:text-2xl font-semibold text-black mb-2">
+            <div className="relative z-10 sm:ml-6 text-center sm:text-left">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-black">
                 FAQs
               </h3>
             </div>
