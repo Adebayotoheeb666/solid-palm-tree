@@ -158,6 +158,49 @@ export const supabaseServerHelpers = {
     return result;
   },
 
+  // Create or get guest user for guest bookings
+  async ensureGuestUser() {
+    const guestEmail = "guest@onboardticket.system";
+
+    // Check if guest user already exists
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", guestEmail)
+      .single();
+
+    if (existingUser) {
+      return existingUser.id;
+    }
+
+    // Create guest user if it doesn't exist
+    const { data: newUser, error } = await supabase
+      .from("users")
+      .insert({
+        id: "00000000-0000-0000-0000-000000000000", // Special UUID for guest user
+        email: guestEmail,
+        first_name: "Guest",
+        last_name: "User",
+        title: "Mr",
+        status: "active",
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      // If user creation fails, try to get existing guest user by special ID
+      const { data: fallbackUser } = await supabase
+        .from("users")
+        .select("id")
+        .eq("id", "00000000-0000-0000-0000-000000000000")
+        .single();
+
+      return fallbackUser?.id || "00000000-0000-0000-0000-000000000000";
+    }
+
+    return newUser.id;
+  },
+
   // Guest booking operations
   async createGuestBooking(bookingData: {
     from_airport_id: string;
@@ -170,6 +213,7 @@ export const supabaseServerHelpers = {
     terms_accepted: boolean;
   }) {
     const pnr = this.generatePNR();
+    const guestUserId = await this.ensureGuestUser();
 
     // Extract only the fields that exist in the database schema
     const {
@@ -197,7 +241,7 @@ export const supabaseServerHelpers = {
         pnr,
         status: "pending",
         currency: "USD",
-        user_id: null, // Guest booking has no user
+        user_id: guestUserId, // Use special guest user ID
       })
       .select()
       .single();
