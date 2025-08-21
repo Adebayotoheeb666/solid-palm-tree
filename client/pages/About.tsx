@@ -88,26 +88,26 @@ export default function About() {
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/ce5a2c74f47721ac230ddfc9a9c4fe42c76c37dc?width=348"
                   alt="Travel illustration"
-                  className="w-44 h-44 object-contain absolute top-0 right-0 transform rotate-17"
+                  className="w-32 h-32 object-contain absolute top-0 right-0 transform rotate-17"
                 />
 
                 {/* Apple illustrations */}
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/3d565ee3e06efddfda08c5040fb5cd9db5966e95?width=550"
                   alt="Travel accessories"
-                  className="w-64 h-64 object-contain absolute top-16 left-8 transform rotate-12 opacity-81"
+                  className="w-48 h-48 object-contain absolute top-16 left-8 transform rotate-12 opacity-81"
                 />
 
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/2058fc28ff689ef8ea67b3ef9284551368f190d0?width=350"
                   alt="Travel gear"
-                  className="w-44 h-44 object-contain absolute bottom-0 right-4"
+                  className="w-32 h-32 object-contain absolute bottom-0 right-4"
                 />
 
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/d246d5ab8beaf35796779c9b050b8f07d5fcd710?width=300"
                   alt="Travel items"
-                  className="w-32 h-32 object-contain absolute bottom-8 left-16 transform rotate-27 rounded-full"
+                  className="w-24 h-24 object-contain absolute bottom-8 left-16 transform rotate-27 rounded-full"
                 />
               </div>
             </div>
