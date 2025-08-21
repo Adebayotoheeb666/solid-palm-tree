@@ -11,7 +11,7 @@ export default function TermsConditions() {
           <img 
             src="/onboard/result.png" 
             alt="OnboardTicket Logo" 
-            className="h-[40px] sm:h-[59px] w-auto max-w-[200px] sm:max-w-[294px] cursor-pointer"
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[360px] object-contain drop-shadow-sm cursor-pointer"
             loading="eager"
             onClick={() => navigate("/")}
           />
@@ -194,7 +194,7 @@ export default function TermsConditions() {
                 <img 
                   src="/onboard/result.png" 
                   alt="OnboardTicket Logo" 
-                  className="w-40 h-10 mb-4 cursor-pointer"
+                  className="h-12 sm:h-14 md:h-16 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] object-contain mb-4 cursor-pointer"
                   onClick={() => navigate("/")}
                 />
                 <hr className="border-white mb-4" />
