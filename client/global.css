@@ -109,6 +109,58 @@
       Roboto,
       Helvetica,
       sans-serif;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Improve minimum touch target sizes for mobile */
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Ensure sufficient contrast for all text */
+  .text-gray-500 {
+    @apply text-gray-600;
+  }
+
+  .text-gray-400 {
+    @apply text-gray-500;
+  }
+
+  /* Improve focus visibility */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* Better icon sizing consistency */
+  .icon-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .icon-md {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .icon-lg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .icon-xl {
+    width: 2rem;
+    height: 2rem;
   }
 }
 

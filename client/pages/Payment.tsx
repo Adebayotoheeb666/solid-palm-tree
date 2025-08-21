@@ -824,8 +824,8 @@ export default function Payment() {
                     {method.label}
                   </button>
                   {method.key === "stripe" && stripeConfig.demoMode && (
-                    <p className="text-xs text-orange-600 mt-1 text-center">
-                      Demo Mode: PayPal demo mode - credentials not configured
+                    <p className="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded px-2 py-1 mt-2 text-center font-medium">
+                      Demo Mode: Stripe demo mode - credentials not configured
                     </p>
                   )}
                 </div>
