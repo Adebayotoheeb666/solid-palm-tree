@@ -274,9 +274,11 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
     const { data: passengers } =
       await supabaseServerHelpers.getPassengersByBookingId(booking.id);
 
+    const isGuestBooking = booking.user_id === "00000000-0000-0000-0000-000000000000";
+
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null,
+      userId: isGuestBooking ? null : booking.user_id,
       pnr: booking.pnr,
       status: booking.status,
       route: {
@@ -308,7 +310,7 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
       createdAt: booking.created_at,
       updatedAt: booking.updated_at,
       ticketUrl: booking.ticket_url || undefined,
-      isGuest: true,
+      isGuest: isGuestBooking,
     };
 
     res.json({
