@@ -144,7 +144,8 @@ export default function Confirmation({
     setError("");
 
     try {
-      const bookingRequest: BookingRequest = {
+      // Build request payload based on authentication status
+      const baseRequest = {
         route: bookingData.route,
         passengers: bookingData.passengers,
         contactEmail: bookingData.contactEmail,
@@ -153,29 +154,44 @@ export default function Confirmation({
         totalAmount: totalAmount,
       };
 
-      console.log("Creating booking:", bookingRequest);
-
-      // Choose API endpoint based on authentication status
-      const apiEndpoint = isAuthenticated
-        ? "/api/bookings"
-        : "/api/guest/bookings";
-      const headers: Record<string, string> = {
+      // Choose API endpoint and construct request based on authentication status
+      let apiEndpoint: string;
+      let requestPayload: any;
+      let headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
 
-      // Add authorization header only for authenticated users
       if (isAuthenticated) {
+        apiEndpoint = "/api/bookings";
+        requestPayload = baseRequest;
         headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`;
       } else {
-        // For guest bookings, add guest checkout flag
-        (bookingRequest as any).guestCheckout = true;
+        apiEndpoint = "/api/guest/bookings";
+        requestPayload = {
+          ...baseRequest,
+          guestCheckout: true,
+        };
       }
+
+      console.log("Creating booking:", requestPayload);
+
+      // Create a new AbortController for this request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers,
-        body: JSON.stringify(bookingRequest),
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
+
+      // Check if response is ok before trying to read body
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
       const result = await response.json();
 
