@@ -47,7 +47,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
     console.log("Creating guest booking...");
 
     // Ensure req.body exists and is parsed
-    if (!req.body || typeof req.body !== 'object') {
+    if (!req.body || typeof req.body !== "object") {
       console.error("Invalid request body:", req.body);
       return res.status(400).json({
         success: false,

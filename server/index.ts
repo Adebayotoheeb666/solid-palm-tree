@@ -141,15 +141,17 @@ export async function createServer() {
   app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
 
   // JSON parsing middleware with increased limit and error handling
-  app.use(express.json({ 
-    limit: '10mb',
-    type: ['application/json'],
-    verify: (req, res, buf) => {
-      // Store the raw body for cases where we need it
-      (req as any).rawBody = buf;
-    }
-  }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  app.use(
+    express.json({
+      limit: "10mb",
+      type: ["application/json"],
+      verify: (req, res, buf) => {
+        // Store the raw body for cases where we need it
+        (req as any).rawBody = buf;
+      },
+    }),
+  );
+  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   // Health check routes
   app.get("/api/ping", (_req, res) => {
@@ -175,7 +177,7 @@ export async function createServer() {
           total: 0,
           working: 0,
           configured: 0,
-        }
+        },
       });
     }
   });
@@ -311,7 +313,10 @@ export async function createServer() {
 
   console.log("🔧 Auth system configuration:");
   console.log("  SUPABASE_URL:", !!process.env.SUPABASE_URL);
-  console.log("  SUPABASE_SERVICE_ROLE_KEY:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.log(
+    "  SUPABASE_SERVICE_ROLE_KEY:",
+    !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   console.log("  useSupabase:", useSupabase);
   console.log("  Auth routes: Using", useSupabase ? "Supabase" : "fallback");
 
@@ -320,7 +325,10 @@ export async function createServer() {
     ? supabaseAuthMiddleware
     : hybridAuthMiddleware;
 
-  console.log("📋 Setting up auth middleware:", useSupabase ? "Supabase" : "Hybrid");
+  console.log(
+    "📋 Setting up auth middleware:",
+    useSupabase ? "Supabase" : "Hybrid",
+  );
 
   // Initialize database if using Supabase
   if (useSupabase) {
@@ -356,11 +364,12 @@ export async function createServer() {
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
     "./routes/guest-bookings"
   );
-  
+
   // Use a separate JSON parser for guest routes to avoid body stream conflicts
-  app.post("/api/guest/bookings", 
-    express.json({ limit: '10mb' }), // Fresh JSON parser
-    handleCreateGuestBooking
+  app.post(
+    "/api/guest/bookings",
+    express.json({ limit: "10mb" }), // Fresh JSON parser
+    handleCreateGuestBooking,
   );
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 
@@ -463,7 +472,11 @@ export async function createServer() {
   // Admin routes (authenticated) - Note: These should have additional admin role checks
   app.get("/api/admin/stats", authMiddleware, handleGetAdminStats);
   app.get("/api/admin/users", authMiddleware, handleGetAllUsers);
-  app.put("/api/admin/users/:userId/status", authMiddleware, handleUpdateUserStatus);
+  app.put(
+    "/api/admin/users/:userId/status",
+    authMiddleware,
+    handleUpdateUserStatus,
+  );
   app.get(
     "/api/admin/bookings",
     authMiddleware,
@@ -474,7 +487,11 @@ export async function createServer() {
     authMiddleware,
     useSupabase ? handleUpdateSupabaseBookingStatus : handleUpdateBookingStatus,
   );
-  app.get("/api/admin/support/tickets", authMiddleware, handleGetAllSupportTickets);
+  app.get(
+    "/api/admin/support/tickets",
+    authMiddleware,
+    handleGetAllSupportTickets,
+  );
   app.put(
     "/api/admin/support/tickets/:ticketId/status",
     authMiddleware,
@@ -482,7 +499,11 @@ export async function createServer() {
   );
   app.get("/api/admin/support/stats", authMiddleware, handleGetSupportStats);
   app.get("/api/admin/payments", authMiddleware, handleGetAllTransactions);
-  app.post("/api/admin/payments/:transactionId/refund", authMiddleware, handleRefundPayment);
+  app.post(
+    "/api/admin/payments/:transactionId/refund",
+    authMiddleware,
+    handleRefundPayment,
+  );
 
   // 404 handler for API routes
   app.use("/api/*", (req, res) => {
@@ -491,13 +512,13 @@ export async function createServer() {
       message: `API endpoint not found: ${req.method} ${req.path}`,
       availableEndpoints: [
         "GET /api/ping",
-        "GET /api/services", 
+        "GET /api/services",
         "GET /api/status",
         "POST /api/auth/register",
         "POST /api/auth/login",
         "POST /api/guest/bookings",
-        "GET /api/guest/bookings/:pnr"
-      ]
+        "GET /api/guest/bookings/:pnr",
+      ],
     });
   });
 
@@ -506,7 +527,8 @@ export async function createServer() {
 
 // Start the server only in production or when not running via Vite
 const PORT = process.env.PORT || 3000;
-const isViteMode = process.env.VITE_MODE || process.env.NODE_ENV === 'development';
+const isViteMode =
+  process.env.VITE_MODE || process.env.NODE_ENV === "development";
 
 // Only start standalone server if not running via Vite dev server
 if (!isViteMode) {
