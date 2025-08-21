@@ -174,7 +174,7 @@ export class DatabaseInitializer {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('count(*)', { count: 'exact' })
+        .select('*', { count: 'exact' })
         .limit(1);
 
       if (error) {
