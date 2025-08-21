@@ -72,9 +72,17 @@ export const supabaseServerHelpers = {
   async createBooking(
     bookingData: Database["public"]["Tables"]["bookings"]["Insert"],
   ) {
+    // Generate PNR if not provided
+    const bookingWithPNR = {
+      ...bookingData,
+      pnr: bookingData.pnr || this.generatePNR(),
+      status: bookingData.status || "pending",
+      currency: bookingData.currency || "USD",
+    };
+
     return await supabase
       .from("bookings")
-      .insert(bookingData)
+      .insert(bookingWithPNR)
       .select(
         `
         *,
