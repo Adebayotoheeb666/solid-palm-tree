@@ -339,14 +339,14 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24">
           {/* Left Side - Form */}
-          <div className="space-y-8">
+          <div className="space-y-6 lg:space-y-8">
             {/* Trip Type Selection */}
             <div>
-              <h2 className="text-2xl font-bold mb-8 text-[#F6F6FF]">Route</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 lg:mb-8 text-[#F6F6FF]">Route</h2>
 
-              <div className="flex gap-0 mb-8 max-w-md">
+              <div className="flex gap-0 mb-6 lg:mb-8 w-full max-w-md">
                 <button
                   onClick={() => setTripType("oneway")}
                   className={`flex-1 py-3 px-6 text-sm font-semibold rounded-l-lg transition-colors ${
