@@ -248,12 +248,14 @@ export const supabaseServerHelpers = {
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
+    const guestUserId = "00000000-0000-0000-0000-000000000000"; // Special guest user ID
+
     return await supabase
       .from("bookings")
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .is("user_id", null) // Guest bookings have null user_id
+      .eq("user_id", guestUserId) // Guest bookings use special guest user ID
       .single();
   },
 
