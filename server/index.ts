@@ -314,7 +314,7 @@ export async function createServer() {
   }
 
   // Authentication routes (public) - using hybrid system
-  console.log("�� Setting up hybrid auth routes (Supabase + fallback)");
+  console.log("📋 Setting up hybrid auth routes (Supabase + fallback)");
   app.post("/api/auth/register", handleHybridRegister);
   app.post("/api/auth/login", handleHybridLogin);
   app.get("/api/auth/validate", handleHybridValidateToken);
@@ -327,7 +327,7 @@ export async function createServer() {
 
   // Guest booking routes (no authentication required)
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
-    "./routes/guest-bookings.js"
+    "./routes/guest-bookings"
   );
   app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
