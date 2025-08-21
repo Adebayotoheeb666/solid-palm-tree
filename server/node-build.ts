@@ -3,7 +3,8 @@ import { createServer } from "./index";
 import * as express from "express";
 import { logSupabaseConnection } from "./logSupabaseConnection";
 
-const port = process.env.PORT || (process.env.NODE_ENV === 'production' ? 8080 : 3000);
+const port =
+  process.env.PORT || (process.env.NODE_ENV === "production" ? 8080 : 3000);
 
 // Initialize server asynchronously
 async function initializeServer() {
@@ -36,8 +37,8 @@ async function initializeServer() {
 }
 
 // Start the server
-initializeServer().catch(err => {
-  console.error('Failed to initialize server:', err);
+initializeServer().catch((err) => {
+  console.error("Failed to initialize server:", err);
   process.exit(1);
 });
 

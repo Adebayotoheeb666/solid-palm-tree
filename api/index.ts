@@ -1,5 +1,5 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
-import { createServer } from '../server';
+import { VercelRequest, VercelResponse } from "@vercel/node";
+import { createServer } from "../server";
 
 let app: any = null;
 
