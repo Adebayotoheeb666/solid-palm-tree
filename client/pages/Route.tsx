@@ -374,8 +374,8 @@ export default function Route({ onNext, currentStep, onNavigate }: RouteProps) {
             <div>
               <h3 className="text-2xl font-bold mb-6 text-[#F6F6FF]">Route</h3>
 
-              <div className="space-y-6 mb-8">
-                <div className="flex items-center gap-4">
+              <div className="space-y-6 mb-6 lg:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                   <div className="flex-1">
                     <label className="block text-sm font-semibold text-[#F6F6FF] mb-2">
                       From (Departure Airport)
