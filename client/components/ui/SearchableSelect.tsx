@@ -128,11 +128,11 @@ export default function SearchableSelect({
       {/* Main input field */}
       <div
         onClick={handleToggle}
-        className={`w-full bg-white border rounded p-4 text-gray-600 cursor-pointer flex items-center justify-between ${
+        className={`w-full bg-white border rounded-lg p-4 cursor-pointer flex items-center justify-between min-h-[56px] shadow-sm ${
           error ? "border-red-500" : "border-gray-300"
-        } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-gray-400"}`}
+        } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-gray-400 hover:shadow-md"} ${isOpen ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
       >
-        <span className={value ? "text-gray-900" : "text-gray-500"}>
+        <span className={`font-medium ${value ? "text-gray-900" : "text-gray-500"}`}>
           {displayText || placeholder}
         </span>
         <ChevronDown
@@ -144,7 +144,7 @@ export default function SearchableSelect({
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-hidden">
+        <div className="absolute z-[100] w-full mt-1 bg-white border border-gray-300 rounded-md shadow-xl max-h-64 overflow-hidden left-0 right-0">
           {/* Search input */}
           <div className="p-3 border-b border-gray-200">
             <div className="relative">
@@ -158,7 +158,7 @@ export default function SearchableSelect({
                   setHighlightedIndex(-1);
                 }}
                 placeholder="Type to search..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               />
             </div>
           </div>
