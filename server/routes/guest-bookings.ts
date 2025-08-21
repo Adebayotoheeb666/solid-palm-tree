@@ -46,6 +46,15 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
   try {
     console.log("Creating guest booking...");
 
+    // Ensure req.body exists and is parsed
+    if (!req.body || typeof req.body !== "object") {
+      console.error("Invalid request body:", req.body);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request body - expected JSON",
+      });
+    }
+
     // Validate request body
     const validation = guestBookingSchema.safeParse(req.body);
     if (!validation.success) {

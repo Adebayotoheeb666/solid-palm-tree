@@ -107,6 +107,12 @@ const MobileNav: React.FC<MobileNavProps> = memo(({ handleBookNow }) => {
             ) : (
               <>
                 <button
+                  className="w-full text-left px-4 py-3 text-brand-text-primary font-medium text-base hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={() => handleNavigation("/guest-booking-lookup")}
+                >
+                  Find Booking
+                </button>
+                <button
                   className="w-full text-left px-4 py-3 text-brand-text-primary font-bold text-lg hover:bg-gray-100 rounded-lg transition-colors"
                   onClick={() => handleNavigation("/login")}
                 >
