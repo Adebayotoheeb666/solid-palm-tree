@@ -212,7 +212,7 @@ export const supabaseServerHelpers = {
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .eq("is_guest", true)
+      .is("user_id", null) // Guest bookings have null user_id
       .single();
   },
 
