@@ -167,7 +167,6 @@ export const supabaseServerHelpers = {
     trip_type: string;
     total_amount: number;
     contact_email: string;
-    contact_phone?: string | null;
     terms_accepted: boolean;
   }) {
     const pnr = this.generatePNR();
@@ -181,7 +180,6 @@ export const supabaseServerHelpers = {
       trip_type,
       total_amount,
       contact_email,
-      contact_phone,
       terms_accepted,
     } = bookingData;
 
@@ -195,7 +193,6 @@ export const supabaseServerHelpers = {
         trip_type,
         total_amount,
         contact_email,
-        contact_phone,
         terms_accepted,
         pnr,
         status: "pending",
