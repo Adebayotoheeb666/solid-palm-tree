@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
@@ -129,6 +128,9 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
+// Import service status checker
+import { ServiceStatusChecker } from "./lib/serviceStatus";
+
 export async function createServer() {
   const app = express();
 
@@ -138,8 +140,16 @@ export async function createServer() {
   // Stripe webhook needs raw body, so add it before express.json()
   app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  // JSON parsing middleware with increased limit and error handling
+  app.use(express.json({ 
+    limit: '10mb',
+    type: ['application/json'],
+    verify: (req, res, buf) => {
+      // Store the raw body for cases where we need it
+      (req as any).rawBody = buf;
+    }
+  }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
   // Health check routes
   app.get("/api/ping", (_req, res) => {
@@ -149,15 +159,36 @@ export async function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // Simple services status endpoint
+  // Simple services status endpoint with error handling
   app.get("/api/services", async (req, res) => {
-    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
-    const serviceStatus = await ServiceStatusChecker.checkAllServices();
-    res.json(serviceStatus);
+    try {
+      const serviceStatus = await ServiceStatusChecker.checkAllServices();
+      res.json(serviceStatus);
+    } catch (error) {
+      console.error("Service status check error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to check service status",
+        error: error instanceof Error ? error.message : "Unknown error",
+        services: {},
+        summary: {
+          total: 0,
+          working: 0,
+          configured: 0,
+        }
+      });
+    }
   });
 
   // Database health check
   app.get("/api/health/database", async (req, res) => {
+    const useSupabase = !!(
+      process.env.SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY &&
+      !process.env.SUPABASE_URL.includes("placeholder") &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key"
+    );
+
     if (!useSupabase) {
       return res.json({
         healthy: true,
@@ -175,50 +206,64 @@ export async function createServer() {
 
   // System status endpoint
   app.get("/api/status", async (req, res) => {
-    const { ServiceStatusChecker } = await import("./lib/serviceStatus");
-    const serviceStatus = await ServiceStatusChecker.checkAllServices();
-    const dbHealth = useSupabase
-      ? await DatabaseInitializer.checkHealth()
-      : { healthy: true, message: "Not using database" };
+    try {
+      const serviceStatus = await ServiceStatusChecker.checkAllServices();
+      const useSupabase = !!(
+        process.env.SUPABASE_URL &&
+        process.env.SUPABASE_SERVICE_ROLE_KEY &&
+        !process.env.SUPABASE_URL.includes("placeholder") &&
+        process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key"
+      );
+      const dbHealth = useSupabase
+        ? await DatabaseInitializer.checkHealth()
+        : { healthy: true, message: "Not using database" };
 
-    res.json({
-      server: "online",
-      authSystem: "hybrid",
-      database: {
-        configured: useSupabase,
-        healthy: dbHealth.healthy,
-        message: dbHealth.message,
-        system: useSupabase ? "supabase" : "fallback",
-      },
-      services: serviceStatus.services,
-      serviceSummary: serviceStatus.summary,
-      features: {
-        authentication: "✅ Available (hybrid)",
-        userRegistration: "✅ Available (hybrid)",
-        booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
-        admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
-        airports:
-          useSupabase && dbHealth.healthy
-            ? "✅ Database"
-            : "⚠️ Static data only",
-        payments:
-          serviceStatus.services.stripe.status === "working"
-            ? "✅ Stripe available"
-            : "⚠️ Stripe not configured",
-        emails:
-          serviceStatus.services.sendgrid.status === "working"
-            ? "✅ SendGrid available"
-            : "⚠️ SendGrid not configured",
-        flights:
-          serviceStatus.services.amadeus.status === "working"
-            ? "✅ Amadeus available"
-            : "⚠️ Amadeus not configured",
-      },
-      adminCredentials: {
-        email: "onboard@admin.com",
-        password: "onboardadmin",
-      },
-    });
+      res.json({
+        server: "online",
+        authSystem: "hybrid",
+        database: {
+          configured: useSupabase,
+          healthy: dbHealth.healthy,
+          message: dbHealth.message,
+          system: useSupabase ? "supabase" : "fallback",
+        },
+        services: serviceStatus.services,
+        serviceSummary: serviceStatus.summary,
+        features: {
+          authentication: "✅ Available (hybrid)",
+          userRegistration: "✅ Available (hybrid)",
+          booking: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+          admin: useSupabase ? "✅ Database + fallback" : "⚠️ Fallback only",
+          airports:
+            useSupabase && dbHealth.healthy
+              ? "✅ Database"
+              : "⚠️ Static data only",
+          payments:
+            serviceStatus.services.stripe.status === "working"
+              ? "✅ Stripe available"
+              : "⚠️ Stripe not configured",
+          emails:
+            serviceStatus.services.sendgrid.status === "working"
+              ? "✅ SendGrid available"
+              : "⚠️ SendGrid not configured",
+          flights:
+            serviceStatus.services.amadeus.status === "working"
+              ? "✅ Amadeus available"
+              : "⚠️ Amadeus not configured",
+        },
+        adminCredentials: {
+          email: "onboard@admin.com",
+          password: "onboardadmin",
+        },
+      });
+    } catch (error) {
+      console.error("Status endpoint error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to get system status",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
   });
 
   // Add fallback airports route
@@ -230,6 +275,13 @@ export async function createServer() {
   });
 
   app.get("/api/health", (req, res) => {
+    const useSupabase = !!(
+      process.env.SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY &&
+      !process.env.SUPABASE_URL.includes("placeholder") &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key"
+    );
+
     const health = {
       status: "healthy",
       timestamp: new Date().toISOString(),
@@ -238,66 +290,41 @@ export async function createServer() {
       services: {
         server: "healthy",
         database: useSupabase ? "configured" : "fallback",
+        authentication: "hybrid",
       },
     };
-    res.status(200).json(health);
+
+    res.json(health);
   });
 
-  // Add database health check routes
-  app.use("/api/health-detailed", dbHealthRouter);
-  app.use("/api/db-health", dbHealthRouter); // Add compatibility route for client
-  app.use("/api/db", dbTestRouter);
+  // Database routes
+  app.use("/api", dbHealthRouter);
+  app.use("/api", dbTestRouter);
 
-  // Determine if we should use Supabase or fallback routes
-  const useSupabase =
+  // Check which authentication and database system to use
+  const useSupabase = !!(
     process.env.SUPABASE_URL &&
     process.env.SUPABASE_SERVICE_ROLE_KEY &&
     !process.env.SUPABASE_URL.includes("placeholder") &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key" &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY !== "your-service-role-key";
-
-  // Use hybrid auth middleware that works with or without Supabase
-  const authMiddleware = hybridAuthMiddleware;
-
-  // Security check: Warn about placeholder values in production
-  if (process.env.NODE_ENV === "production") {
-    const dangerousValues = [
-      "placeholder",
-      "your-",
-      "test_",
-      "demo",
-      "example",
-      "sk_test_",
-      "pk_test_",
-      "whsec_test",
-    ];
-
-    Object.entries(process.env).forEach(([key, value]) => {
-      if (
-        key.includes("SECRET") ||
-        key.includes("KEY") ||
-        key.includes("PRIVATE")
-      ) {
-        if (value && dangerousValues.some((danger) => value.includes(danger))) {
-          console.warn(
-            `⚠️ SECURITY WARNING: ${key} appears to contain placeholder/test values in production!`,
-          );
-        }
-      }
-    });
-  }
+    process.env.SUPABASE_SERVICE_ROLE_KEY !== "placeholder-service-role-key"
+  );
 
   console.log("🔧 Auth system configuration:");
   console.log("  SUPABASE_URL:", !!process.env.SUPABASE_URL);
-  console.log(
-    "  SUPABASE_SERVICE_ROLE_KEY:",
-    !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-  );
+  console.log("  SUPABASE_SERVICE_ROLE_KEY:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   console.log("  useSupabase:", useSupabase);
-  console.log("  Auth routes: Using", useSupabase ? "Supabase" : "Fallback");
+  console.log("  Auth routes: Using", useSupabase ? "Supabase" : "fallback");
+
+  // Choose auth middleware based on configuration
+  const authMiddleware = useSupabase
+    ? supabaseAuthMiddleware
+    : hybridAuthMiddleware;
+
+  console.log("📋 Setting up auth middleware:", useSupabase ? "Supabase" : "Hybrid");
 
   // Initialize database if using Supabase
   if (useSupabase) {
+    console.log("🔄 Initializing database...");
     DatabaseInitializer.initialize()
       .then((success) => {
         if (success) {
@@ -325,11 +352,16 @@ export async function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Guest booking routes (no authentication required)
+  // Guest booking routes (no authentication required) - Fix body stream issue
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
     "./routes/guest-bookings"
   );
-  app.post("/api/guest/bookings", handleCreateGuestBooking);
+  
+  // Use a separate JSON parser for guest routes to avoid body stream conflicts
+  app.post("/api/guest/bookings", 
+    express.json({ limit: '10mb' }), // Fresh JSON parser
+    handleCreateGuestBooking
+  );
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 
   // Booking routes (authenticated) - prefer Supabase but fallback when needed
@@ -401,40 +433,37 @@ export async function createServer() {
     handleSendPaymentConfirmation,
   );
   app.post(
-    "/api/email/support-ticket-confirmation",
+    "/api/email/support-ticket",
     authMiddleware,
     handleSendSupportTicketConfirmation,
   );
-  app.post(
-    "/api/email/password-reset",
-    authMiddleware,
-    handleSendPasswordReset,
-  );
+  app.post("/api/email/password-reset", handleSendPasswordReset);
   app.post("/api/email/welcome", authMiddleware, handleSendWelcomeEmail);
   app.post("/api/email/test", authMiddleware, handleTestEmail);
 
-  // Amadeus API routes (public for flight search, some authenticated)
+  // Email verification routes (public)
+  app.post("/api/email/verify/send", handleSendVerificationEmail);
+  app.post("/api/email/verify/confirm", handleVerifyEmail);
+  app.get("/api/email/verify/status/:token", handleCheckVerificationStatus);
+  app.post("/api/email/verify/resend", handleResendVerificationEmail);
+
+  // Amadeus API routes (public)
   app.get("/api/amadeus/flights/search", handleSearchFlights);
   app.get("/api/amadeus/airports/search", handleSearchAirports);
-  app.post("/api/amadeus/flights/price", authMiddleware, handleGetFlightPrice);
-  app.get("/api/amadeus/flights/seat-maps", authMiddleware, handleGetSeatMaps);
+  app.get("/api/amadeus/flights/price", handleGetFlightPrice);
+  app.get("/api/amadeus/flights/seatmaps", handleGetSeatMaps);
   app.get("/api/amadeus/airlines/:airlineCode", handleGetAirline);
   app.get("/api/amadeus/destinations/popular", handleGetPopularDestinations);
   app.get("/api/amadeus/health", handleAmadeusHealthCheck);
 
-  // Stripe webhook routes (no authentication required)
+  // Stripe webhook routes (public, but authenticated via Stripe signature)
   app.post("/api/webhooks/stripe", handleStripeWebhook);
-  app.get("/api/webhooks/stripe/health", handleWebhookHealth);
+  app.get("/api/webhooks/health", handleWebhookHealth);
 
-  // Email verification routes (public)
-  app.post("/api/auth/send-verification", handleSendVerificationEmail);
-  app.get("/api/auth/verify-email", handleVerifyEmail);
-  app.get("/api/auth/verification-status", handleCheckVerificationStatus);
-  app.post("/api/auth/resend-verification", handleResendVerificationEmail);
-
-  // Admin routes (with authentication)
+  // Admin routes (authenticated) - Note: These should have additional admin role checks
   app.get("/api/admin/stats", authMiddleware, handleGetAdminStats);
-
+  app.get("/api/admin/users", authMiddleware, handleGetAllUsers);
+  app.put("/api/admin/users/:userId/status", authMiddleware, handleUpdateUserStatus);
   app.get(
     "/api/admin/bookings",
     authMiddleware,
@@ -445,55 +474,44 @@ export async function createServer() {
     authMiddleware,
     useSupabase ? handleUpdateSupabaseBookingStatus : handleUpdateBookingStatus,
   );
-
-  app.get("/api/admin/payments", authMiddleware, handleGetAllTransactions);
-  app.post(
-    "/api/admin/payments/:transactionId/refund",
-    authMiddleware,
-    handleRefundPayment,
-  );
-  app.get(
-    "/api/admin/support/tickets",
-    authMiddleware,
-    handleGetAllSupportTickets,
-  );
+  app.get("/api/admin/support/tickets", authMiddleware, handleGetAllSupportTickets);
   app.put(
     "/api/admin/support/tickets/:ticketId/status",
     authMiddleware,
     handleUpdateSupportTicketStatus,
   );
   app.get("/api/admin/support/stats", authMiddleware, handleGetSupportStats);
-  app.get("/api/admin/users", authMiddleware, handleGetAllUsers);
-  app.put(
-    "/api/admin/users/:userId/status",
-    authMiddleware,
-    handleUpdateUserStatus,
-  );
-
-  // Error handling middleware
-  app.use(
-    (
-      err: Error,
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
-      console.error("Server error:", err);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-        ...(process.env.NODE_ENV === "development" && { error: err.message }),
-      });
-    },
-  );
+  app.get("/api/admin/payments", authMiddleware, handleGetAllTransactions);
+  app.post("/api/admin/payments/:transactionId/refund", authMiddleware, handleRefundPayment);
 
   // 404 handler for API routes
   app.use("/api/*", (req, res) => {
     res.status(404).json({
       success: false,
-      message: "API endpoint not found",
+      message: `API endpoint not found: ${req.method} ${req.path}`,
+      availableEndpoints: [
+        "GET /api/ping",
+        "GET /api/services", 
+        "GET /api/status",
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/guest/bookings",
+        "GET /api/guest/bookings/:pnr"
+      ]
     });
   });
 
   return app;
 }
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+
+createServer().then((app) => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`📋 API status: http://localhost:${PORT}/api/status`);
+    console.log(`🔧 Services status: http://localhost:${PORT}/api/services`);
+  });
+});
