@@ -1,9 +1,12 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createServer } from '../server';
 
-const app = createServer();
+let app: any = null;
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (!app) {
+    app = await createServer();
+  }
   // Let Express handle the request
   app(req, res);
 }
