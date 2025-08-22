@@ -114,22 +114,3 @@ export default defineConfig(({ mode }) => ({
     logOverride: { "this-is-undefined-in-esm": "silent" },
   },
 }));
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
-    configureServer(server) {
-      createServer()
-        .then((app) => {
-          // Add Express app as middleware to Vite dev server
-          // This will handle all API routes before Vite's SPA handling
-          server.middlewares.use('/api', app);
-          server.middlewares.use('/health', app);
-        })
-        .catch((err) => {
-          console.error("Failed to create server:", err);
-        });
-    },
-  };
-}
