@@ -26,12 +26,12 @@ const guestBookingSchema = z.object({
   }),
   passengers: z.array(
     z.object({
-      title: z.string(),
-      firstName: z.string(),
-      lastName: z.string(),
+      title: z.enum(["Mr", "Ms", "Mrs"]),
+      firstName: z.string().min(2),
+      lastName: z.string().min(2),
       email: z.string().email(),
     }),
-  ),
+  ).min(1),
   contactEmail: z.string().email(),
   contactPhone: z.string().optional(),
   termsAccepted: z.boolean(),
