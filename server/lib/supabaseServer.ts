@@ -242,6 +242,8 @@ export const supabaseServerHelpers = {
         status: "pending",
         currency: "USD",
         user_id: guestUserId, // Use special guest user ID
+        base_amount: total_amount, // Set base_amount to satisfy NOT NULL constraint
+        booking_source: "web", // Set booking source
       })
       .select()
       .single();
