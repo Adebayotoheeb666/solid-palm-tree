@@ -159,11 +159,12 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
     }
 
     // Format response to match expected API structure
-    const isGuestBooking = booking.user_id === "00000000-0000-0000-0000-000000000000";
+    // Since we're using admin user for guest bookings, identify by booking source/context
+    const isGuestBooking = true; // This is a guest booking route, so always treat as guest
 
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: isGuestBooking ? null : booking.user_id, // Return null for guest bookings
+      userId: null, // Always return null for guest bookings from this route
       pnr: booking.pnr,
       status: booking.status,
       route: {
