@@ -97,19 +97,48 @@ export default function StripePaymentForm({
       const stripeInstance = await loadStripe(configData.publishableKey);
       setStripe(stripeInstance);
 
-      // Create payment intent
-      const intentResponse = await fetch("/api/payments/stripe/create-intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          bookingId,
-          amount,
-          currency,
-        }),
-      });
+      // Create payment intent - check if this is a guest booking
+      const authToken = localStorage.getItem("token");
+      const isGuestBooking = !authToken || authToken === "null" || authToken === "undefined";
+
+      let intentResponse;
+      if (isGuestBooking) {
+        // For guest bookings, get PNR and contact email from stored booking data
+        const currentBooking = localStorage.getItem("currentBooking");
+        const bookingData = currentBooking ? JSON.parse(currentBooking) : null;
+
+        if (!bookingData || !bookingData.pnr) {
+          throw new Error("Guest booking data not found. Please restart the booking process.");
+        }
+
+        intentResponse = await fetch("/api/guest/payments/stripe/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingId,
+            amount,
+            currency,
+            pnr: bookingData.pnr,
+            contactEmail: bookingData.contactEmail || bookingData.contact_email,
+          }),
+        });
+      } else {
+        // For authenticated users
+        intentResponse = await fetch("/api/payments/stripe/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            bookingId,
+            amount,
+            currency,
+          }),
+        });
+      }
 
       const intentData = await intentResponse.json();
 
