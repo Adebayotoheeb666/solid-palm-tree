@@ -35,10 +35,12 @@ export class DatabaseInitializer {
       if (airportsError) {
         console.log('⚠️ Airports table not found, it may need to be created');
       } else {
-        const airportCount = airportsData?.[0]?.count || 0;
-        console.log(`📊 Found ${airportCount} airports in database`);
-        
-        if (airportCount === 0) {
+        const { count: airportCount } = await supabase
+          .from('airports')
+          .select('*', { count: 'exact', head: true });
+        console.log(`📊 Found ${airportCount || 0} airports in database`);
+
+        if ((airportCount || 0) === 0) {
           await this.seedAirports();
         }
       }
