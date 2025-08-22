@@ -366,10 +366,7 @@ export async function createServer() {
   );
 
   // Guest booking route (uses global JSON parser)
-  app.post(
-    "/api/guest/bookings",
-    handleCreateGuestBooking,
-  );
+  app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 
   // Booking routes (authenticated) - prefer Supabase but fallback when needed

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import QRCode from 'qrcode';
+import React, { useEffect, useState } from "react";
+import QRCode from "qrcode";
 
 interface QRCodeDisplayProps {
   value: string;
@@ -12,9 +12,9 @@ interface QRCodeDisplayProps {
 const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
   value,
   size = 128,
-  className = '',
+  className = "",
   showUrl = false,
-  title = 'QR Code'
+  title = "QR Code",
 }) => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,15 +26,15 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
           width: size,
           margin: 2,
           color: {
-            dark: '#3839C9',
-            light: '#FFFFFF'
-          }
+            dark: "#3839C9",
+            light: "#FFFFFF",
+          },
         });
         setQrCodeUrl(url);
         setError(null);
       } catch (err) {
-        console.error('Error generating QR code:', err);
-        setError('Failed to generate QR code');
+        console.error("Error generating QR code:", err);
+        setError("Failed to generate QR code");
         setQrCodeUrl(null);
       }
     };
@@ -46,8 +46,10 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center border-2 border-gray-300 bg-gray-100 ${className}`} 
-           style={{ width: size, height: size }}>
+      <div
+        className={`flex items-center justify-center border-2 border-gray-300 bg-gray-100 ${className}`}
+        style={{ width: size, height: size }}
+      >
         <span className="text-xs text-gray-500 text-center px-2">
           QR Code Error
         </span>
@@ -57,11 +59,11 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
 
   if (!qrCodeUrl) {
     return (
-      <div className={`flex items-center justify-center border-2 border-gray-300 bg-gray-100 animate-pulse ${className}`} 
-           style={{ width: size, height: size }}>
-        <span className="text-xs text-gray-500">
-          Loading...
-        </span>
+      <div
+        className={`flex items-center justify-center border-2 border-gray-300 bg-gray-100 animate-pulse ${className}`}
+        style={{ width: size, height: size }}
+      >
+        <span className="text-xs text-gray-500">Loading...</span>
       </div>
     );
   }
@@ -71,8 +73,8 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
       {title && (
         <h4 className="text-sm font-semibold text-gray-700 mb-2">{title}</h4>
       )}
-      <img 
-        src={qrCodeUrl} 
+      <img
+        src={qrCodeUrl}
         alt={title}
         className="border border-gray-200 rounded-lg"
         style={{ width: size, height: size }}

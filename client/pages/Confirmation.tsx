@@ -397,7 +397,8 @@ export default function Confirmation({
                     className="mb-3"
                   />
                   <p className="text-sm text-white/80 text-center">
-                    Scan this QR code with your phone to quickly access your booking details anytime
+                    Scan this QR code with your phone to quickly access your
+                    booking details anytime
                   </p>
                 </div>
               </div>
@@ -412,8 +413,8 @@ export default function Confirmation({
                 </h4>
               </div>
               <p className="text-xs text-white/80">
-                Your booking confirmation and e-ticket will be sent to your email.
-                You can view your booking anytime using our{" "}
+                Your booking confirmation and e-ticket will be sent to your
+                email. You can view your booking anytime using our{" "}
                 <button
                   onClick={() => navigate("/guest-booking-lookup")}
                   className="text-ticket-accent hover:underline font-medium"
@@ -461,7 +462,6 @@ export default function Confirmation({
                 </label>
               </div>
             </div>
-
 
             {/* Action Buttons */}
             <div className="space-y-4">

@@ -114,7 +114,7 @@ function expressPlugin(): Plugin {
 
         // Mount Express app as middleware at the beginning of the middleware stack
         server.middlewares.use((req, res, next) => {
-          if (req.url?.startsWith('/api')) {
+          if (req.url?.startsWith("/api")) {
             return app(req, res, next);
           }
           next();
