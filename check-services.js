@@ -3,7 +3,13 @@
 // Comprehensive service status checker
 async function checkServices() {
   try {
-    const response = await fetch('http://localhost:5000/api/services');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    const response = await fetch('http://localhost:5000/api/services', {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
     const data = await response.json();
     
     console.log('\n🔍 SERVICE STATUS REPORT\n');

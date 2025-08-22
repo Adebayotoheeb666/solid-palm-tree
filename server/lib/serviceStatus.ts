@@ -44,6 +44,10 @@ export class ServiceStatusChecker {
 
     try {
       const { supabase } = await import("./supabaseServer");
+      if (!supabase) {
+        throw new Error("Supabase client not initialized");
+      }
+      
       const { data, error, count } = await supabase
         .from("users")
         .select("*", { count: "exact", head: true });

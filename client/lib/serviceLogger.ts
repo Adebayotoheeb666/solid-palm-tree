@@ -136,7 +136,7 @@ class ServiceLogger {
   }> {
     try {
       // Check if Supabase client is available
-      const { getSafeSupabase } = await import("../lib/supabaseSafe");
+      const { getSafeSupabase } = await import("./supabaseSafe");
       const { supabaseHelpers } = await getSafeSupabase();
 
       // Try a simple operation
