@@ -111,8 +111,8 @@ function expressPlugin(): Plugin {
     configureServer(server) {
       createServer()
         .then((app) => {
-          // Add Express app as middleware to Vite dev server
-          server.middlewares.use(app);
+          // Add Express app as middleware to Vite dev server with API prefix
+          server.middlewares.use("/api", app);
         })
         .catch((err) => {
           console.error("Failed to create server:", err);
