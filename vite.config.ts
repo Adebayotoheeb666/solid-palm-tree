@@ -12,13 +12,13 @@ export default defineConfig(({ mode }) => ({
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
     proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
+      "/api": {
+        target: "http://localhost:3001",
         changeOrigin: true,
         secure: false,
       },
-      '/health': {
-        target: 'http://localhost:3001',
+      "/health": {
+        target: "http://localhost:3001",
         changeOrigin: true,
         secure: false,
       },

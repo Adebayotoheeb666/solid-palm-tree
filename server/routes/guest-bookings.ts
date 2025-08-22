@@ -45,9 +45,12 @@ const guestBookingSchema = z.object({
 export async function handleCreateGuestBooking(req: Request, res: Response) {
   try {
     console.log("Creating guest booking...");
-    console.log("Request headers:", req.headers['content-type']);
+    console.log("Request headers:", req.headers["content-type"]);
     console.log("Request body type:", typeof req.body);
-    console.log("Request body keys:", req.body ? Object.keys(req.body) : 'no body');
+    console.log(
+      "Request body keys:",
+      req.body ? Object.keys(req.body) : "no body",
+    );
 
     // Ensure req.body exists and is parsed
     if (!req.body || typeof req.body !== "object") {

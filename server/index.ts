@@ -142,9 +142,9 @@ export async function createServer() {
 
   // Request logging middleware for debugging
   app.use((req, res, next) => {
-    if (req.url?.startsWith('/api/')) {
+    if (req.url?.startsWith("/api/")) {
       console.log(`🔍 API Request: ${req.method} ${req.url}`);
-      console.log(`🔍 Content-Type: ${req.headers['content-type']}`);
+      console.log(`🔍 Content-Type: ${req.headers["content-type"]}`);
     }
     next();
   });
