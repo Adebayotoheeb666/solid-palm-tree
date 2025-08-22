@@ -1,5 +1,4 @@
 import "./global.css";
-import "./lib/serviceLogger"; // Initialize service logger
 
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
@@ -10,7 +9,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { Suspense } from "react";
 import { AuthProvider } from "./hooks/useAuth";
 import { NotificationProvider } from "./hooks/useNotifications";
-import { useServiceStatus } from "./hooks/useServiceStatus";
 import {
   AuthProtectedRoute,
   AdminProtectedRoute,
@@ -48,23 +46,11 @@ const TicketSample = React.lazy(() => import("./pages/TicketSample"));
 
 const queryClient = new QueryClient();
 
-// Service Status Monitor Component
-const ServiceStatusMonitor: React.FC = () => {
-  useServiceStatus({
-    enablePeriodicChecking: true,
-    checkIntervalMinutes: 10,
-    checkOnMount: true,
-  });
-
-  return null; // This component doesn't render anything
-};
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
         <NotificationProvider>
-          <ServiceStatusMonitor />
           <PerformanceOptimizer />
           <Toaster />
           <Sonner />
