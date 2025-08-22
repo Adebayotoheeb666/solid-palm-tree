@@ -59,13 +59,26 @@ class ServiceLogger {
       const response = await fetch("/api/health/database");
       if (response.ok) {
         const data = await response.json();
-        // Corrected the access to data.overall.status
-        return {
-          status: data.overall.status === "healthy" ? "working" : "error",
-          message: data.overall.status === "healthy" ? "Database health check completed" : "Database issues detected",
-        };
+        // Safe access to nested properties
+        const overallStatus = data?.overall?.status;
+        if (overallStatus === "healthy") {
+          return {
+            status: "working",
+            message: "Database health check completed"
+          };
+        } else if (overallStatus) {
+          return {
+            status: "error",
+            message: `Database status: ${overallStatus}`
+          };
+        } else {
+          return {
+            status: "error",
+            message: "Invalid database health response format"
+          };
+        }
       }
-      return { status: "error", message: "Database health check failed" };
+      return { status: "error", message: `Database health check failed: ${response.status}` };
     } catch (error) {
       return { status: "error", message: `Database check failed: ${error}` };
     }
@@ -101,11 +114,31 @@ class ServiceLogger {
     message?: string;
   }> {
     try {
-      // Check if Stripe is loaded
-      if (typeof window !== "undefined" && (window as any).Stripe) {
-        return { status: "working", message: "Stripe payment service loaded" };
+      // Check if Stripe configuration exists by testing the endpoint
+      const response = await fetch("/api/payments/config", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+      
+      if (response.ok) {
+        const config = await response.json();
+        if (config.publishableKey) {
+          return { 
+            status: "working", 
+            message: "Stripe payment service configured" 
+          };
+        }
       }
-      return { status: "error", message: "Stripe payment service not loaded" };
+      
+      // Fallback: Check if Stripe is loaded in window
+      if (typeof window !== "undefined" && (window as any).Stripe) {
+        return { status: "working", message: "Stripe client loaded" };
+      }
+      
+      return { 
+        status: "error", 
+        message: "Stripe payment service not configured or loaded" 
+      };
     } catch (error) {
       return { status: "error", message: `Stripe check failed: ${error}` };
     }
@@ -183,13 +216,13 @@ class ServiceLogger {
   }
 
   private startLogging() {
-    // Log service status every 30 seconds
+    // Log service status every 2 minutes to reduce performance impact
     this.logInterval = setInterval(() => {
       this.logServiceStatus();
-    }, 30000);
+    }, 120000);
 
-    // Log immediately
-    setTimeout(() => this.logServiceStatus(), 2000);
+    // Log after initial services are checked (delayed longer)
+    setTimeout(() => this.logServiceStatus(), 5000);
   }
 
   public logServiceStatus() {

@@ -54,6 +54,8 @@
   
   // Auto-clear cache if we detect asset loading errors
   let errorCount = 0;
+  let errorCount = 0;
+
   window.addEventListener('error', function(e) {
     if (e.filename && e.filename.match(/\.(js|css)$/i)) {
       errorCount++;
@@ -62,9 +64,10 @@
       // If we get multiple asset errors, clear cache automatically
       if (errorCount >= 2) {
         console.log('Multiple asset errors detected, clearing cache...');
-        fullCacheReset();
+        if (typeof fullCacheReset === 'function') {
+          fullCacheReset();
+        }
       }
     }
   });
-  
 })();
