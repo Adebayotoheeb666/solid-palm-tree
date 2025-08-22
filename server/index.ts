@@ -365,10 +365,9 @@ export async function createServer() {
     "./routes/guest-bookings"
   );
 
-  // Use a separate JSON parser for guest routes to avoid body stream conflicts
+  // Guest booking route (uses global JSON parser)
   app.post(
     "/api/guest/bookings",
-    express.json({ limit: "10mb" }), // Fresh JSON parser
     handleCreateGuestBooking,
   );
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
