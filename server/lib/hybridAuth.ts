@@ -8,7 +8,10 @@ import { supabase } from "./supabaseServer";
 class HybridAuthSystem {
   private static inMemoryUsers: User[] = [];
   private static userPasswords = new Map<string, string>();
-  private static tokenStorage = new Map<string, { userId: string; expiresAt: number }>();
+  private static tokenStorage = new Map<
+    string,
+    { userId: string; expiresAt: number }
+  >();
   private static userIdCounter = 1;
   private static isSupabaseAvailable = true;
 
@@ -66,10 +69,10 @@ class HybridAuthSystem {
 
     try {
       const { error } = await supabase
-        .from('users')
-        .select('count(*)', { count: 'exact' })
+        .from("users")
+        .select("id", { count: "exact" })
         .limit(1);
-      
+
       const available = !error;
       this.isSupabaseAvailable = available;
       return available;
@@ -90,29 +93,28 @@ class HybridAuthSystem {
       if (supabaseAvailable) {
         // Try Supabase first
         try {
-          const { data: authData, error: authError } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                first_name: firstName,
-                last_name: lastName,
-                title: title
-              }
-            }
-          });
+          const { data: authData, error: authError } =
+            await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  first_name: firstName,
+                  last_name: lastName,
+                  title: title,
+                },
+              },
+            });
 
           if (!authError && authData.user) {
             // Create user profile
-            const { error: userError } = await supabase
-              .from('users')
-              .insert({
-                id: authData.user.id,
-                email,
-                first_name: firstName,
-                last_name: lastName,
-                title
-              });
+            const { error: userError } = await supabase.from("users").insert({
+              id: authData.user.id,
+              email,
+              first_name: firstName,
+              last_name: lastName,
+              title,
+            });
 
             if (!userError) {
               const user: User = {
@@ -122,28 +124,33 @@ class HybridAuthSystem {
                 lastName,
                 title,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toISOString(),
               };
 
               return {
                 success: true,
                 user,
-                token: authData.session?.access_token || this.generateToken(user.id),
-                message: "Registration successful"
+                token:
+                  authData.session?.access_token || this.generateToken(user.id),
+                message: "Registration successful",
               };
             }
           }
         } catch (error) {
-          console.log("Supabase registration failed, falling back to in-memory");
+          console.log(
+            "Supabase registration failed, falling back to in-memory",
+          );
         }
       }
 
       // Fall back to in-memory system
-      const existingUser = this.inMemoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      const existingUser = this.inMemoryUsers.find(
+        (u) => u.email.toLowerCase() === email.toLowerCase(),
+      );
       if (existingUser) {
         return {
           success: false,
-          message: "User with this email already exists"
+          message: "User with this email already exists",
         };
       }
 
@@ -154,7 +161,7 @@ class HybridAuthSystem {
         lastName,
         title,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
 
       this.inMemoryUsers.push(newUser);
@@ -167,13 +174,12 @@ class HybridAuthSystem {
         success: true,
         user: newUser,
         token,
-        message: "Registration successful (using fallback system)"
+        message: "Registration successful (using fallback system)",
       };
-
     } catch (error) {
       return {
         success: false,
-        message: "Registration failed"
+        message: "Registration failed",
       };
     }
   }
@@ -189,17 +195,18 @@ class HybridAuthSystem {
       if (supabaseAvailable) {
         // Try Supabase first
         try {
-          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password
-          });
+          const { data: authData, error: authError } =
+            await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
 
           if (!authError && authData.user) {
             // Get user profile
             const { data: userData, error: userError } = await supabase
-              .from('users')
-              .select('*')
-              .eq('id', authData.user.id)
+              .from("users")
+              .select("*")
+              .eq("id", authData.user.id)
               .single();
 
             if (!userError && userData) {
@@ -210,14 +217,15 @@ class HybridAuthSystem {
                 lastName: userData.last_name,
                 title: userData.title,
                 createdAt: userData.created_at,
-                updatedAt: userData.updated_at
+                updatedAt: userData.updated_at,
               };
 
               return {
                 success: true,
                 user,
-                token: authData.session?.access_token || this.generateToken(user.id),
-                message: "Login successful"
+                token:
+                  authData.session?.access_token || this.generateToken(user.id),
+                message: "Login successful",
               };
             }
           }
@@ -227,11 +235,13 @@ class HybridAuthSystem {
       }
 
       // Fall back to in-memory system
-      const user = this.inMemoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      const user = this.inMemoryUsers.find(
+        (u) => u.email.toLowerCase() === email.toLowerCase(),
+      );
       if (!user) {
         return {
           success: false,
-          message: "Invalid email or password"
+          message: "Invalid email or password",
         };
       }
 
@@ -239,7 +249,7 @@ class HybridAuthSystem {
       if (!hashedPassword || !this.verifyPassword(password, hashedPassword)) {
         return {
           success: false,
-          message: "Invalid email or password"
+          message: "Invalid email or password",
         };
       }
 
@@ -249,13 +259,12 @@ class HybridAuthSystem {
         success: true,
         user,
         token,
-        message: "Login successful (using fallback system)"
+        message: "Login successful (using fallback system)",
       };
-
     } catch (error) {
       return {
         success: false,
-        message: "Login failed"
+        message: "Login failed",
       };
     }
   }
@@ -268,9 +277,9 @@ class HybridAuthSystem {
     if (supabaseAvailable) {
       try {
         const { data, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', id)
+          .from("users")
+          .select("*")
+          .eq("id", id)
           .single();
 
         if (!error && data) {
@@ -281,7 +290,7 @@ class HybridAuthSystem {
             lastName: data.last_name,
             title: data.title,
             createdAt: data.created_at,
-            updatedAt: data.updated_at
+            updatedAt: data.updated_at,
           };
         }
       } catch (error) {
@@ -290,7 +299,7 @@ class HybridAuthSystem {
     }
 
     // Fall back to in-memory system
-    return this.inMemoryUsers.find(u => u.id === id) || null;
+    return this.inMemoryUsers.find((u) => u.id === id) || null;
   }
 }
 

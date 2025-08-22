@@ -161,14 +161,21 @@ export const supabaseServerHelpers = {
     contact_email: string;
     contact_phone?: string | null;
     terms_accepted: boolean;
-    is_guest: boolean;
   }) {
     const pnr = this.generatePNR();
 
     return await supabase
       .from("bookings")
       .insert({
-        ...bookingData,
+        from_airport_id: bookingData.from_airport_id,
+        to_airport_id: bookingData.to_airport_id,
+        departure_date: bookingData.departure_date,
+        return_date: bookingData.return_date,
+        trip_type: bookingData.trip_type,
+        total_amount: bookingData.total_amount,
+        contact_email: bookingData.contact_email,
+        contact_phone: bookingData.contact_phone,
+        terms_accepted: bookingData.terms_accepted,
         pnr,
         status: "pending",
         currency: "USD",
@@ -184,7 +191,7 @@ export const supabaseServerHelpers = {
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .eq("is_guest", true)
+      .is("user_id", null)
       .single();
   },
 

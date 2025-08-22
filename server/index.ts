@@ -140,15 +140,11 @@ export async function createServer() {
   // Stripe webhook needs raw body, so add it before express.json()
   app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
 
-  // JSON parsing middleware with increased limit and error handling
+  // JSON parsing middleware with increased limit
   app.use(
     express.json({
       limit: "10mb",
       type: ["application/json"],
-      verify: (req, res, buf) => {
-        // Store the raw body for cases where we need it
-        (req as any).rawBody = buf;
-      },
     }),
   );
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
