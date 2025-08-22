@@ -122,7 +122,9 @@ export default function Confirmation({
   const handleCreateBooking = async () => {
     // Prevent multiple concurrent calls
     if (loading) {
-      console.log("Booking creation already in progress, ignoring duplicate call");
+      console.log(
+        "Booking creation already in progress, ignoring duplicate call",
+      );
       return;
     }
 
@@ -214,14 +216,16 @@ export default function Confirmation({
 
       // Handle different types of errors with specific messages
       if (error instanceof Error) {
-        if (error.name === 'AbortError') {
+        if (error.name === "AbortError") {
           setError("Request timed out. Please try again.");
         } else if (error.message.includes("body stream")) {
           setError("Request conflict detected. Please try again in a moment.");
         } else if (error.message.includes("HTTP")) {
           setError(`Server error: ${error.message}. Please try again.`);
         } else if (error.message.includes("Failed to fetch")) {
-          setError("Network connection failed. Please check your internet connection.");
+          setError(
+            "Network connection failed. Please check your internet connection.",
+          );
         } else {
           setError(`Booking error: ${error.message}`);
         }

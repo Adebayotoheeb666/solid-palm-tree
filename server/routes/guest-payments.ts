@@ -21,7 +21,8 @@ export const handleCreateGuestStripePaymentIntent: RequestHandler = async (
     if (!pnr || !contactEmail) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields for guest booking: pnr and contactEmail",
+        message:
+          "Missing required fields for guest booking: pnr and contactEmail",
       });
     }
 
@@ -105,7 +106,7 @@ export const handleCreateGuestStripePaymentIntent: RequestHandler = async (
       });
     } catch (error) {
       console.error("Payment intent creation error:", error);
-      
+
       // Return demo mode response if Stripe fails
       console.log("Stripe failed, falling back to demo mode");
       res.json({

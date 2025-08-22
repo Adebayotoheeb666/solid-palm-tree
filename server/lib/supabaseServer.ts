@@ -173,13 +173,15 @@ export const supabaseServerHelpers = {
         .single();
 
       if (error || !adminUser) {
-        console.error("❌ Could not find admin user for guest bookings:", error);
+        console.error(
+          "❌ Could not find admin user for guest bookings:",
+          error,
+        );
         throw new Error("Admin user not found");
       }
 
       console.log("✅ Using admin user for guest booking:", adminUser.id);
       return adminUser.id;
-
     } catch (error) {
       console.error("❌ Error getting admin user for guest booking:", error);
       throw error;
@@ -236,7 +238,10 @@ export const supabaseServerHelpers = {
         booking_source: "web", // Set booking source
       };
 
-      console.log("🔄 Inserting booking with data:", JSON.stringify(bookingInsertData, null, 2));
+      console.log(
+        "🔄 Inserting booking with data:",
+        JSON.stringify(bookingInsertData, null, 2),
+      );
 
       const result = await supabase
         .from("bookings")
@@ -251,7 +256,6 @@ export const supabaseServerHelpers = {
 
       console.log("✅ Guest booking created successfully:", result.data.id);
       return result;
-
     } catch (error) {
       console.error("❌ Error in createGuestBooking:", error);
       throw error;

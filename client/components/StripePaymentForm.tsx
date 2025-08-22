@@ -51,31 +51,38 @@ export default function StripePaymentForm({
         try {
           // Demo mode - check if this is a guest booking
           const authToken = localStorage.getItem("token");
-          const isGuestBooking = !authToken || authToken === "null" || authToken === "undefined";
+          const isGuestBooking =
+            !authToken || authToken === "null" || authToken === "undefined";
 
           let intentResponse;
           if (isGuestBooking) {
             // For guest bookings in demo mode
             const currentBooking = localStorage.getItem("currentBooking");
-            const bookingData = currentBooking ? JSON.parse(currentBooking) : null;
+            const bookingData = currentBooking
+              ? JSON.parse(currentBooking)
+              : null;
 
             if (!bookingData || !bookingData.pnr) {
               throw new Error("Guest booking data not found for demo payment.");
             }
 
-            intentResponse = await fetch("/api/guest/payments/stripe/create-intent", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
+            intentResponse = await fetch(
+              "/api/guest/payments/stripe/create-intent",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  amount: Math.round(amount * 100),
+                  currency: currency.toLowerCase(),
+                  bookingId: bookingId,
+                  pnr: bookingData.pnr,
+                  contactEmail:
+                    bookingData.contactEmail || bookingData.contact_email,
+                }),
               },
-              body: JSON.stringify({
-                amount: Math.round(amount * 100),
-                currency: currency.toLowerCase(),
-                bookingId: bookingId,
-                pnr: bookingData.pnr,
-                contactEmail: bookingData.contactEmail || bookingData.contact_email,
-              }),
-            });
+            );
           } else {
             // For authenticated users in demo mode
             intentResponse = await fetch("/api/payments/stripe/create-intent", {
@@ -126,7 +133,8 @@ export default function StripePaymentForm({
 
       // Create payment intent - check if this is a guest booking
       const authToken = localStorage.getItem("token");
-      const isGuestBooking = !authToken || authToken === "null" || authToken === "undefined";
+      const isGuestBooking =
+        !authToken || authToken === "null" || authToken === "undefined";
 
       let intentResponse;
       if (isGuestBooking) {
@@ -135,22 +143,28 @@ export default function StripePaymentForm({
         const bookingData = currentBooking ? JSON.parse(currentBooking) : null;
 
         if (!bookingData || !bookingData.pnr) {
-          throw new Error("Guest booking data not found. Please restart the booking process.");
+          throw new Error(
+            "Guest booking data not found. Please restart the booking process.",
+          );
         }
 
-        intentResponse = await fetch("/api/guest/payments/stripe/create-intent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        intentResponse = await fetch(
+          "/api/guest/payments/stripe/create-intent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              bookingId,
+              amount,
+              currency,
+              pnr: bookingData.pnr,
+              contactEmail:
+                bookingData.contactEmail || bookingData.contact_email,
+            }),
           },
-          body: JSON.stringify({
-            bookingId,
-            amount,
-            currency,
-            pnr: bookingData.pnr,
-            contactEmail: bookingData.contactEmail || bookingData.contact_email,
-          }),
-        });
+        );
       } else {
         // For authenticated users
         intentResponse = await fetch("/api/payments/stripe/create-intent", {

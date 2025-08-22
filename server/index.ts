@@ -410,8 +410,13 @@ export async function createServer() {
   );
 
   // Guest payment routes (no authentication required)
-  const { handleCreateGuestStripePaymentIntent } = await import("./routes/guest-payments");
-  app.post("/api/guest/payments/stripe/create-intent", handleCreateGuestStripePaymentIntent);
+  const { handleCreateGuestStripePaymentIntent } = await import(
+    "./routes/guest-payments"
+  );
+  app.post(
+    "/api/guest/payments/stripe/create-intent",
+    handleCreateGuestStripePaymentIntent,
+  );
 
   app.get("/api/payments/stripe/config", handleGetStripeConfig);
   app.get("/api/payments/history", authMiddleware, handleGetPaymentHistory);
