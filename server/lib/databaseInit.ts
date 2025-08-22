@@ -17,7 +17,7 @@ export class DatabaseInitializer {
       // Test basic connection first
       const { data: testData, error: testError } = await supabase
         .from('users')
-        .select('count(*)', { count: 'exact' })
+        .select('id', { count: 'exact' })
         .limit(1);
 
       if (testError) {
@@ -30,7 +30,7 @@ export class DatabaseInitializer {
       // Check if airports table exists and has data
       const { data: airportsData, error: airportsError } = await supabase
         .from('airports')
-        .select('count(*)', { count: 'exact' });
+        .select('id', { count: 'exact' });
 
       if (airportsError) {
         console.log('⚠️ Airports table not found, it may need to be created');
@@ -174,7 +174,7 @@ export class DatabaseInitializer {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('count(*)', { count: 'exact' })
+        .select('id', { count: 'exact' })
         .limit(1);
 
       if (error) {
