@@ -1,3 +1,4 @@
+
 /**
  * Client-side service status logger
  * Logs the status of external services to browser console
@@ -73,7 +74,6 @@ class ServiceStatusLogger {
 
     } catch (error) {
       console.error('❌ Service status check failed:', error);
-      console.groupEnd();
     } finally {
       this.isLogging = false;
     }
@@ -84,68 +84,30 @@ class ServiceStatusLogger {
    */
   private async fetchServicesStatus(): Promise<ServiceCheckResult | null> {
     try {
-      // Check network connectivity first
-      if (!navigator.onLine) {
-        console.warn('🌐 No internet connection detected');
-        return null;
-      }
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-      const response = await fetch('/api/services', {
-        signal: controller.signal,
-        headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
-        }
-      });
-
-      clearTimeout(timeoutId);
-
+      const response = await fetch('/api/services');
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
-      const data = await response.json();
-
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid response format');
-      }
-
-      return data;
+      return await response.json();
     } catch (error) {
-      if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          console.error('🚨 Service status check timed out (10s)');
-        } else {
-          console.error('🚨 Failed to fetch services status:', error.message);
-        }
-      } else {
-        console.error('🚨 Unknown error during service status check:', error);
-      }
+      console.error('Failed to fetch services status:', error);
       return null;
     }
   }
 
   /**
-   * Log individual service statuses
+   * Log individual services status
    */
   private logServicesStatus(result: ServiceCheckResult): void {
     console.group('📋 Individual Services Status');
     
-    Object.entries(result.services).forEach(([serviceName, status]) => {
-      const emoji = this.getStatusEmoji(status.status);
-      const style = this.getStatusStyle(status.status);
+    Object.entries(result.services).forEach(([key, service]) => {
+      const emoji = this.getStatusEmoji(service.status);
+      const style = this.getStatusStyle(service.status);
       
-      console.log(
-        `%c${emoji} ${serviceName.toUpperCase()}`,
-        style,
-        status.message
-      );
-
-      if (status.lastChecked) {
-        console.log(`   └─ Last checked: ${status.lastChecked}`);
+      console.log(`${emoji} %c${service.name}%c: ${service.status.toUpperCase()}`, style, '');
+      if (service.message) {
+        console.log(`   └─ ${service.message}`);
       }
     });
     
@@ -153,20 +115,21 @@ class ServiceStatusLogger {
   }
 
   /**
-   * Log services summary
+   * Log summary statistics
    */
   private logSummary(result: ServiceCheckResult): void {
     const { summary } = result;
     
-    console.group('📊 Services Summary');
-    console.log(`✅ Working: ${summary.working}/${summary.total}`);
-    console.log(`❌ Error: ${summary.error}/${summary.total}`);
-    console.log(`⚙️ Not configured: ${summary.not_configured}/${summary.total}`);
+    console.group('📊 Summary Statistics');
+    console.log(`Total Services: ${summary.total}`);
+    console.log(`✅ Working: ${summary.working}`);
+    console.log(`❌ Errors: ${summary.error}`);
+    console.log(`⚙️ Not Configured: ${summary.not_configured}`);
     
     if (summary.working === summary.total) {
       console.log('%c🎉 All services are operational!', 'color: #10B981; font-weight: bold;');
     } else if (summary.error > 0) {
-      console.warn(`⚠️ ${summary.error} service(s) have errors`);
+      console.log('%c⚠️ Some services have errors', 'color: #EF4444; font-weight: bold;');
     }
     
     console.groupEnd();
@@ -265,3 +228,5 @@ export const serviceStatusLogger = ServiceStatusLogger.getInstance();
 if (typeof window !== 'undefined') {
   (window as any).serviceStatusLogger = serviceStatusLogger;
 }
+
+export default serviceStatusLogger;

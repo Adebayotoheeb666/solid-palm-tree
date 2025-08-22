@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { serviceStatusLogger } from '../lib/serviceStatusLogger';
+import serviceStatusLogger from '../lib/serviceStatusLogger';
 
 interface ServiceStatusHookOptions {
   enablePeriodicChecking?: boolean;
