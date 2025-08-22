@@ -9,6 +9,7 @@ import {
   Users,
   AlertCircle,
 } from "lucide-react";
+import QRCodeDisplay from "../components/QRCodeDisplay";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { FlightRoute, Passenger, BookingRequest } from "@shared/api";
@@ -118,7 +119,7 @@ export default function Confirmation({
       ? parseFloat(bookingData.selectedFlight.price.total)
       : 15;
 
-  // Handle booking creation
+  // Handle booking creation (simplified for guest checkout)
   const handleCreateBooking = async () => {
     if (!acceptTerms) {
       setError("Please accept the terms and conditions to continue.");
@@ -132,8 +133,6 @@ export default function Confirmation({
       return;
     }
 
-    // Note: Removed authentication check to support guest checkout
-
     setLoading(true);
     setError("");
 
@@ -145,29 +144,17 @@ export default function Confirmation({
         termsAccepted: acceptTerms,
         selectedFlight: bookingData.selectedFlight || null,
         totalAmount: totalAmount,
+        guestCheckout: true, // Always use guest checkout for simplicity
       };
 
       console.log("Creating booking:", bookingRequest);
 
-      // Choose API endpoint based on authentication status
-      const apiEndpoint = isAuthenticated
-        ? "/api/bookings"
-        : "/api/guest/bookings";
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      // Add authorization header only for authenticated users
-      if (isAuthenticated) {
-        headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`;
-      } else {
-        // For guest bookings, add guest checkout flag
-        (bookingRequest as any).guestCheckout = true;
-      }
-
-      const response = await fetch(apiEndpoint, {
+      // Always use guest booking endpoint for simplicity
+      const response = await fetch("/api/guest/bookings", {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(bookingRequest),
       });
 
@@ -396,29 +383,47 @@ export default function Confirmation({
               </div>
             </div>
 
-            {/* Guest Booking Notice */}
-            {!isAuthenticated && (
-              <div className="bg-ticket-accent/20 border border-ticket-accent/30 rounded-lg p-4 mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-ticket-accent rounded-full"></div>
-                  <h4 className="text-sm font-semibold text-ticket-accent">
-                    Booking as Guest
-                  </h4>
+            {/* QR Code for Ticket Access */}
+            {bookingData.contactEmail && (
+              <div className="bg-ticket-secondary rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4 text-[#F6F6FF]">
+                  Quick Access
+                </h3>
+                <div className="flex flex-col items-center">
+                  <QRCodeDisplay
+                    value={`${window.location.origin}/guest-booking-lookup?email=${encodeURIComponent(bookingData.contactEmail)}`}
+                    size={120}
+                    title="Scan to Find Your Booking"
+                    className="mb-3"
+                  />
+                  <p className="text-sm text-white/80 text-center">
+                    Scan this QR code with your phone to quickly access your
+                    booking details anytime
+                  </p>
                 </div>
-                <p className="text-xs text-white/80">
-                  You're booking as a guest. Your booking confirmation and
-                  e-ticket will be sent to your email. You can view your booking
-                  anytime using our{" "}
-                  <button
-                    onClick={() => navigate("/guest-booking-lookup")}
-                    className="text-ticket-accent hover:underline font-medium"
-                  >
-                    booking lookup
-                  </button>{" "}
-                  feature.
-                </p>
               </div>
             )}
+
+            {/* Booking Notice */}
+            <div className="bg-ticket-accent/20 border border-ticket-accent/30 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-2 h-2 bg-ticket-accent rounded-full"></div>
+                <h4 className="text-sm font-semibold text-ticket-accent">
+                  Quick Booking
+                </h4>
+              </div>
+              <p className="text-xs text-white/80">
+                Your booking confirmation and e-ticket will be sent to your
+                email. You can view your booking anytime using our{" "}
+                <button
+                  onClick={() => navigate("/guest-booking-lookup")}
+                  className="text-ticket-accent hover:underline font-medium"
+                >
+                  booking lookup
+                </button>{" "}
+                feature.
+              </p>
+            </div>
 
             {/* Terms and Conditions */}
             <div className="bg-ticket-secondary rounded-lg p-6">
@@ -457,24 +462,6 @@ export default function Confirmation({
                 </label>
               </div>
             </div>
-
-            {/* Optional Sign In for Guests */}
-            {!isAuthenticated && (
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <div className="text-center">
-                  <p className="text-sm text-white/80 mb-3">
-                    Want to save your booking history and manage future bookings
-                    easily?
-                  </p>
-                  <button
-                    onClick={() => navigate("/login")}
-                    className="text-ticket-accent hover:text-ticket-accent/80 text-sm font-medium underline"
-                  >
-                    Sign In or Create Account (Optional)
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* Action Buttons */}
             <div className="space-y-4">

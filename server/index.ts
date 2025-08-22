@@ -360,17 +360,13 @@ export async function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Guest booking routes (no authentication required) - Fix body stream issue
+  // Guest booking routes (no authentication required)
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
     "./routes/guest-bookings"
   );
 
-  // Use a separate JSON parser for guest routes to avoid body stream conflicts
-  app.post(
-    "/api/guest/bookings",
-    express.json({ limit: "10mb" }), // Fresh JSON parser
-    handleCreateGuestBooking,
-  );
+  // Guest booking route (uses global JSON parser)
+  app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 
   // Booking routes (authenticated) - prefer Supabase but fallback when needed

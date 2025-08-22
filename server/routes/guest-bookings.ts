@@ -22,16 +22,18 @@ const guestBookingSchema = z.object({
     }),
     departureDate: z.string(),
     returnDate: z.string().optional(),
-    tripType: z.enum(["one-way", "round-trip"]),
+    tripType: z.enum(["oneway", "roundtrip"]),
   }),
-  passengers: z.array(
-    z.object({
-      title: z.string(),
-      firstName: z.string(),
-      lastName: z.string(),
-      email: z.string().email(),
-    }),
-  ),
+  passengers: z
+    .array(
+      z.object({
+        title: z.enum(["Mr", "Ms", "Mrs"]),
+        firstName: z.string().min(2),
+        lastName: z.string().min(2),
+        email: z.string().email(),
+      }),
+    )
+    .min(1),
   contactEmail: z.string().email(),
   contactPhone: z.string().optional(),
   termsAccepted: z.boolean(),
