@@ -353,4 +353,14 @@ export const supabaseServerHelpers = {
   async cleanupExpiredBookings() {
     return await supabase.rpc("cleanup_expired_bookings");
   },
+
+  // Generate PNR (Passenger Name Record)
+  generatePNR(): string {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  },
 };
