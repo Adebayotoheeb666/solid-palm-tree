@@ -382,29 +382,26 @@ export default function Confirmation({
               </div>
             </div>
 
-            {/* Guest Booking Notice */}
-            {!isAuthenticated && (
-              <div className="bg-ticket-accent/20 border border-ticket-accent/30 rounded-lg p-4 mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-ticket-accent rounded-full"></div>
-                  <h4 className="text-sm font-semibold text-ticket-accent">
-                    Booking as Guest
-                  </h4>
-                </div>
-                <p className="text-xs text-white/80">
-                  You're booking as a guest. Your booking confirmation and
-                  e-ticket will be sent to your email. You can view your booking
-                  anytime using our{" "}
-                  <button
-                    onClick={() => navigate("/guest-booking-lookup")}
-                    className="text-ticket-accent hover:underline font-medium"
-                  >
-                    booking lookup
-                  </button>{" "}
-                  feature.
-                </p>
+            {/* Booking Notice */}
+            <div className="bg-ticket-accent/20 border border-ticket-accent/30 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-2 h-2 bg-ticket-accent rounded-full"></div>
+                <h4 className="text-sm font-semibold text-ticket-accent">
+                  Quick Booking
+                </h4>
               </div>
-            )}
+              <p className="text-xs text-white/80">
+                Your booking confirmation and e-ticket will be sent to your email.
+                You can view your booking anytime using our{" "}
+                <button
+                  onClick={() => navigate("/guest-booking-lookup")}
+                  className="text-ticket-accent hover:underline font-medium"
+                >
+                  booking lookup
+                </button>{" "}
+                feature.
+              </p>
+            </div>
 
             {/* Terms and Conditions */}
             <div className="bg-ticket-secondary rounded-lg p-6">
