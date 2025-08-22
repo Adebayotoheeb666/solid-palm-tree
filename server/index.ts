@@ -140,6 +140,15 @@ export async function createServer() {
   // Stripe webhook needs raw body, so add it before express.json()
   app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
 
+  // Request logging middleware for debugging
+  app.use((req, res, next) => {
+    if (req.url?.startsWith('/api/')) {
+      console.log(`🔍 API Request: ${req.method} ${req.url}`);
+      console.log(`🔍 Content-Type: ${req.headers['content-type']}`);
+    }
+    next();
+  });
+
   // JSON parsing middleware with increased limit and error handling
   app.use(
     express.json({
