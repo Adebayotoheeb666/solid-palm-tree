@@ -232,24 +232,29 @@ export const supabaseServerHelpers = {
     contact_email: string;
     terms_accepted: boolean;
   }) {
-    const pnr = this.generatePNR();
-    const guestUserId = await this.ensureGuestUser();
+    try {
+      console.log("🔄 Starting guest booking creation...");
 
-    // Extract only the fields that exist in the database schema
-    const {
-      from_airport_id,
-      to_airport_id,
-      departure_date,
-      return_date,
-      trip_type,
-      total_amount,
-      contact_email,
-      terms_accepted,
-    } = bookingData;
+      const pnr = this.generatePNR();
+      console.log("✅ Generated PNR:", pnr);
 
-    return await supabase
-      .from("bookings")
-      .insert({
+      console.log("🔄 Ensuring guest user exists...");
+      const guestUserId = await this.ensureGuestUser();
+      console.log("✅ Guest user ID:", guestUserId);
+
+      // Extract only the fields that exist in the database schema
+      const {
+        from_airport_id,
+        to_airport_id,
+        departure_date,
+        return_date,
+        trip_type,
+        total_amount,
+        contact_email,
+        terms_accepted,
+      } = bookingData;
+
+      const bookingInsertData = {
         from_airport_id,
         to_airport_id,
         departure_date,
@@ -264,9 +269,28 @@ export const supabaseServerHelpers = {
         user_id: guestUserId, // Use special guest user ID
         base_amount: total_amount, // Set base_amount to satisfy NOT NULL constraint
         booking_source: "web", // Set booking source
-      })
-      .select()
-      .single();
+      };
+
+      console.log("🔄 Inserting booking with data:", JSON.stringify(bookingInsertData, null, 2));
+
+      const result = await supabase
+        .from("bookings")
+        .insert(bookingInsertData)
+        .select()
+        .single();
+
+      if (result.error) {
+        console.error("❌ Database insert error:", result.error);
+        throw result.error;
+      }
+
+      console.log("✅ Guest booking created successfully:", result.data.id);
+      return result;
+
+    } catch (error) {
+      console.error("❌ Error in createGuestBooking:", error);
+      throw error;
+    }
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
