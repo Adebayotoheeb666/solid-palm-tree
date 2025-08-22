@@ -78,6 +78,8 @@ export const supabaseServerHelpers = {
       pnr: bookingData.pnr || this.generatePNR(),
       status: bookingData.status || "pending",
       currency: bookingData.currency || "USD",
+      base_amount: bookingData.base_amount || bookingData.total_amount,
+      booking_source: bookingData.booking_source || "web",
     };
 
     return await supabase
