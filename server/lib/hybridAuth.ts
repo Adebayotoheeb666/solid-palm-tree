@@ -67,7 +67,7 @@ class HybridAuthSystem {
     try {
       const { error } = await supabase
         .from('users')
-        .select('count(*)', { count: 'exact' })
+        .select('id', { count: 'exact' })
         .limit(1);
       
       const available = !error;
