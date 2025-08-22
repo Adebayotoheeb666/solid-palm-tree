@@ -9,6 +9,7 @@ import {
   Users,
   AlertCircle,
 } from "lucide-react";
+import QRCodeDisplay from "../components/QRCodeDisplay";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { FlightRoute, Passenger, BookingRequest } from "@shared/api";
