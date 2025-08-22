@@ -160,63 +160,28 @@ export const supabaseServerHelpers = {
     return result;
   },
 
-  // Create or get guest user for guest bookings
-  async ensureGuestUser() {
-    const guestUserId = "00000000-0000-0000-0000-000000000000";
-    const guestEmail = "guest@onboardticket.system";
-
+  // Get existing admin user for guest bookings (simpler approach)
+  async getGuestUserId() {
     try {
-      // Check if guest user already exists by ID
-      const { data: existingUser, error: fetchError } = await supabase
+      // Use the existing admin user for guest bookings
+      const adminEmail = "onboard@admin.com";
+
+      const { data: adminUser, error } = await supabase
         .from("users")
         .select("id")
-        .eq("id", guestUserId)
+        .eq("email", adminEmail)
         .single();
 
-      if (existingUser && !fetchError) {
-        console.log("✅ Guest user already exists");
-        return existingUser.id;
+      if (error || !adminUser) {
+        console.error("❌ Could not find admin user for guest bookings:", error);
+        throw new Error("Admin user not found");
       }
 
-      console.log("🔄 Creating guest user...");
-
-      // Create guest user if it doesn't exist
-      const { data: newUser, error: createError } = await supabase
-        .from("users")
-        .insert({
-          id: guestUserId,
-          email: guestEmail,
-          first_name: "Guest",
-          last_name: "User",
-          title: "Mr",
-          status: "active",
-        })
-        .select("id")
-        .single();
-
-      if (createError) {
-        console.error("❌ Failed to create guest user:", createError);
-
-        // Try one more time to check if it exists (race condition)
-        const { data: retryUser } = await supabase
-          .from("users")
-          .select("id")
-          .eq("id", guestUserId)
-          .single();
-
-        if (retryUser) {
-          console.log("✅ Found guest user on retry");
-          return retryUser.id;
-        }
-
-        throw createError;
-      }
-
-      console.log("✅ Guest user created successfully");
-      return newUser.id;
+      console.log("✅ Using admin user for guest booking:", adminUser.id);
+      return adminUser.id;
 
     } catch (error) {
-      console.error("❌ Error in ensureGuestUser:", error);
+      console.error("❌ Error getting admin user for guest booking:", error);
       throw error;
     }
   },
