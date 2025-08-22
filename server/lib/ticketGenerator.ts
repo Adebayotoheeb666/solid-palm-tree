@@ -328,9 +328,6 @@ export class TicketGenerator {
           doc.end();
         });
 
-        // Finalize PDF
-        doc.end();
-
         stream.on("finish", () => {
           console.log(`✅ Ticket PDF generated: ${publicUrl}`);
           resolve(publicUrl);
