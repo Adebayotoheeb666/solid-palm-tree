@@ -56,12 +56,12 @@ class ServiceLogger {
     message?: string;
   }> {
     try {
-      const response = await fetch("/api/db-health");
+      const response = await fetch("/api/health/database");
       if (response.ok) {
         const data = await response.json();
         return {
-          status: data.success ? "working" : "error",
-          message: data.message || "Database health check completed",
+          status: data.overall.status === "healthy" ? "working" : "error",
+          message: data.overall.status === "healthy" ? "Database health check completed" : "Database issues detected",
         };
       }
       return { status: "error", message: "Database health check failed" };

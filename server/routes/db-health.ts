@@ -98,7 +98,7 @@ async function checkFallbackData(): Promise<DatabaseStatus> {
 
   try {
     // Test fallback airports endpoint
-    const response = await fetch("http://localhost:8080/api/airports");
+      const response = await fetch("http://localhost:5000/api/airports");
     const data = await response.json();
     const responseTime = Date.now() - startTime;
 
