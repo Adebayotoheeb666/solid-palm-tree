@@ -112,14 +112,9 @@ function expressPlugin(): Plugin {
       createServer()
         .then((app) => {
           // Add Express app as middleware to Vite dev server
-          // Insert before Vite's internal middlewares to ensure API routes are handled first
-          server.middlewares.use((req, res, next) => {
-            if (req.url?.startsWith('/api/') || req.url?.startsWith('/health')) {
-              app(req, res, next);
-            } else {
-              next();
-            }
-          });
+          // This will handle all API routes before Vite's SPA handling
+          server.middlewares.use('/api', app);
+          server.middlewares.use('/health', app);
         })
         .catch((err) => {
           console.error("Failed to create server:", err);
