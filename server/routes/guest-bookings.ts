@@ -38,7 +38,7 @@ const guestBookingSchema = z.object({
   contactPhone: z.string().optional(),
   termsAccepted: z.boolean(),
   // Guest-specific fields
-  guestCheckout: z.literal(true),
+  guestCheckout: z.literal(true).optional(),
 });
 
 /**
