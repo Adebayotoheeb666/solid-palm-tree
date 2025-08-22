@@ -360,7 +360,7 @@ export async function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Guest booking routes (no authentication required) - Fix body stream issue
+  // Guest booking routes (no authentication required)
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
     "./routes/guest-bookings"
   );
