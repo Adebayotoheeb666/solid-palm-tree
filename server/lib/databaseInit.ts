@@ -171,6 +171,58 @@ export class DatabaseInitializer {
   }
 
   /**
+   * Ensure guest user exists for guest bookings
+   */
+  private static async ensureGuestUser(): Promise<void> {
+    console.log('👤 Checking for guest user...');
+
+    try {
+      const guestUserId = '00000000-0000-0000-0000-000000000000';
+      const guestEmail = 'guest@onboardticket.system';
+
+      // Check if guest user exists in the users table
+      const { data: existingUser, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', guestUserId)
+        .single();
+
+      if (userError && userError.code !== 'PGRST116') { // PGRST116 = no rows found
+        console.log('⚠️ Error checking for guest user:', userError.message);
+        return;
+      }
+
+      if (existingUser) {
+        console.log('✅ Guest user already exists in database');
+        return;
+      }
+
+      console.log('🔄 Creating guest user for guest bookings...');
+
+      // Create guest user record in database
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert({
+          id: guestUserId,
+          email: guestEmail,
+          first_name: 'Guest',
+          last_name: 'User',
+          title: 'Mr',
+          status: 'active'
+        });
+
+      if (insertError) {
+        console.log('⚠️ Could not create guest user record:', insertError.message);
+      } else {
+        console.log('✅ Guest user created successfully');
+      }
+
+    } catch (error) {
+      console.log('⚠️ Error ensuring guest user:', error);
+    }
+  }
+
+  /**
    * Check if database is properly initialized
    */
   static async checkHealth(): Promise<{ healthy: boolean; message: string }> {
