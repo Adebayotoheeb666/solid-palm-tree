@@ -383,6 +383,26 @@ export default function Confirmation({
               </div>
             </div>
 
+            {/* QR Code for Ticket Access */}
+            {bookingData.contactEmail && (
+              <div className="bg-ticket-secondary rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4 text-[#F6F6FF]">
+                  Quick Access
+                </h3>
+                <div className="flex flex-col items-center">
+                  <QRCodeDisplay
+                    value={`${window.location.origin}/guest-booking-lookup?email=${encodeURIComponent(bookingData.contactEmail)}`}
+                    size={120}
+                    title="Scan to Find Your Booking"
+                    className="mb-3"
+                  />
+                  <p className="text-sm text-white/80 text-center">
+                    Scan this QR code with your phone to quickly access your booking details anytime
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Booking Notice */}
             <div className="bg-ticket-accent/20 border border-ticket-accent/30 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-3 mb-2">
