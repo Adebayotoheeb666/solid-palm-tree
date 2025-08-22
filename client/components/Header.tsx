@@ -97,16 +97,10 @@ const Header: React.FC<HeaderProps> = memo(({ handleBookNow }) => {
                 Find Booking
               </button>
               <button
-                className="px-6 md:px-8 py-2 text-brand-text-primary font-bold text-base md:text-lg hover:bg-gray-100 rounded-lg transition-colors shadow-none"
-                onClick={handleLoginClick}
-              >
-                Sign In
-              </button>
-              <button
-                className="px-8 py-2 bg-white text-brand-text-primary font-bold text-base md:text-lg rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+                className="px-8 py-2 bg-[#3839C9] text-white font-bold text-base md:text-lg rounded-lg hover:bg-blue-700 transition-colors shadow-md"
                 onClick={bookNowHandler}
               >
-                Book now
+                Book Ticket
               </button>
             </div>
           )}
