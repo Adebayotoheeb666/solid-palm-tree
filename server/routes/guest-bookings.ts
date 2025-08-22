@@ -103,7 +103,6 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
         contact_email: bookingData.contactEmail,
         contact_phone: bookingData.contactPhone || null,
         terms_accepted: bookingData.termsAccepted,
-        is_guest: true,
       });
 
     if (bookingError || !booking) {
