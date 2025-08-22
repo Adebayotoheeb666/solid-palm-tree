@@ -275,11 +275,12 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
     const { data: passengers } =
       await supabaseServerHelpers.getPassengersByBookingId(booking.id);
 
-    const isGuestBooking = booking.user_id === "00000000-0000-0000-0000-000000000000";
+    // Since this is guest booking lookup, always treat as guest booking
+    const isGuestBooking = true;
 
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: isGuestBooking ? null : booking.user_id,
+      userId: null, // Always return null for guest bookings
       pnr: booking.pnr,
       status: booking.status,
       route: {
