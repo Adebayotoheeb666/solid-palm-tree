@@ -22,7 +22,7 @@ const guestBookingSchema = z.object({
     }),
     departureDate: z.string(),
     returnDate: z.string().optional(),
-    tripType: z.enum(["one-way", "round-trip"]),
+    tripType: z.enum(["oneway", "roundtrip"]),
   }),
   passengers: z.array(
     z.object({
@@ -98,9 +98,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
         trip_type: bookingData.route.tripType,
         total_amount: totalAmount,
         contact_email: bookingData.contactEmail,
-        contact_phone: bookingData.contactPhone || null,
         terms_accepted: bookingData.termsAccepted,
-        is_guest: true,
       });
 
     if (bookingError || !booking) {
@@ -161,9 +159,12 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
     }
 
     // Format response to match expected API structure
+    // Since we're using admin user for guest bookings, identify by booking source/context
+    const isGuestBooking = true; // This is a guest booking route, so always treat as guest
+
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null, // Guest booking has no user ID
+      userId: null, // Always return null for guest bookings from this route
       pnr: booking.pnr,
       status: booking.status,
       route: {
@@ -189,7 +190,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
       createdAt: booking.created_at,
       updatedAt: booking.updated_at,
       ticketUrl: ticketUrl || booking.ticket_url || undefined,
-      isGuest: true,
+      isGuest: isGuestBooking,
     };
 
     // Send booking confirmation email
@@ -274,9 +275,12 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
     const { data: passengers } =
       await supabaseServerHelpers.getPassengersByBookingId(booking.id);
 
+    // Since this is guest booking lookup, always treat as guest booking
+    const isGuestBooking = true;
+
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null,
+      userId: null, // Always return null for guest bookings
       pnr: booking.pnr,
       status: booking.status,
       route: {
@@ -308,7 +312,7 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
       createdAt: booking.created_at,
       updatedAt: booking.updated_at,
       ticketUrl: booking.ticket_url || undefined,
-      isGuest: true,
+      isGuest: isGuestBooking,
     };
 
     res.json({

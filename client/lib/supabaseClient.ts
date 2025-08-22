@@ -132,7 +132,7 @@ export type Database = {
       bookings: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null; // Allow null for guest bookings
           pnr: string;
           status: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id: string;
@@ -141,16 +141,18 @@ export type Database = {
           return_date: string | null;
           trip_type: "oneway" | "roundtrip";
           total_amount: number;
+          base_amount: number; // Required field for base pricing
           currency: string;
           contact_email: string;
           terms_accepted: boolean;
           ticket_url: string | null;
+          booking_source: string; // Required field for tracking source
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
-          user_id: string;
+          user_id?: string | null; // Allow null for guest bookings
           pnr?: string;
           status?: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id: string;
@@ -159,16 +161,18 @@ export type Database = {
           return_date?: string | null;
           trip_type?: "oneway" | "roundtrip";
           total_amount: number;
+          base_amount?: number; // Optional in insert, will default to total_amount
           currency?: string;
           contact_email: string;
           terms_accepted?: boolean;
           ticket_url?: string | null;
+          booking_source?: string; // Optional in insert, will default to "web"
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
           pnr?: string;
           status?: "pending" | "confirmed" | "cancelled" | "expired";
           from_airport_id?: string;
@@ -177,10 +181,12 @@ export type Database = {
           return_date?: string | null;
           trip_type?: "oneway" | "roundtrip";
           total_amount?: number;
+          base_amount?: number;
           currency?: string;
           contact_email?: string;
           terms_accepted?: boolean;
           ticket_url?: string | null;
+          booking_source?: string;
           created_at?: string;
           updated_at?: string;
         };

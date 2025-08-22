@@ -120,6 +120,14 @@ export default function Confirmation({
 
   // Handle booking creation
   const handleCreateBooking = async () => {
+    // Prevent multiple concurrent calls
+    if (loading) {
+      console.log(
+        "Booking creation already in progress, ignoring duplicate call",
+      );
+      return;
+    }
+
     if (!acceptTerms) {
       setError("Please accept the terms and conditions to continue.");
       return;
@@ -138,7 +146,8 @@ export default function Confirmation({
     setError("");
 
     try {
-      const bookingRequest: BookingRequest = {
+      // Build request payload based on authentication status
+      const baseRequest = {
         route: bookingData.route,
         passengers: bookingData.passengers,
         contactEmail: bookingData.contactEmail,
@@ -147,29 +156,44 @@ export default function Confirmation({
         totalAmount: totalAmount,
       };
 
-      console.log("Creating booking:", bookingRequest);
-
-      // Choose API endpoint based on authentication status
-      const apiEndpoint = isAuthenticated
-        ? "/api/bookings"
-        : "/api/guest/bookings";
-      const headers: Record<string, string> = {
+      // Choose API endpoint and construct request based on authentication status
+      let apiEndpoint: string;
+      let requestPayload: any;
+      let headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
 
-      // Add authorization header only for authenticated users
       if (isAuthenticated) {
+        apiEndpoint = "/api/bookings";
+        requestPayload = baseRequest;
         headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`;
       } else {
-        // For guest bookings, add guest checkout flag
-        (bookingRequest as any).guestCheckout = true;
+        apiEndpoint = "/api/guest/bookings";
+        requestPayload = {
+          ...baseRequest,
+          guestCheckout: true,
+        };
       }
+
+      console.log("Creating booking:", requestPayload);
+
+      // Create a new AbortController for this request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers,
-        body: JSON.stringify(bookingRequest),
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
+
+      // Check if response is ok before trying to read body
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
       const result = await response.json();
 
@@ -189,7 +213,25 @@ export default function Confirmation({
       }
     } catch (error) {
       console.error("Error creating booking:", error);
-      setError("Network error. Please check your connection and try again.");
+
+      // Handle different types of errors with specific messages
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          setError("Request timed out. Please try again.");
+        } else if (error.message.includes("body stream")) {
+          setError("Request conflict detected. Please try again in a moment.");
+        } else if (error.message.includes("HTTP")) {
+          setError(`Server error: ${error.message}. Please try again.`);
+        } else if (error.message.includes("Failed to fetch")) {
+          setError(
+            "Network connection failed. Please check your internet connection.",
+          );
+        } else {
+          setError(`Booking error: ${error.message}`);
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

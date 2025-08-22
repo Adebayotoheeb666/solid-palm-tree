@@ -72,9 +72,19 @@ export const supabaseServerHelpers = {
   async createBooking(
     bookingData: Database["public"]["Tables"]["bookings"]["Insert"],
   ) {
+    // Generate PNR if not provided
+    const bookingWithPNR = {
+      ...bookingData,
+      pnr: bookingData.pnr || this.generatePNR(),
+      status: bookingData.status || "pending",
+      currency: bookingData.currency || "USD",
+      base_amount: bookingData.base_amount || bookingData.total_amount,
+      booking_source: bookingData.booking_source || "web",
+    };
+
     return await supabase
       .from("bookings")
-      .insert(bookingData)
+      .insert(bookingWithPNR)
       .select(
         `
         *,
@@ -140,6 +150,44 @@ export const supabaseServerHelpers = {
       .single();
   },
 
+  // Utility functions
+  generatePNR(): string {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  },
+
+  // Get existing admin user for guest bookings (simpler approach)
+  async getGuestUserId() {
+    try {
+      // Use the existing admin user for guest bookings
+      const adminEmail = "onboard@admin.com";
+
+      const { data: adminUser, error } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", adminEmail)
+        .single();
+
+      if (error || !adminUser) {
+        console.error(
+          "❌ Could not find admin user for guest bookings:",
+          error,
+        );
+        throw new Error("Admin user not found");
+      }
+
+      console.log("✅ Using admin user for guest booking:", adminUser.id);
+      return adminUser.id;
+    } catch (error) {
+      console.error("❌ Error getting admin user for guest booking:", error);
+      throw error;
+    }
+  },
+
   // Guest booking operations
   async createGuestBooking(bookingData: {
     from_airport_id: string;
@@ -149,32 +197,79 @@ export const supabaseServerHelpers = {
     trip_type: string;
     total_amount: number;
     contact_email: string;
-    contact_phone?: string | null;
     terms_accepted: boolean;
-    is_guest: boolean;
   }) {
-    const pnr = this.generatePNR();
+    try {
+      console.log("🔄 Starting guest booking creation...");
 
-    return await supabase
-      .from("bookings")
-      .insert({
-        ...bookingData,
+      const pnr = this.generatePNR();
+      console.log("✅ Generated PNR:", pnr);
+
+      console.log("🔄 Getting admin user for guest booking...");
+      const guestUserId = await this.getGuestUserId();
+      console.log("✅ Using user ID for guest booking:", guestUserId);
+
+      // Extract only the fields that exist in the database schema
+      const {
+        from_airport_id,
+        to_airport_id,
+        departure_date,
+        return_date,
+        trip_type,
+        total_amount,
+        contact_email,
+        terms_accepted,
+      } = bookingData;
+
+      const bookingInsertData = {
+        from_airport_id,
+        to_airport_id,
+        departure_date,
+        return_date,
+        trip_type,
+        total_amount,
+        contact_email,
+        terms_accepted,
         pnr,
         status: "pending",
         currency: "USD",
-        user_id: null, // Guest booking has no user
-      })
-      .select()
-      .single();
+        user_id: guestUserId, // Use special guest user ID
+        base_amount: total_amount, // Set base_amount to satisfy NOT NULL constraint
+        booking_source: "web", // Set booking source
+      };
+
+      console.log(
+        "🔄 Inserting booking with data:",
+        JSON.stringify(bookingInsertData, null, 2),
+      );
+
+      const result = await supabase
+        .from("bookings")
+        .insert(bookingInsertData)
+        .select()
+        .single();
+
+      if (result.error) {
+        console.error("❌ Database insert error:", result.error);
+        throw result.error;
+      }
+
+      console.log("✅ Guest booking created successfully:", result.data.id);
+      return result;
+    } catch (error) {
+      console.error("❌ Error in createGuestBooking:", error);
+      throw error;
+    }
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
+    // For guest bookings, we identify them by PNR and contact email match
+    // Since we're using admin user ID, we can't filter by user_id
     return await supabase
       .from("bookings")
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .eq("is_guest", true)
       .single();
   },
 
