@@ -22,7 +22,7 @@ const guestBookingSchema = z.object({
     }),
     departureDate: z.string(),
     returnDate: z.string().optional(),
-    tripType: z.enum(["one-way", "round-trip"]),
+    tripType: z.enum(["oneway", "roundtrip"]),
   }),
   passengers: z.array(
     z.object({
@@ -45,6 +45,12 @@ const guestBookingSchema = z.object({
 export async function handleCreateGuestBooking(req: Request, res: Response) {
   try {
     console.log("Creating guest booking...");
+    console.log("Request headers:", req.headers["content-type"]);
+    console.log("Request body type:", typeof req.body);
+    console.log(
+      "Request body keys:",
+      req.body ? Object.keys(req.body) : "no body",
+    );
 
     // Ensure req.body exists and is parsed
     if (!req.body || typeof req.body !== "object") {
@@ -100,7 +106,6 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
         contact_email: bookingData.contactEmail,
         contact_phone: bookingData.contactPhone || null,
         terms_accepted: bookingData.termsAccepted,
-        is_guest: true,
       });
 
     if (bookingError || !booking) {

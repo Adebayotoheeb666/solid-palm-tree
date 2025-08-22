@@ -140,6 +140,15 @@ export async function createServer() {
   // Stripe webhook needs raw body, so add it before express.json()
   app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
 
+  // Request logging middleware for debugging
+  app.use((req, res, next) => {
+    if (req.url?.startsWith("/api/")) {
+      console.log(`🔍 API Request: ${req.method} ${req.url}`);
+      console.log(`🔍 Content-Type: ${req.headers["content-type"]}`);
+    }
+    next();
+  });
+
   // JSON parsing middleware with increased limit and error handling
   app.use(
     express.json({
@@ -360,17 +369,12 @@ export async function createServer() {
   app.get("/api/user/bookings/:bookingId", authMiddleware, handleGetBooking);
   app.put("/api/user/profile", authMiddleware, handleUpdateProfile);
 
-  // Guest booking routes (no authentication required) - Fix body stream issue
+  // Guest booking routes (no authentication required)
   const { handleCreateGuestBooking, handleGetGuestBooking } = await import(
     "./routes/guest-bookings"
   );
 
-  // Use a separate JSON parser for guest routes to avoid body stream conflicts
-  app.post(
-    "/api/guest/bookings",
-    express.json({ limit: "10mb" }), // Fresh JSON parser
-    handleCreateGuestBooking,
-  );
+  app.post("/api/guest/bookings", handleCreateGuestBooking);
   app.get("/api/guest/bookings/:pnr", handleGetGuestBooking);
 
   // Booking routes (authenticated) - prefer Supabase but fallback when needed

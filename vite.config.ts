@@ -1,7 +1,6 @@
-import { defineConfig, Plugin } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { createServer } from "./server";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -11,6 +10,18 @@ export default defineConfig(({ mode }) => ({
     fs: {
       allow: ["./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
+    },
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/health": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   build: {
@@ -78,7 +89,6 @@ export default defineConfig(({ mode }) => ({
       // Enable Fast Refresh
       fast: true,
     }),
-    expressPlugin(),
   ],
   resolve: {
     alias: {
@@ -103,20 +113,3 @@ export default defineConfig(({ mode }) => ({
     logOverride: { "this-is-undefined-in-esm": "silent" },
   },
 }));
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
-    configureServer(server) {
-      createServer()
-        .then((app) => {
-          // Add Express app as middleware to Vite dev server
-          server.middlewares.use(app);
-        })
-        .catch((err) => {
-          console.error("Failed to create server:", err);
-        });
-    },
-  };
-}
