@@ -259,14 +259,13 @@ export const supabaseServerHelpers = {
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
-    const guestUserId = "00000000-0000-0000-0000-000000000000"; // Special guest user ID
-
+    // For guest bookings, we identify them by PNR and contact email match
+    // Since we're using admin user ID, we can't filter by user_id
     return await supabase
       .from("bookings")
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .eq("user_id", guestUserId) // Guest bookings use special guest user ID
       .single();
   },
 
