@@ -59,6 +59,7 @@ class ServiceLogger {
       const response = await fetch("/api/health/database");
       if (response.ok) {
         const data = await response.json();
+        // Corrected the access to data.overall.status
         return {
           status: data.overall.status === "healthy" ? "working" : "error",
           message: data.overall.status === "healthy" ? "Database health check completed" : "Database issues detected",
