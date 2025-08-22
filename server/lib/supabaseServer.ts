@@ -203,9 +203,9 @@ export const supabaseServerHelpers = {
       const pnr = this.generatePNR();
       console.log("✅ Generated PNR:", pnr);
 
-      console.log("🔄 Ensuring guest user exists...");
-      const guestUserId = await this.ensureGuestUser();
-      console.log("✅ Guest user ID:", guestUserId);
+      console.log("🔄 Getting admin user for guest booking...");
+      const guestUserId = await this.getGuestUserId();
+      console.log("✅ Using user ID for guest booking:", guestUserId);
 
       // Extract only the fields that exist in the database schema
       const {
