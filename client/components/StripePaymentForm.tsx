@@ -49,21 +49,48 @@ export default function StripePaymentForm({
         console.warn("Stripe in demo mode - using simulated payment flow");
         // Create payment intent anyway (server returns demo clientSecret)
         try {
-          const intentResponse = await fetch(
-            "/api/payments/stripe/create-intent",
-            {
+          // Demo mode - check if this is a guest booking
+          const authToken = localStorage.getItem("token");
+          const isGuestBooking = !authToken || authToken === "null" || authToken === "undefined";
+
+          let intentResponse;
+          if (isGuestBooking) {
+            // For guest bookings in demo mode
+            const currentBooking = localStorage.getItem("currentBooking");
+            const bookingData = currentBooking ? JSON.parse(currentBooking) : null;
+
+            if (!bookingData || !bookingData.pnr) {
+              throw new Error("Guest booking data not found for demo payment.");
+            }
+
+            intentResponse = await fetch("/api/guest/payments/stripe/create-intent", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({
+                amount: Math.round(amount * 100),
+                currency: currency.toLowerCase(),
+                bookingId: bookingId,
+                pnr: bookingData.pnr,
+                contactEmail: bookingData.contactEmail || bookingData.contact_email,
+              }),
+            });
+          } else {
+            // For authenticated users in demo mode
+            intentResponse = await fetch("/api/payments/stripe/create-intent", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
               },
               body: JSON.stringify({
                 amount: Math.round(amount * 100),
                 currency: currency.toLowerCase(),
                 bookingId: bookingId,
               }),
-            },
-          );
+            });
+          }
 
           const intentData = await intentResponse.json();
           if (intentData.success) {
