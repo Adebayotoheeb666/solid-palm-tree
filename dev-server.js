@@ -5,14 +5,14 @@
  * Runs on port 3001 to work with Vite proxy
  */
 
-import { createServer } from "./server/index.js";
+import { createServer } from "./server/index.ts";
 
 const PORT = process.env.API_PORT || 3001;
 
 async function startDevServer() {
   try {
     const app = await createServer();
-    
+
     app.listen(PORT, () => {
       console.log(`🚀 API Server running on port ${PORT}`);
       console.log(`🔧 API: http://localhost:${PORT}/api`);
