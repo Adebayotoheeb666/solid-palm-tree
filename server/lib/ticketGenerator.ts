@@ -277,30 +277,43 @@ export class TicketGenerator {
         // Generate QR Code for ticket verification
         const ticketViewUrl = `${process.env.CLIENT_URL || "https://onboardticket.com"}/guest-booking-lookup?pnr=${ticketData.pnr}&email=${encodeURIComponent(ticketData.contactEmail || ticketData.customerName)}`;
 
-        try {
-          // Generate QR code as data URL
-          const qrCodeDataUrl = await QRCode.toDataURL(ticketViewUrl, {
-            width: 60,
-            margin: 1,
-            color: {
-              dark: primaryColor,
-              light: '#FFFFFF'
-            }
-          });
+        // Generate QR code synchronously for PDF embedding
+        QRCode.toDataURL(ticketViewUrl, {
+          width: 60,
+          margin: 1,
+          color: {
+            dark: primaryColor,
+            light: '#FFFFFF'
+          }
+        }).then((qrCodeDataUrl) => {
+          try {
+            // Convert data URL to buffer for PDF
+            const qrCodeBuffer = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
 
-          // Convert data URL to buffer for PDF
-          const qrCodeBuffer = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
+            // Add QR code to PDF
+            doc.image(qrCodeBuffer, 480, 180, { width: 60, height: 60 });
 
-          // Add QR code to PDF
-          doc.image(qrCodeBuffer, 480, 180, { width: 60, height: 60 });
+            // Add label below QR code
+            doc
+              .fontSize(8)
+              .fillColor(textColor)
+              .text("Scan to view", 485, 245, { width: 50, align: 'center' })
+              .text("ticket details", 485, 255, { width: 50, align: 'center' });
+          } catch (qrError) {
+            console.error("❌ Error embedding QR code:", qrError);
+            // Add fallback text
+            doc
+              .rect(480, 180, 60, 60)
+              .stroke(primaryColor)
+              .fontSize(8)
+              .fillColor(textColor)
+              .text("QR CODE", 485, 205, { width: 50, align: 'center' })
+              .text("ERROR", 485, 215, { width: 50, align: 'center' });
+          }
 
-          // Add label below QR code
-          doc
-            .fontSize(8)
-            .fillColor(textColor)
-            .text("Scan to view", 485, 245, { width: 50, align: 'center' })
-            .text("ticket details", 485, 255, { width: 50, align: 'center' });
-        } catch (qrError) {
+          // Finalize PDF after QR code is added
+          doc.end();
+        }).catch((qrError) => {
           console.error("❌ Error generating QR code:", qrError);
           // Fallback to text if QR generation fails
           doc
@@ -310,7 +323,10 @@ export class TicketGenerator {
             .fillColor(textColor)
             .text("QR CODE", 485, 205, { width: 50, align: 'center' })
             .text("ERROR", 485, 215, { width: 50, align: 'center' });
-        }
+
+          // Finalize PDF even if QR code fails
+          doc.end();
+        });
 
         // Finalize PDF
         doc.end();
