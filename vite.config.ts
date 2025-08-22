@@ -90,7 +90,6 @@ export default defineConfig(({ mode }) => ({
       // Enable Fast Refresh
       fast: true,
     }),
-    expressPlugin(),
   ],
   resolve: {
     alias: {
