@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
+import QRCode from "qrcode";
 
 export interface TicketData {
   pnr: string;
