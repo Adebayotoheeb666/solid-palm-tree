@@ -118,7 +118,7 @@ export default function Confirmation({
       ? parseFloat(bookingData.selectedFlight.price.total)
       : 15;
 
-  // Handle booking creation
+  // Handle booking creation (simplified for guest checkout)
   const handleCreateBooking = async () => {
     if (!acceptTerms) {
       setError("Please accept the terms and conditions to continue.");
@@ -132,8 +132,6 @@ export default function Confirmation({
       return;
     }
 
-    // Note: Removed authentication check to support guest checkout
-
     setLoading(true);
     setError("");
 
@@ -145,29 +143,17 @@ export default function Confirmation({
         termsAccepted: acceptTerms,
         selectedFlight: bookingData.selectedFlight || null,
         totalAmount: totalAmount,
+        guestCheckout: true, // Always use guest checkout for simplicity
       };
 
       console.log("Creating booking:", bookingRequest);
 
-      // Choose API endpoint based on authentication status
-      const apiEndpoint = isAuthenticated
-        ? "/api/bookings"
-        : "/api/guest/bookings";
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      // Add authorization header only for authenticated users
-      if (isAuthenticated) {
-        headers.Authorization = `Bearer ${localStorage.getItem("authToken")}`;
-      } else {
-        // For guest bookings, add guest checkout flag
-        (bookingRequest as any).guestCheckout = true;
-      }
-
-      const response = await fetch(apiEndpoint, {
+      // Always use guest booking endpoint for simplicity
+      const response = await fetch("/api/guest/bookings", {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(bookingRequest),
       });
 
