@@ -17,7 +17,7 @@ export class DatabaseInitializer {
       // Test basic connection first
       const { data: testData, error: testError } = await supabase
         .from('users')
-        .select('count(*)', { count: 'exact' })
+        .select('*', { count: 'exact' })
         .limit(1);
 
       if (testError) {
