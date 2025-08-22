@@ -11,8 +11,8 @@
     ]
   },
   "scripts": {
-    "dev": "concurrently \"node dev-server.js\" \"vite\" --names \"API,VITE\" --prefix-colors \"blue,green\"",
-    "dev:api": "node dev-server.js",
+    "dev": "concurrently \"tsx dev-server.js\" \"vite\" --names \"API,VITE\" --prefix-colors \"blue,green\"",
+    "dev:api": "tsx dev-server.js",
     "dev:client": "vite",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",
@@ -92,7 +92,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
-    "concurrently": "^9.2.0",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
