@@ -30,7 +30,7 @@ export class DatabaseInitializer {
       // Check if airports table exists and has data
       const { data: airportsData, error: airportsError } = await supabase
         .from('airports')
-        .select('count(*)', { count: 'exact' });
+        .select('*', { count: 'exact' });
 
       if (airportsError) {
         console.log('⚠️ Airports table not found, it may need to be created');
