@@ -46,9 +46,6 @@ export class DatabaseInitializer {
       // Try to create admin user if it doesn't exist
       await this.ensureAdminUser();
 
-      // Try to create guest user if it doesn't exist
-      await this.ensureGuestUser();
-
       this.initialized = true;
       console.log('✅ Database initialization complete');
       return true;
