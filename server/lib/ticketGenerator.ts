@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 export interface TicketData {
   pnr: string;
   customerName: string;
+  contactEmail: string;
   route: {
     from: string;
     to: string;
