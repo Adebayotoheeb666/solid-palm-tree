@@ -358,6 +358,7 @@ export class TicketGenerator {
     const ticketData: TicketData = {
       pnr: bookingData.pnr,
       customerName: bookingData.contactEmail, // Using email as customer identifier
+      contactEmail: bookingData.contactEmail,
       route: {
         from: bookingData.route.from,
         to: bookingData.route.to,
