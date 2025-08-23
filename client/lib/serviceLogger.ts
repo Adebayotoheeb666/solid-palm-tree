@@ -119,7 +119,7 @@ class ServiceLogger {
         method: "GET",
         headers: { "Content-Type": "application/json" }
       });
-      
+
       if (response.ok) {
         const config = await response.json();
         if (config.publishableKey) {
@@ -129,12 +129,12 @@ class ServiceLogger {
           };
         }
       }
-      
+
       // Fallback: Check if Stripe is loaded in window
       if (typeof window !== "undefined" && (window as any).Stripe) {
         return { status: "working", message: "Stripe client loaded" };
       }
-      
+
       return { 
         status: "error", 
         message: "Stripe payment service not configured or loaded" 

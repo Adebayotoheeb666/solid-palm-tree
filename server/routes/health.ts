@@ -44,7 +44,7 @@ export const handleHealthCheck: RequestHandler = async (req, res) => {
 
     // Update overall status
     health.overall.status = health.status;
-    
+
     // Set appropriate status code
     const statusCode =
       health.status === "healthy"
