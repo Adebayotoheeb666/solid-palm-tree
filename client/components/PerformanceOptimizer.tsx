@@ -80,8 +80,8 @@ const PerformanceOptimizer: React.FC = () => {
     if ("performance" in window && "PerformanceObserver" in window) {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          // Log long tasks (> 50ms)
-          if (entry.entryType === "longtask" && entry.duration > 50) {
+          // Log long tasks (> 100ms) - reduced sensitivity
+          if (entry.entryType === "longtask" && entry.duration > 100) {
             console.warn("Long task detected:", entry.duration + "ms");
           }
 
@@ -91,6 +91,11 @@ const PerformanceOptimizer: React.FC = () => {
           }
         }
       });
+
+      // Cleanup observer on unmount
+      return () => {
+        observer.disconnect();
+      };
 
       try {
         observer.observe({ entryTypes: ["longtask", "layout-shift"] });

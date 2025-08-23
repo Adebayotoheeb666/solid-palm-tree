@@ -216,13 +216,16 @@ class ServiceLogger {
   }
 
   private startLogging() {
-    // Log service status every 5 minutes to reduce performance impact
+    // Log service status every 10 minutes to minimize performance impact
     this.logInterval = setInterval(() => {
-      this.logServiceStatus();
-    }, 300000);
+      // Only log if tab is visible to reduce background processing
+      if (document.visibilityState === 'visible') {
+        this.logServiceStatus();
+      }
+    }, 600000);
 
     // Log after initial services are checked (delayed longer)
-    setTimeout(() => this.logServiceStatus(), 5000);
+    setTimeout(() => this.logServiceStatus(), 8000);
   }
 
   public logServiceStatus() {
