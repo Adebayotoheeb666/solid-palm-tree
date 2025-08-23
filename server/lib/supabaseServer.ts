@@ -109,7 +109,10 @@ export const supabaseServerHelpers = {
       .single();
 
     if (adminError || !adminUser) {
-      console.error("Admin user not found, trying without user_id:", adminError);
+      console.error(
+        "Admin user not found, trying without user_id:",
+        adminError,
+      );
       // Last resort: try without user_id
       insertData.user_id = null;
     } else {
