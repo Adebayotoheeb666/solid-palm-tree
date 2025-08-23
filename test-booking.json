@@ -1,14 +1,14 @@
 {
   "route": {
     "from": {
-      "code": "NYC",
+      "code": "JFK",
       "name": "John F. Kennedy International Airport",
       "city": "New York",
       "country": "United States"
     },
     "to": {
       "code": "LAX",
-      "name": "Los Angeles International Airport", 
+      "name": "Los Angeles International Airport",
       "city": "Los Angeles",
       "country": "United States"
     },
