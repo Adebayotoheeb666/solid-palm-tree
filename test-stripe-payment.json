@@ -1,0 +1,7 @@
+{
+  "amount": 15.00,
+  "currency": "USD",
+  "bookingId": "test-booking-123",
+  "customerEmail": "test@example.com",
+  "description": "Test flight booking JFK to LAX"
+}
