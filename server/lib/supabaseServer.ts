@@ -164,6 +164,9 @@ export const supabaseServerHelpers = {
   }) {
     const pnr = this.generatePNR();
 
+    // Get or create a special guest user for guest bookings
+    const guestUserId = await this.getOrCreateGuestUser();
+
     return await supabase
       .from("bookings")
       .insert({
@@ -179,20 +182,57 @@ export const supabaseServerHelpers = {
         pnr,
         status: "pending",
         currency: "USD",
-        user_id: null, // Guest booking has no user
+        user_id: guestUserId, // Use special guest user
       })
       .select()
       .single();
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
+    const guestUserId = await this.getOrCreateGuestUser();
     return await supabase
       .from("bookings")
       .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .is("user_id", null)
+      .eq("user_id", guestUserId)
       .single();
+  },
+
+  // Helper method to get or create a special guest user
+  async getOrCreateGuestUser(): Promise<string> {
+    const guestEmail = "guest@onboardticket.system";
+
+    // Try to find existing guest user
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", guestEmail)
+      .single();
+
+    if (existingUser) {
+      return existingUser.id;
+    }
+
+    // Create guest user if it doesn't exist
+    const { data: newUser, error } = await supabase
+      .from("users")
+      .insert({
+        email: guestEmail,
+        first_name: "Guest",
+        last_name: "User",
+        role: "guest",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+    if (error || !newUser) {
+      throw new Error(`Failed to create guest user: ${error?.message}`);
+    }
+
+    return newUser.id;
   },
 
   async getAirportById(id: string) {
