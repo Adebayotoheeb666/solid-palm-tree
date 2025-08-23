@@ -49,22 +49,22 @@ const TicketSample = React.lazy(() => import("./pages/TicketSample"));
 const queryClient = new QueryClient();
 
 // Service Status Monitor Component
-const ServiceStatusMonitor: React.FC = () => {
-  useServiceStatus({
-    enablePeriodicChecking: true,
-    checkIntervalMinutes: 10,
-    checkOnMount: true,
-  });
+// const ServiceStatusMonitor: React.FC = () => {
+//   useServiceStatus({
+//     enablePeriodicChecking: true,
+//     checkIntervalMinutes: 10,
+//     checkOnMount: true,
+//   });
 
-  return null; // This component doesn't render anything
-};
+//   return null; // This component doesn't render anything
+// };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
         <NotificationProvider>
-          <ServiceStatusMonitor />
+          {/* <ServiceStatusMonitor /> */}
           <PerformanceOptimizer />
           <Toaster />
           <Sonner />
@@ -77,8 +77,8 @@ const App = () => (
             <DashboardButton />
             <Suspense
               fallback={
-                <div className="w-full h-screen flex items-center justify-center text-lg">
-                  Loading...
+                <div className="flex h-screen items-center justify-center">
+                  <div className="text-lg">Loading...</div>
                 </div>
               }
             >

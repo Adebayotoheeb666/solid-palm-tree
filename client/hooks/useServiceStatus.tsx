@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import serviceLogger from '../lib/serviceLogger';
+import { useState } from 'react';
 
 interface ServiceStatusHookOptions {
   enablePeriodicChecking?: boolean;
@@ -14,39 +13,16 @@ interface ServiceStatusHookReturn {
 }
 
 /**
- * React hook for monitoring and logging external services status
+ * Simplified service status hook (monitoring removed to prevent performance issues)
  */
 export function useServiceStatus(options: ServiceStatusHookOptions = {}): ServiceStatusHookReturn {
-  const {
-    enablePeriodicChecking = true,
-    checkIntervalMinutes = 10,
-    checkOnMount = true,
-  } = options;
-
   const [isChecking, setIsChecking] = useState(false);
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
-
-  useEffect(() => {
-    if (checkOnMount) {
-      // Initial check on mount
-      handleServiceCheck();
-    }
-
-    // Periodic checking is handled by serviceLogger automatically
-
-    // Log startup information
-    console.log('%c🚀 OnboardTicket Service Monitor Started', 'color: #3B82F6; font-size: 14px; font-weight: bold;');
-    console.log('Use serviceStatusLogger.manualCheck() to trigger manual checks');
-
-    return () => {
-      // Cleanup if needed
-    };
-  }, [enablePeriodicChecking, checkIntervalMinutes, checkOnMount]);
 
   const handleServiceCheck = async (): Promise<void> => {
     setIsChecking(true);
     try {
-      serviceLogger.recheckServices();
+      // Service monitoring disabled
       setLastCheckTime(new Date());
     } catch (error) {
       console.error('Service check failed:', error);
