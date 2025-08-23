@@ -103,9 +103,14 @@ export const supabaseServerHelpers = {
     console.log("Creating guest user for booking...");
     const guestEmail = `guest+${Date.now()}@onboardticket.com`;
 
+    // Generate UUID manually since the database default might not be working
+    const { randomUUID } = await import('crypto');
+    const guestUserId = randomUUID();
+
     const { data: guestUser, error: userError } = await supabase
       .from("users")
       .insert({
+        id: guestUserId,
         email: guestEmail,
         first_name: "Guest",
         last_name: "User",
