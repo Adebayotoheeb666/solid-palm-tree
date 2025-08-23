@@ -214,10 +214,15 @@ export const supabaseServerHelpers = {
       return existingUser.id;
     }
 
-    // Create guest user if it doesn't exist - let database generate the UUID
+    // Generate UUID for guest user
+    const crypto = await import('crypto');
+    const guestId = crypto.randomUUID();
+
+    // Create guest user if it doesn't exist
     const { data: newUser, error } = await supabase
       .from("users")
       .insert({
+        id: guestId,
         email: guestEmail,
         first_name: "Guest",
         last_name: "User",
