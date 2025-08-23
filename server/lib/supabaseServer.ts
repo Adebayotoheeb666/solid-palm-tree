@@ -199,20 +199,8 @@ export const supabaseServerHelpers = {
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
-    // First try to find by is_guest flag if it exists
-    const { data, error } = await supabase
-      .from("bookings")
-      .select("*")
-      .eq("pnr", pnr)
-      .eq("contact_email", email)
-      .eq("is_guest", true)
-      .single();
-
-    if (data) {
-      return { data, error: null };
-    }
-
-    // Fallback: try to find by null user_id (for older guest bookings)
+    // Find guest bookings by PNR and email
+    // Guest bookings are identified by having user_id as null
     return await supabase
       .from("bookings")
       .select("*")
