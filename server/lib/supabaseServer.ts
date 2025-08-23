@@ -82,25 +82,63 @@ export const supabaseServerHelpers = {
   }) {
       const pnr = this.generatePNR();
 
-      return await supabase
-          .from("bookings")
-          .insert({
-              from_airport_id: bookingData.from_airport_id,
-              to_airport_id: bookingData.to_airport_id,
-              departure_date: bookingData.departure_date,
-              return_date: bookingData.return_date,
-              trip_type: bookingData.trip_type,
-              total_amount: bookingData.total_amount,
-              contact_email: bookingData.contact_email,
-              contact_phone: bookingData.contact_phone,
-              terms_accepted: bookingData.terms_accepted,
-              pnr,
-              status: "pending",
-              currency: "USD",
-              user_id: null, // Guest booking has no user
-          })
-          .select()
-          .single();
+      // For guest bookings, we'll create a special guest user or handle the constraint
+      // First, let's try to create the booking with is_guest flag
+      const insertData: any = {
+          from_airport_id: bookingData.from_airport_id,
+          to_airport_id: bookingData.to_airport_id,
+          departure_date: bookingData.departure_date,
+          return_date: bookingData.return_date,
+          trip_type: bookingData.trip_type,
+          total_amount: bookingData.total_amount,
+          contact_email: bookingData.contact_email,
+          contact_phone: bookingData.contact_phone,
+          terms_accepted: bookingData.terms_accepted,
+          pnr,
+          status: "pending",
+          currency: "USD",
+          is_guest: true
+      };
+
+      // Try without user_id first (if database allows NULL)
+      try {
+          return await supabase
+              .from("bookings")
+              .insert(insertData)
+              .select()
+              .single();
+      } catch (error: any) {
+          // If user_id constraint fails, try creating/using a guest user
+          if (error?.code === '23502' && error?.message?.includes('user_id')) {
+              console.log('Creating guest user for booking...');
+
+              // Create or get a special guest user
+              const guestEmail = `guest+${Date.now()}@onboardticket.com`;
+              const { data: guestUser, error: userError } = await supabase
+                  .from("users")
+                  .insert({
+                      email: guestEmail,
+                      first_name: "Guest",
+                      last_name: "User",
+                      title: "Mr"
+                  })
+                  .select()
+                  .single();
+
+              if (userError || !guestUser) {
+                  throw new Error(`Failed to create guest user: ${userError?.message}`);
+              }
+
+              // Now insert booking with guest user ID
+              insertData.user_id = guestUser.id;
+              return await supabase
+                  .from("bookings")
+                  .insert(insertData)
+                  .select()
+                  .single();
+          }
+          throw error;
+      }
   },
 
   async getUserBookings(userId: string) {
