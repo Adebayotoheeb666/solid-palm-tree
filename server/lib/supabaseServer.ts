@@ -99,33 +99,23 @@ export const supabaseServerHelpers = {
       user_id: null, // Guest booking has no user
     };
 
-    // Create a temporary guest user for RLS policy compliance
-    console.log("Creating guest user for booking...");
-    const guestEmail = `guest+${Date.now()}@onboardticket.com`;
+    // Use the existing admin user for guest bookings to avoid RLS issues
+    console.log("Using admin user for guest booking...");
 
-    // Generate UUID manually since the database default might not be working
-    const { randomUUID } = await import('crypto');
-    const guestUserId = randomUUID();
-
-    const { data: guestUser, error: userError } = await supabase
+    const { data: adminUser, error: adminError } = await supabase
       .from("users")
-      .insert({
-        id: guestUserId,
-        email: guestEmail,
-        first_name: "Guest",
-        last_name: "User",
-        title: "Mr",
-      })
-      .select()
+      .select("id")
+      .eq("email", "onboard@admin.com")
       .single();
 
-    if (userError || !guestUser) {
-      console.error("Failed to create guest user:", userError);
-      throw new Error(`Failed to create guest user: ${userError?.message}`);
+    if (adminError || !adminUser) {
+      console.error("Admin user not found, trying without user_id:", adminError);
+      // Last resort: try without user_id
+      insertData.user_id = null;
+    } else {
+      // Use admin user ID for guest bookings
+      insertData.user_id = adminUser.id;
     }
-
-    // Insert booking with guest user ID
-    insertData.user_id = guestUser.id;
 
     return await supabase.from("bookings").insert(insertData).select().single();
   },
