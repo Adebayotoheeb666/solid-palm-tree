@@ -161,41 +161,6 @@ export const supabaseServerHelpers = {
     return result;
   },
 
-  // Guest booking operations
-  async createGuestBooking(bookingData: {
-    from_airport_id: string;
-    to_airport_id: string;
-    departure_date: string;
-    return_date?: string | null;
-    trip_type: string;
-    total_amount: number;
-    contact_email: string;
-    contact_phone?: string | null;
-    terms_accepted: boolean;
-  }) {
-    const pnr = this.generatePNR();
-
-    return await supabase
-      .from("bookings")
-      .insert({
-        from_airport_id: bookingData.from_airport_id,
-        to_airport_id: bookingData.to_airport_id,
-        departure_date: bookingData.departure_date,
-        return_date: bookingData.return_date,
-        trip_type: bookingData.trip_type,
-        total_amount: bookingData.total_amount,
-        contact_email: bookingData.contact_email,
-        contact_phone: bookingData.contact_phone,
-        terms_accepted: bookingData.terms_accepted,
-        pnr,
-        status: "pending",
-        currency: "USD",
-        user_id: null, // Guest booking has no user
-      })
-      .select()
-      .single();
-  },
-
   async getGuestBookingByPNR(pnr: string, email: string) {
     return await supabase
       .from("bookings")
