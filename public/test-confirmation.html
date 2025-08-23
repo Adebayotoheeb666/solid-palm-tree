@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .success {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #17a2b8;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Booking Confirmation Test</h1>
+        <p>This page sets up test booking data and simulates the booking creation process.</p>
+        
+        <div id="status"></div>
+        
+        <button class="test-button" onclick="setupTestData()">Setup Test Booking Data</button>
+        <button class="test-button" onclick="testBookingAPI()">Test Booking Creation</button>
+        <button class="test-button" onclick="navigateToConfirmation()">Go to Confirmation Page</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function setupTestData() {
+            // Setup test route data
+            const testRoute = {
+                from: {
+                    code: "LAX",
+                    name: "Los Angeles International Airport",
+                    city: "Los Angeles",
+                    country: "United States"
+                },
+                to: {
+                    code: "JFK",
+                    name: "John F. Kennedy International Airport",
+                    city: "New York",
+                    country: "United States"
+                },
+                departureDate: "2024-02-15",
+                tripType: "oneway"
+            };
+
+            // Setup test passenger data
+            const testPassengers = [{
+                title: "Mr",
+                firstName: "Test",
+                lastName: "User",
+                email: "test@example.com"
+            }];
+
+            const contactEmail = "test@example.com";
+
+            // Store in localStorage (same keys used by the app)
+            localStorage.setItem('selectedRoute', JSON.stringify(testRoute));
+            localStorage.setItem('bookingRoute', JSON.stringify(testRoute));
+            localStorage.setItem('bookingPassengers', JSON.stringify(testPassengers));
+            localStorage.setItem('bookingContactEmail', contactEmail);
+
+            logSuccess('✅ Test booking data setup complete!');
+            logInfo('Route: LAX → JFK (One-way)');
+            logInfo('Passenger: Mr Test User (test@example.com)');
+            logInfo('Contact: test@example.com');
+        }
+
+        async function testBookingAPI() {
+            const testBooking = {
+                route: {
+                    from: {
+                        code: "LAX",
+                        name: "Los Angeles International Airport",
+                        city: "Los Angeles",
+                        country: "United States"
+                    },
+                    to: {
+                        code: "JFK",
+                        name: "John F. Kennedy International Airport",
+                        city: "New York",
+                        country: "United States"
+                    },
+                    departureDate: "2024-02-15",
+                    tripType: "oneway"
+                },
+                passengers: [{
+                    title: "Mr",
+                    firstName: "Test",
+                    lastName: "User",
+                    email: "test@example.com"
+                }],
+                contactEmail: "test@example.com",
+                termsAccepted: true,
+                guestCheckout: true
+            };
+
+            try {
+                logInfo('🔄 Testing booking API...');
+                
+                const response = await fetch('/api/guest/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testBooking)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logSuccess('✅ Booking API test PASSED!');
+                    logSuccess('Booking ID: ' + result.booking.id);
+                    logSuccess('PNR: ' + result.booking.pnr);
+                    
+                    // Store the successful booking
+                    localStorage.setItem('currentBookingId', result.booking.id);
+                    localStorage.setItem('currentBooking', JSON.stringify(result.booking));
+                } else {
+                    logError('❌ Booking API test FAILED');
+                    logError('Error: ' + result.message);
+                    if (result.errors) {
+                        result.errors.forEach(error => logError('- ' + error));
+                    }
+                }
+            } catch (error) {
+                logError('❌ Booking API ERROR: ' + error.message);
+            }
+        }
+
+        function navigateToConfirmation() {
+            logInfo('🔄 Navigating to confirmation page...');
+            window.location.href = '/userform/confirmation';
+        }
+
+        function logSuccess(message) {
+            const div = document.createElement('div');
+            div.className = 'success';
+            div.textContent = message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        function logError(message) {
+            const div = document.createElement('div');
+            div.className = 'error';
+            div.textContent = message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        function logInfo(message) {
+            const div = document.createElement('div');
+            div.className = 'info';
+            div.textContent = message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        // Auto-setup on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            logInfo('Booking test page loaded');
+            logInfo('Click "Setup Test Booking Data" to prepare test data');
+            logInfo('Then click "Test Booking Creation" to test the API');
+        });
+    </script>
+</body>
+</html>
