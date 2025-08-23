@@ -1,7 +1,0 @@
-{
-  "amount": 15.00,
-  "currency": "USD",
-  "bookingId": "e4ba24d6-36a2-42bd-85e6-59cdbeb3e0aa",
-  "customerEmail": "test@example.com",
-  "description": "Test flight booking JFK to LAX"
-}
