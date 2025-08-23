@@ -221,7 +221,6 @@ export const supabaseServerHelpers = {
         email: guestEmail,
         first_name: "Guest",
         last_name: "User",
-        role: "guest",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
