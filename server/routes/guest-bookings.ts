@@ -95,8 +95,12 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
       await supabaseServerHelpers.createGuestBooking({
         from_airport_id: fromAirport.id,
         to_airport_id: toAirport.id,
-        departure_date: new Date(bookingData.route.departureDate).toISOString().split('T')[0], // Ensure proper date format
-        return_date: bookingData.route.returnDate ? new Date(bookingData.route.returnDate).toISOString().split('T')[0] : null,
+        departure_date: new Date(bookingData.route.departureDate)
+          .toISOString()
+          .split("T")[0], // Ensure proper date format
+        return_date: bookingData.route.returnDate
+          ? new Date(bookingData.route.returnDate).toISOString().split("T")[0]
+          : null,
         trip_type: bookingData.route.tripType,
         base_amount: totalAmount, // Set base amount
         fees_amount: 0, // Add fees amount
