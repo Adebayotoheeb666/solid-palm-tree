@@ -68,28 +68,39 @@ export const supabaseServerHelpers = {
     return await supabase.from("users").select("*").eq("email", email).single();
   },
 
-  // Booking operations
-  async createBooking(
-    bookingData: Database["public"]["Tables"]["bookings"]["Insert"],
-  ) {
-    return await supabase
-      .from("bookings")
-      .insert(bookingData)
-      .select(
-        `
-        *,
-        from_airport:airports!from_airport_id(*),
-        to_airport:airports!to_airport_id(*),
-        passengers(*)
-      `,
-      )
-      .single();
-  },
+  // Guest booking operations
+  async createGuestBooking(bookingData: {
+      from_airport_id: string;
+      to_airport_id: string;
+      departure_date: string;
+      return_date?: string | null;
+      trip_type: string;
+      total_amount: number;
+      contact_email: string;
+      contact_phone?: string | null;
+      terms_accepted: boolean;
+  }) {
+      const pnr = this.generatePNR();
 
-  async addPassengers(
-    passengers: Database["public"]["Tables"]["passengers"]["Insert"][],
-  ) {
-    return await supabase.from("passengers").insert(passengers).select();
+      return await supabase
+          .from("bookings")
+          .insert({
+              from_airport_id: bookingData.from_airport_id,
+              to_airport_id: bookingData.to_airport_id,
+              departure_date: bookingData.departure_date,
+              return_date: bookingData.return_date,
+              trip_type: bookingData.trip_type,
+              total_amount: bookingData.total_amount,
+              contact_email: bookingData.contact_email,
+              contact_phone: bookingData.contact_phone,
+              terms_accepted: bookingData.terms_accepted,
+              pnr,
+              status: "pending",
+              currency: "USD",
+              user_id: null, // Guest booking has no user
+          })
+          .select()
+          .single();
   },
 
   async getUserBookings(userId: string) {
