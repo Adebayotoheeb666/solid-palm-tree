@@ -199,44 +199,24 @@ export const supabaseServerHelpers = {
       .single();
   },
 
-  // Helper method to get or create a special guest user
+  // Helper method to get admin user for guest bookings
   async getOrCreateGuestUser(): Promise<string> {
-    const guestEmail = "guest@onboardticket.system";
+    // For simplicity, use the admin user for guest bookings
+    const adminEmail = "onboard@admin.com";
 
-    // Try to find existing guest user
-    const { data: existingUser } = await supabase
+    // Find existing admin user
+    const { data: adminUser } = await supabase
       .from("users")
       .select("id")
-      .eq("email", guestEmail)
+      .eq("email", adminEmail)
       .single();
 
-    if (existingUser) {
-      return existingUser.id;
+    if (adminUser) {
+      return adminUser.id;
     }
 
-    // Generate UUID for guest user
-    const crypto = await import('crypto');
-    const guestId = crypto.randomUUID();
-
-    // Create guest user if it doesn't exist
-    const { data: newUser, error } = await supabase
-      .from("users")
-      .insert({
-        id: guestId,
-        email: guestEmail,
-        first_name: "Guest",
-        last_name: "User",
-        title: "Mr",
-        status: "active",
-      })
-      .select("id")
-      .single();
-
-    if (error || !newUser) {
-      throw new Error(`Failed to create guest user: ${error?.message}`);
-    }
-
-    return newUser.id;
+    // If no admin user found, throw error
+    throw new Error("Admin user not found for guest bookings");
   },
 
   async getAirportById(id: string) {
