@@ -77,11 +77,12 @@ export interface BookingRequest {
   termsAccepted: boolean;
   selectedFlight?: FlightOffer | null;
   totalAmount?: number;
+  guestCheckout?: boolean;
 }
 
 export interface Booking {
   id: string;
-  userId: string;
+  userId: string | null;
   pnr: string;
   status: "pending" | "confirmed" | "cancelled" | "expired";
   route: FlightRoute;
@@ -93,6 +94,7 @@ export interface Booking {
   ticketUrl?: string;
   selectedFlight?: FlightOffer | null;
   basePrice?: number;
+  isGuest?: boolean;
 }
 
 export interface BookingResponse {
