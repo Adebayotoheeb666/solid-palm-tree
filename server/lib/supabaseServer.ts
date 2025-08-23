@@ -158,6 +158,7 @@ export const supabaseServerHelpers = {
     return_date?: string | null;
     trip_type: string;
     base_amount: number;
+    fees_amount: number;
     total_amount: number;
     contact_email: string;
     contact_phone?: string | null;
@@ -177,6 +178,7 @@ export const supabaseServerHelpers = {
         return_date: bookingData.return_date,
         trip_type: bookingData.trip_type,
         base_amount: bookingData.base_amount,
+        fees_amount: bookingData.fees_amount,
         total_amount: bookingData.total_amount,
         contact_email: bookingData.contact_email,
         contact_phone: bookingData.contact_phone,
