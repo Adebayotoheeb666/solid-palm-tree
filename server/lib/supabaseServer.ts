@@ -83,7 +83,6 @@ export const supabaseServerHelpers = {
       const pnr = this.generatePNR();
 
       // For guest bookings, we'll create a special guest user or handle the constraint
-      // First, let's try to create the booking with is_guest flag
       const insertData: any = {
           from_airport_id: bookingData.from_airport_id,
           to_airport_id: bookingData.to_airport_id,
@@ -97,7 +96,7 @@ export const supabaseServerHelpers = {
           pnr,
           status: "pending",
           currency: "USD",
-          is_guest: true
+          user_id: null // Guest booking has no user
       };
 
       // Try without user_id first (if database allows NULL)
