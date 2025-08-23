@@ -216,10 +216,10 @@ class ServiceLogger {
   }
 
   private startLogging() {
-    // Log service status every 2 minutes to reduce performance impact
+    // Log service status every 5 minutes to reduce performance impact
     this.logInterval = setInterval(() => {
       this.logServiceStatus();
-    }, 120000);
+    }, 300000);
 
     // Log after initial services are checked (delayed longer)
     setTimeout(() => this.logServiceStatus(), 5000);

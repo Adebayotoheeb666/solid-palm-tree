@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import serviceStatusLogger from '../lib/serviceStatusLogger';
+import serviceLogger from '../lib/serviceLogger';
 
 interface ServiceStatusHookOptions {
   enablePeriodicChecking?: boolean;
@@ -32,10 +32,7 @@ export function useServiceStatus(options: ServiceStatusHookOptions = {}): Servic
       handleServiceCheck();
     }
 
-    if (enablePeriodicChecking) {
-      // Start periodic checking
-      serviceStatusLogger.startPeriodicChecking(checkIntervalMinutes);
-    }
+    // Periodic checking is handled by serviceLogger automatically
 
     // Log startup information
     console.log('%c🚀 OnboardTicket Service Monitor Started', 'color: #3B82F6; font-size: 14px; font-weight: bold;');
@@ -49,8 +46,8 @@ export function useServiceStatus(options: ServiceStatusHookOptions = {}): Servic
   const handleServiceCheck = async (): Promise<void> => {
     setIsChecking(true);
     try {
-      await serviceStatusLogger.checkAndLogServices();
-      setLastCheckTime(serviceStatusLogger.getLastCheckTime());
+      serviceLogger.recheckServices();
+      setLastCheckTime(new Date());
     } catch (error) {
       console.error('Service check failed:', error);
     } finally {

@@ -6,7 +6,7 @@ async function checkServices() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
-    const response = await fetch('http://localhost:5000/api/services', {
+    const response = await fetch('http://localhost:8080/api/services', {
       signal: controller.signal
     });
     clearTimeout(timeoutId);

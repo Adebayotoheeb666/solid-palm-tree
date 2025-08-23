@@ -9,6 +9,9 @@ export const handleHealthCheck: RequestHandler = async (req, res) => {
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
     version: process.env.npm_package_version || "unknown",
+    overall: {
+      status: "healthy"
+    },
     services: {
       database: "unknown",
       supabase: "unknown",
@@ -39,6 +42,9 @@ export const handleHealthCheck: RequestHandler = async (req, res) => {
     // Calculate response time
     health.responseTime = Date.now() - startTime;
 
+    // Update overall status
+    health.overall.status = health.status;
+    
     // Set appropriate status code
     const statusCode =
       health.status === "healthy"
