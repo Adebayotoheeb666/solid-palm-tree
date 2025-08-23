@@ -188,15 +188,31 @@ export const supabaseServerHelpers = {
   },
 
   async getGuestBookingByPNR(pnr: string, email: string) {
-    // Find guest bookings by PNR and email
-    // Guest bookings are identified by having user_id as null
-    return await supabase
+    // Find guest bookings by PNR and contact_email
+    // Guest bookings are identified by the contact_email matching the lookup email
+    // and having a user with email starting with "guest+"
+    const { data, error } = await supabase
       .from("bookings")
-      .select("*")
+      .select(`
+        *,
+        users:user_id (email)
+      `)
       .eq("pnr", pnr)
       .eq("contact_email", email)
-      .is("user_id", null)
       .single();
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    // Check if this is a guest booking (user email starts with "guest+")
+    const userData = data.users as any;
+    if (userData && userData.email && userData.email.startsWith("guest+")) {
+      return { data, error: null };
+    }
+
+    // Not a guest booking
+    return { data: null, error: new Error("Booking not found or not a guest booking") };
   },
 
   async getAirportById(id: string) {
