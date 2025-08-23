@@ -1,11 +1,11 @@
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
 // Initialize Stripe only if API key is available
 let stripe: Stripe | null = null;
 
 if (process.env.STRIPE_SECRET_KEY) {
   stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-07-30.basil'
+    apiVersion: "2025-07-30.basil",
   });
 }
 
@@ -33,9 +33,13 @@ export class StripeService {
   /**
    * Create a Payment Intent for the booking
    */
-  static async createPaymentIntent(data: StripePaymentIntentData): Promise<Stripe.PaymentIntent> {
+  static async createPaymentIntent(
+    data: StripePaymentIntentData,
+  ): Promise<Stripe.PaymentIntent> {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
@@ -44,7 +48,7 @@ export class StripeService {
         currency: data.currency.toLowerCase(),
         metadata: {
           bookingId: data.bookingId,
-          customerEmail: data.customerEmail
+          customerEmail: data.customerEmail,
         },
         description: data.description,
         automatic_payment_methods: {
@@ -54,7 +58,7 @@ export class StripeService {
 
       return paymentIntent;
     } catch (error) {
-      console.error('Stripe Payment Intent creation failed:', error);
+      console.error("Stripe Payment Intent creation failed:", error);
       throw error;
     }
   }
@@ -62,14 +66,19 @@ export class StripeService {
   /**
    * Confirm a Payment Intent
    */
-  static async confirmPaymentIntent(paymentIntentId: string, paymentMethodId?: string): Promise<Stripe.PaymentIntent> {
+  static async confirmPaymentIntent(
+    paymentIntentId: string,
+    paymentMethodId?: string,
+  ): Promise<Stripe.PaymentIntent> {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
       const confirmData: Stripe.PaymentIntentConfirmParams = {
-        return_url: `${process.env.CLIENT_URL || 'http://localhost:8080'}/payment/success`,
+        return_url: `${process.env.CLIENT_URL || "http://localhost:8080"}/payment/success`,
       };
 
       if (paymentMethodId) {
@@ -78,12 +87,12 @@ export class StripeService {
 
       const paymentIntent = await stripe!.paymentIntents.confirm(
         paymentIntentId,
-        confirmData
+        confirmData,
       );
 
       return paymentIntent;
     } catch (error) {
-      console.error('Stripe Payment Intent confirmation failed:', error);
+      console.error("Stripe Payment Intent confirmation failed:", error);
       throw error;
     }
   }
@@ -91,15 +100,19 @@ export class StripeService {
   /**
    * Retrieve a Payment Intent
    */
-  static async retrievePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+  static async retrievePaymentIntent(
+    paymentIntentId: string,
+  ): Promise<Stripe.PaymentIntent> {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
       return await stripe!.paymentIntents.retrieve(paymentIntentId);
     } catch (error) {
-      console.error('Stripe Payment Intent retrieval failed:', error);
+      console.error("Stripe Payment Intent retrieval failed:", error);
       throw error;
     }
   }
@@ -107,9 +120,14 @@ export class StripeService {
   /**
    * Create a Customer
    */
-  static async createCustomer(email: string, name?: string): Promise<Stripe.Customer> {
+  static async createCustomer(
+    email: string,
+    name?: string,
+  ): Promise<Stripe.Customer> {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
@@ -118,7 +136,7 @@ export class StripeService {
         name,
       });
     } catch (error) {
-      console.error('Stripe Customer creation failed:', error);
+      console.error("Stripe Customer creation failed:", error);
       throw error;
     }
   }
@@ -126,9 +144,14 @@ export class StripeService {
   /**
    * Refund a Payment Intent
    */
-  static async refundPayment(paymentIntentId: string, amount?: number): Promise<Stripe.Refund> {
+  static async refundPayment(
+    paymentIntentId: string,
+    amount?: number,
+  ): Promise<Stripe.Refund> {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
@@ -142,7 +165,7 @@ export class StripeService {
 
       return await stripe!.refunds.create(refundData);
     } catch (error) {
-      console.error('Stripe refund failed:', error);
+      console.error("Stripe refund failed:", error);
       throw error;
     }
   }
@@ -150,15 +173,21 @@ export class StripeService {
   /**
    * Verify webhook signature
    */
-  static verifyWebhookSignature(payload: string, signature: string, secret: string): Stripe.Event {
+  static verifyWebhookSignature(
+    payload: string,
+    signature: string,
+    secret: string,
+  ): Stripe.Event {
     if (!this.isStripeAvailable()) {
-      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      throw new Error(
+        "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.",
+      );
     }
 
     try {
       return stripe!.webhooks.constructEvent(payload, signature, secret);
     } catch (error) {
-      console.error('Stripe webhook signature verification failed:', error);
+      console.error("Stripe webhook signature verification failed:", error);
       throw error;
     }
   }
@@ -167,7 +196,7 @@ export class StripeService {
    * Get Stripe publishable key
    */
   static getPublishableKey(): string {
-    return process.env.STRIPE_PUBLISHABLE_KEY || '';
+    return process.env.STRIPE_PUBLISHABLE_KEY || "";
   }
 
   /**
