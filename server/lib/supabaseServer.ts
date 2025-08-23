@@ -214,19 +214,15 @@ export const supabaseServerHelpers = {
       return existingUser.id;
     }
 
-    // Create guest user if it doesn't exist
-    const guestId = "00000000-0000-0000-0000-000000000000"; // Special UUID for guest user
+    // Create guest user if it doesn't exist - let database generate the UUID
     const { data: newUser, error } = await supabase
       .from("users")
       .insert({
-        id: guestId,
         email: guestEmail,
         first_name: "Guest",
         last_name: "User",
         title: "Mr",
         status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       })
       .select("id")
       .single();
