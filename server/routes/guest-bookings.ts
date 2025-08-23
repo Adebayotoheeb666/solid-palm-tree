@@ -98,6 +98,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
         departure_date: bookingData.route.departureDate,
         return_date: bookingData.route.returnDate || null,
         trip_type: bookingData.route.tripType,
+        base_amount: totalAmount - 0, // Set base amount (total - fees)
         total_amount: totalAmount,
         contact_email: bookingData.contactEmail,
         contact_phone: bookingData.contactPhone || null,

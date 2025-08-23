@@ -157,6 +157,7 @@ export const supabaseServerHelpers = {
     departure_date: string;
     return_date?: string | null;
     trip_type: string;
+    base_amount: number;
     total_amount: number;
     contact_email: string;
     contact_phone?: string | null;
@@ -175,6 +176,7 @@ export const supabaseServerHelpers = {
         departure_date: bookingData.departure_date,
         return_date: bookingData.return_date,
         trip_type: bookingData.trip_type,
+        base_amount: bookingData.base_amount,
         total_amount: bookingData.total_amount,
         contact_email: bookingData.contact_email,
         contact_phone: bookingData.contact_phone,
@@ -182,7 +184,7 @@ export const supabaseServerHelpers = {
         pnr,
         status: "pending",
         currency: "USD",
-        user_id: guestUserId, // Use special guest user
+        user_id: guestUserId, // Use admin user for guest bookings
       })
       .select()
       .single();
