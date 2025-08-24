@@ -253,7 +253,7 @@ export default function Payment() {
     if (selectedFlight && selectedFlight.price) {
       return parseFloat(selectedFlight.price.total);
     }
-    return 10; // Fallback price
+    return 15; // Fallback price - matches backend pricing
   };
 
   const getCurrency = () => {
