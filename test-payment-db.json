@@ -1,8 +1,0 @@
-{
-  "bookingId": "e4ba24d6-36a2-42bd-85e6-59cdbeb3e0aa",
-  "paymentMethod": "stripe",
-  "paymentDetails": {
-    "stripePaymentIntentId": "pi_test_payment_123",
-    "stripePaymentMethodId": "pm_test_card_123"
-  }
-}
