@@ -128,6 +128,13 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
+<<<<<<< HEAD
+=======
+// Import service status checker
+import { ServiceStatusChecker } from "./lib/serviceStatus";
+// Import services route
+import { servicesRouter } from "./routes/services";
+>>>>>>> refs/remotes/origin/main
 
 export async function createServer() {
   const app = express();
@@ -230,12 +237,8 @@ export async function createServer() {
   // Add fallback airports route
   app.use("/api", fallbackAirportsRouter);
 
-  // Add health check endpoints for Digital Ocean
-  app.get("/health", (req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
-  });
-
-  app.get("/api/health", (req, res) => {
+  // Health check routes
+  app.get("/api/health", (_req, res) => {
     const useSupabase = !!(
       process.env.SUPABASE_URL &&
       process.env.SUPABASE_SERVICE_ROLE_KEY &&
@@ -261,6 +264,9 @@ export async function createServer() {
   // Database routes
   app.use("/api", dbHealthRouter);
   app.use("/api", dbTestRouter);
+
+  // Services status route
+  app.use("/api/services", servicesRouter);
 
   // Check which authentication and database system to use
   const useSupabase = !!(

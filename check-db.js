@@ -5,7 +5,13 @@ async function checkDatabaseConnectivity() {
   console.log("=".repeat(50));
 
   try {
-    const response = await fetch("http://localhost:8080/api/health/database");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    
+    const response = await fetch("http://localhost:8080/api/health/database", {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
     const result = await response.json();
 
     console.log(`📊 Check completed at: ${result.timestamp}`);

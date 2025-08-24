@@ -170,7 +170,7 @@ export async function handleCreateGuestBooking(req: Request, res: Response) {
     // Format response to match expected API structure
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null, // Guest booking has no user ID
+      userId: null, // Guest booking - hide the internal guest user ID
       pnr: booking.pnr,
       status: booking.status,
       route: {
@@ -283,7 +283,7 @@ export async function handleGetGuestBooking(req: Request, res: Response) {
 
     const bookingResponse: Booking = {
       id: booking.id,
-      userId: null,
+      userId: null, // Guest booking - hide the internal guest user ID
       pnr: booking.pnr,
       status: booking.status,
       route: {
