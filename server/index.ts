@@ -128,14 +128,6 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
-<<<<<<< HEAD
-=======
-// Import service status checker
-import { ServiceStatusChecker } from "./lib/serviceStatus";
-// Import services route
-import { servicesRouter } from "./routes/services";
->>>>>>> refs/remotes/origin/main
-
 export async function createServer() {
   const app = express();
 
