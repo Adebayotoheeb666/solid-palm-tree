@@ -190,7 +190,9 @@ export default function Confirmation({
     } catch (error) {
       console.error("Error creating booking:", error);
       if (error instanceof Error) {
-        setError(`Network error: ${error.message}. Please check your connection and try again.`);
+        setError(
+          `Network error: ${error.message}. Please check your connection and try again.`,
+        );
       } else {
         setError("Network error. Please check your connection and try again.");
       }
