@@ -226,6 +226,19 @@ export const supabaseServerHelpers = {
       .eq("booking_id", bookingId);
   },
 
+  async addPassengers(passengersData: Array<{
+    booking_id: string;
+    title: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>) {
+    return await supabase
+      .from("passengers")
+      .insert(passengersData)
+      .select();
+  },
+
   // Airport operations
   async getAllAirports() {
     return await withServerErrorHandling(
