@@ -154,7 +154,6 @@ export async function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-
   // Database health check
   app.get("/api/health/database", async (req, res) => {
     const useSupabase = !!(
@@ -256,7 +255,6 @@ export async function createServer() {
   // Database routes
   app.use("/api", dbHealthRouter);
   app.use("/api", dbTestRouter);
-
 
   // Check which authentication and database system to use
   const useSupabase = !!(

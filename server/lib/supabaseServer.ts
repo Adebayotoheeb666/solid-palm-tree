@@ -68,7 +68,6 @@ export const supabaseServerHelpers = {
     return await supabase.from("users").select("*").eq("email", email).single();
   },
 
-
   async getUserBookings(userId: string) {
     return await supabase
       .from("booking_summary")

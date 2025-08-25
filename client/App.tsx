@@ -55,11 +55,11 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
             <DashboardButton />
             <Suspense
               fallback={
