@@ -257,8 +257,6 @@ export async function createServer() {
   app.use("/api", dbHealthRouter);
   app.use("/api", dbTestRouter);
 
-  // Services status route
-  app.use("/api/services", servicesRouter);
 
   // Check which authentication and database system to use
   const useSupabase = !!(

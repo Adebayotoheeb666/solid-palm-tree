@@ -68,62 +68,6 @@ export const supabaseServerHelpers = {
     return await supabase.from("users").select("*").eq("email", email).single();
   },
 
-  // Guest booking operations
-  async createGuestBooking(bookingData: {
-    from_airport_id: string;
-    to_airport_id: string;
-    departure_date: string;
-    return_date?: string | null;
-    trip_type: string;
-    total_amount: number;
-    contact_email: string;
-    contact_phone?: string | null;
-    terms_accepted: boolean;
-  }) {
-    const pnr = this.generatePNR();
-
-    // For guest bookings, we'll create a special guest user or handle the constraint
-    const insertData: any = {
-      from_airport_id: bookingData.from_airport_id,
-      to_airport_id: bookingData.to_airport_id,
-      departure_date: bookingData.departure_date,
-      return_date: bookingData.return_date,
-      trip_type: bookingData.trip_type,
-      total_amount: bookingData.total_amount,
-      contact_email: bookingData.contact_email,
-      contact_phone: bookingData.contact_phone,
-      terms_accepted: bookingData.terms_accepted,
-      pnr,
-      status: "pending",
-      currency: "USD",
-      user_id: null, // Guest booking has no user
-    };
-
-    // Create a temporary guest user for RLS policy compliance
-    console.log("Creating guest user for booking...");
-    const guestEmail = `guest+${Date.now()}@onboardticket.com`;
-
-    const { data: guestUser, error: userError } = await supabase
-      .from("users")
-      .insert({
-        email: guestEmail,
-        first_name: "Guest",
-        last_name: "User",
-        title: "Mr",
-      })
-      .select()
-      .single();
-
-    if (userError || !guestUser) {
-      console.error("Failed to create guest user:", userError);
-      throw new Error(`Failed to create guest user: ${userError?.message}`);
-    }
-
-    // Insert booking with guest user ID
-    insertData.user_id = guestUser.id;
-
-    return await supabase.from("bookings").insert(insertData).select().single();
-  },
 
   async getUserBookings(userId: string) {
     return await supabase
