@@ -183,7 +183,6 @@ export const supabaseServerHelpers = {
     return result;
   },
 
-<<<<<<< HEAD
   // Guest booking operations
   async createGuestBooking(bookingData: {
     from_airport_id: string;
@@ -229,26 +228,11 @@ export const supabaseServerHelpers = {
   async getGuestBookingByPNR(pnr: string, email: string) {
     const guestUserId = await this.getOrCreateGuestUser();
     return await supabase
-=======
-  async getGuestBookingByPNR(pnr: string, email: string) {
-    // Find guest bookings by PNR and contact_email
-    // Guest bookings are identified by the contact_email matching the lookup email
-    // and having a user with email starting with "guest+"
-    const { data, error } = await supabase
->>>>>>> refs/remotes/origin/main
       .from("bookings")
-      .select(
-        `
-        *,
-        users:user_id (email)
-      `,
-      )
+      .select("*")
       .eq("pnr", pnr)
       .eq("contact_email", email)
-<<<<<<< HEAD
       .eq("user_id", guestUserId)
-=======
->>>>>>> refs/remotes/origin/main
       .single();
 
     if (error) {
