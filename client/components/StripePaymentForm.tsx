@@ -299,7 +299,7 @@ export default function StripePaymentForm({
               })
             }
             maxLength={19}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-ticket-accent focus:ring-2 focus:ring-ticket-accent/20"
           />
         </div>
 
@@ -320,7 +320,7 @@ export default function StripePaymentForm({
                 })
               }
               maxLength={5}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
+              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-ticket-accent focus:ring-2 focus:ring-ticket-accent/20"
             />
           </div>
           <div>
@@ -336,7 +336,7 @@ export default function StripePaymentForm({
                 })
               }
               maxLength={4}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
+              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-ticket-accent focus:ring-2 focus:ring-ticket-accent/20"
             />
           </div>
         </div>
@@ -356,7 +356,7 @@ export default function StripePaymentForm({
                 cardholderName: e.target.value,
               })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-ticket-accent"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-ticket-accent focus:ring-2 focus:ring-ticket-accent/20"
           />
         </div>
 
@@ -371,7 +371,7 @@ export default function StripePaymentForm({
                 country: e.target.value,
               })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-ticket-accent"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-ticket-accent focus:ring-2 focus:ring-ticket-accent/20"
           >
             <option value="">Select Country</option>
             <option value="US">United States</option>

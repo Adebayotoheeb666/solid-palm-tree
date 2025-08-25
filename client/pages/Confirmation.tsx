@@ -121,6 +121,12 @@ export default function Confirmation({
 
   // Handle booking creation (simplified for guest checkout)
   const handleCreateBooking = async () => {
+    // Prevent duplicate requests
+    if (loading) {
+      console.log("Request already in progress, skipping duplicate call");
+      return;
+    }
+
     if (!acceptTerms) {
       setError("Please accept the terms and conditions to continue.");
       return;
@@ -149,14 +155,21 @@ export default function Confirmation({
 
       console.log("Creating booking:", bookingRequest);
 
-      // Always use guest booking endpoint for simplicity
-      const response = await fetch("/api/guest/bookings", {
-        method: "POST",
+      // Create fresh request options each time to avoid stream reuse
+      const requestOptions = {
+        method: "POST" as const,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingRequest),
-      });
+      };
+
+      // Always use guest booking endpoint for simplicity
+      const response = await fetch("/api/guest/bookings", requestOptions);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const result = await response.json();
 
@@ -176,7 +189,13 @@ export default function Confirmation({
       }
     } catch (error) {
       console.error("Error creating booking:", error);
-      setError("Network error. Please check your connection and try again.");
+      if (error instanceof Error) {
+        setError(
+          `Network error: ${error.message}. Please check your connection and try again.`,
+        );
+      } else {
+        setError("Network error. Please check your connection and try again.");
+      }
     } finally {
       setLoading(false);
     }

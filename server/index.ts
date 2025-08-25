@@ -128,11 +128,6 @@ import {
   handleResendVerificationEmail,
 } from "./routes/email-verification";
 
-// Import service status checker
-import { ServiceStatusChecker } from "./lib/serviceStatus";
-// Import services route
-import { servicesRouter } from "./routes/services";
-
 export async function createServer() {
   const app = express();
 
@@ -158,27 +153,6 @@ export async function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
-
-  // Simple services status endpoint with error handling
-  app.get("/api/services", async (req, res) => {
-    try {
-      const serviceStatus = await ServiceStatusChecker.checkAllServices();
-      res.json(serviceStatus);
-    } catch (error) {
-      console.error("Service status check error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to check service status",
-        error: error instanceof Error ? error.message : "Unknown error",
-        services: {},
-        summary: {
-          total: 0,
-          working: 0,
-          configured: 0,
-        },
-      });
-    }
-  });
 
   // Database health check
   app.get("/api/health/database", async (req, res) => {
@@ -207,7 +181,6 @@ export async function createServer() {
   // System status endpoint
   app.get("/api/status", async (req, res) => {
     try {
-      const serviceStatus = await ServiceStatusChecker.checkAllServices();
       const useSupabase = !!(
         process.env.SUPABASE_URL &&
         process.env.SUPABASE_SERVICE_ROLE_KEY &&
@@ -227,8 +200,6 @@ export async function createServer() {
           message: dbHealth.message,
           system: useSupabase ? "supabase" : "fallback",
         },
-        services: serviceStatus.services,
-        serviceSummary: serviceStatus.summary,
         features: {
           authentication: "✅ Available (hybrid)",
           userRegistration: "✅ Available (hybrid)",
@@ -238,18 +209,6 @@ export async function createServer() {
             useSupabase && dbHealth.healthy
               ? "✅ Database"
               : "⚠️ Static data only",
-          payments:
-            serviceStatus.services.stripe.status === "working"
-              ? "✅ Stripe available"
-              : "⚠️ Stripe not configured",
-          emails:
-            serviceStatus.services.sendgrid.status === "working"
-              ? "✅ SendGrid available"
-              : "⚠️ SendGrid not configured",
-          flights:
-            serviceStatus.services.amadeus.status === "working"
-              ? "✅ Amadeus available"
-              : "⚠️ Amadeus not configured",
         },
         adminCredentials: {
           email: "onboard@admin.com",
@@ -296,9 +255,6 @@ export async function createServer() {
   // Database routes
   app.use("/api", dbHealthRouter);
   app.use("/api", dbTestRouter);
-
-  // Services status route
-  app.use("/api/services", servicesRouter);
 
   // Check which authentication and database system to use
   const useSupabase = !!(
@@ -505,7 +461,6 @@ export async function createServer() {
       message: `API endpoint not found: ${req.method} ${req.path}`,
       availableEndpoints: [
         "GET /api/ping",
-        "GET /api/services",
         "GET /api/status",
         "POST /api/auth/register",
         "POST /api/auth/login",
@@ -530,7 +485,6 @@ if (!isViteMode) {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`📋 API status: http://localhost:${PORT}/api/status`);
-      console.log(`🔧 Services status: http://localhost:${PORT}/api/services`);
     });
   });
 }
